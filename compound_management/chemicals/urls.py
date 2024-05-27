@@ -13,4 +13,6 @@ urlpatterns = [
     path('chemicals/<str:target>/edit/<str:chem_id>/', views.chemical_edit_view, name='chemical_edit'),
     path('chemicals/<str:target>/delete/<str:chem_id>/', views.chemical_delete_view, name='chemical_delete'),
     path('chemicals/upload/<str:target>/', views.upload_chemicals, name='upload_chemicals'),
+    path('chemicals/<str:target>/pharmacokinetics/<str:chem_id>/', views.pharmacokinetic_list, name='pharmacokinetic_list'),
+    path('chemicals/<str:target>/pharmacokinetics/<str:chem_id>/add/', views.pharmacokinetic_add, name='pharmacokinetic_add'),
 ]

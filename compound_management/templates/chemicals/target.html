@@ -13,6 +13,7 @@
                 <th>MW</th>
                 <th>cLogP</th>
                 <th>Actions</th>
+                <th>Results</th>
             </tr>
         </thead>
         <tbody>
@@ -30,9 +31,12 @@
                     <a href="{% url 'chemical_edit' target=target chem_id=chem.chem_id %}">Edit</a>
                     <a href="{% url 'chemical_delete' target=target chem_id=chem.chem_id %}">Delete</a>
                 </td>
+                <td>
+                    <a href="{% url 'pharmacokinetic_list' target=target chem_id=chem.chem_id %}">Link</a>
+                </td>
             </tr>
             {% endfor %}
-        </tbody>
+       </tbody>
     </table>
     <a href="{% url 'chemical_new' target=target %}">New Chem</a>
     <a href="{% url 'upload_chemicals' target=target %}">Upload Chemicals</a>

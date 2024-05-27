@@ -2,8 +2,8 @@ from django.shortcuts import render
 
 # Create your views here.
 from django.shortcuts import render, redirect, get_object_or_404
-from .models import Chemical
-from .forms import ChemicalForm, ChemicalUploadForm
+from .models import Chemical, Pharmacokinetic
+from .forms import ChemicalForm, ChemicalUploadForm, PharmacokineticForm
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.decorators import login_required
@@ -130,6 +130,27 @@ def upload_chemicals(request, target):
     else:
         form = ChemicalUploadForm()
     return render(request, 'chemicals/upload_chemicals.html', {'form': form, 'target': target})
+
+@login_required
+def pharmacokinetic_list(request, target, chem_id):
+    chemical = get_object_or_404(Chemical, chem_id=chem_id)
+    pharmacokinetics = Pharmacokinetic.objects.filter(chemical=chemical)
+    return render(request, 'chemicals/pharmacokinetic_list.html', {'chemical': chemical, 'pharmacokinetics': pharmacokinetics})
+
+@login_required
+def pharmacokinetic_add(request, target, chem_id):
+    chemical = get_object_or_404(Chemical, chem_id=chem_id)
+    if request.method == 'POST':
+        form = PharmacokineticForm(request.POST)
+        if form.is_valid():
+            pharmacokinetic = form.save(commit=False)
+            pharmacokinetic.chemical = chemical
+            pharmacokinetic.save()
+            return redirect('pharmacokinetic_list', target=target, chem_id=chem_id)
+    else:
+        form = PharmacokineticForm()
+    return render(request, 'chemicals/pharmacokinetic_form.html', {'form': form, 'chemical': chemical})
+
 def register_view(request):
     if request.method == 'POST':
         form = UserCreationForm(request.POST)

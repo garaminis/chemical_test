@@ -9,6 +9,7 @@ class Chemical(models.Model):
     chem_id = models.CharField(max_length=50, primary_key=True)
     smiles = models.TextField()
     image = models.ImageField(upload_to='chemicals/', blank=True, null=True)
+ #   image = models.ImageField(upload_to='chemical_images/', blank=True, null=True)
     MW = models.FloatField()
     cLogP = models.FloatField(null=True, blank=True)
 
@@ -24,3 +25,17 @@ class Result(models.Model):
 
     def __str__(self):
         return f"{self.chemical} - {self.description}"
+
+class Pharmacokinetic(models.Model):
+    chemical = models.ForeignKey(Chemical, on_delete=models.CASCADE)
+    date = models.DateField()
+    cmax = models.FloatField()
+    tmax = models.FloatField()
+    AUC = models.FloatField()
+    t_half = models.FloatField()  # t1/2
+    Vss = models.FloatField()
+    Vd = models.FloatField()
+    BA = models.FloatField()  # Bioavailability
+
+    def __str__(self):
+        return f'{self.chemical.chem_id} - {self.date}'
