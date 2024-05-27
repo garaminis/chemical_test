@@ -27,8 +27,8 @@
                 <td>{{ chem.MW }}</td>
                 <td>{{ chem.cLogP }}</td>
                 <td>
-                    <a href="{% url 'chemical_edit' target=target pk=chem.pk %}">Edit</a>
-                    <a href="{% url 'chemical_delete' target=target pk=chem.pk %}">Delete</a>
+                    <a href="{% url 'chemical_edit' target=target chem_id=chem.chem_id %}">Edit</a>
+                    <a href="{% url 'chemical_delete' target=target chem_id=chem.chem_id %}">Delete</a>
                 </td>
             </tr>
             {% endfor %}

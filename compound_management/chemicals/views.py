@@ -24,7 +24,7 @@ def home_view(request):
 
 @login_required
 def target_view(request, target):
-    chemicals = Chemical.objects.filter(target=target)
+    chemicals = Chemical.objects.filter(target__iexact=target)
     if not chemicals.exists():
         logger.debug(f'No chemicals found for target: {target}')
     else:
@@ -67,8 +67,8 @@ def chemical_new_view(request, target):
     return render(request, 'chemicals/chemical_form.html', {'form': form, 'target': target})
 
 @login_required
-def chemical_edit_view(request, target, pk):
-    chemical = get_object_or_404(Chemical, pk=pk)
+def chemical_edit_view(request, target, chem_id):
+    chemical = get_object_or_404(Chemical, chem_id=chem_id)
     if request.method == 'POST':
         form = ChemicalForm(request.POST, instance=chemical)
         if form.is_valid():
@@ -87,15 +87,8 @@ def chemical_edit_view(request, target, pk):
     logger.debug(f'Edit chemical form for {chemical}')
     return render(request, 'chemicals/chemical_form.html', {'form': form, 'target': target})
 @login_required
-def chemical_delete_view(request, target, pk):
-    chemical = get_object_or_404(Chemical, pk=pk)
-    if request.method == 'POST':
-        chemical.delete()
-        return redirect('target_view', target=target)
-    return render(request, 'chemicals/chemical_confirm_delete.html', {'chemical': chemical})
-@login_required
-def chemical_delete_view(request, target, pk):
-    chemical = get_object_or_404(Chemical, pk=pk)
+def chemical_delete_view(request, target, chem_id):
+    chemical = get_object_or_404(Chemical, chem_id=chem_id)
     if request.method == 'POST':
         chemical.delete()
         logger.debug(f'Chemical deleted: {chemical}')
@@ -125,6 +118,7 @@ def upload_chemicals(request, target):
                 chemical = Chemical(
                     chem_id=chem_id,
                     smiles=smiles,
+                    target=target,
                     MW=float(MW),
                     cLogP=calculate_cLogP(smiles)
                 )
@@ -132,7 +126,7 @@ def upload_chemicals(request, target):
                 if image_data:
                     chemical.image.save(f'{chemical.chem_id}.png', ContentFile(image_data), save=False)
                 chemical.save()
-            return redirect(f'/chemicals/{target.lower()}/')
+        return redirect('target_view', target=target)
     else:
         form = ChemicalUploadForm()
     return render(request, 'chemicals/upload_chemicals.html', {'form': form, 'target': target})

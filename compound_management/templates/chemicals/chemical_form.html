@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Chemical Form</title>
+    <title>{{target}} Chemical Form</title>
 </head>
 <body>
-    <h2>Chemical Form</h2>
+    <h2>{{target}} Chemical Form</h2>
     <form method="post">
         {% csrf_token %}
         {{ form.as_p }}

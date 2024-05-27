@@ -6,7 +6,7 @@ from django.contrib.auth.models import User
 # User 모델을 확장하거나 기본 User 모델을 사용할 수 있습니다.
 class Chemical(models.Model):
     target = models.CharField(max_length=50)
-    chem_id = models.IntegerField(primary_key=True)
+    chem_id = models.CharField(max_length=50, primary_key=True)
     smiles = models.TextField()
     image = models.ImageField(upload_to='chemicals/', blank=True, null=True)
     MW = models.FloatField()
