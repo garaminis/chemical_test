@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Upload Chemicals for {{ target }}</title>
+</head>
+<body>
+    <h2>Upload Chemicals for {{ target }}</h2>
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Upload</button>
+    </form>
+    <a href="{% url 'target_view' target=target %}">Back to {{ target }}</a>
+</body>
+</html>

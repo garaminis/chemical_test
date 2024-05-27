@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Home</title>
+</head>
+<body>
+    <h2>Welcome to the Chemical Management System</h2>
+    <a href="{% url 'target_view' target='TNIK' %}">TNIK</a>
+    <a href="{% url 'target_view' target='FOXM1' %}">FOXM1</a>
+    <form method="post" action="{% url 'logout' %}">
+        {% csrf_token %}
+        <button type="submit">Logout</button>
+    </form>
+</body>
+</html>>

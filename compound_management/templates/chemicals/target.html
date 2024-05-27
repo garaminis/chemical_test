@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{{ target }}</title>
+</head>
+<body>
+    <h2>{{ target }} Chemicals</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Chem ID</th>
+                <th>Str_Image</th>
+                <th>MW</th>
+                <th>cLogP</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for chem in chemicals %}
+            <tr>
+                <td>{{ chem.chem_id }}</td>
+                <td>
+                    {% if chem.image %}
+                    <img src="{{ chem.image.url }}" alt="Structure Image" style="max-width: 180px;">
+                    {% endif %}
+                </td>
+                <td>{{ chem.MW }}</td>
+                <td>{{ chem.cLogP }}</td>
+                <td>
+                    <a href="{% url 'chemical_edit' target=target pk=chem.pk %}">Edit</a>
+                    <a href="{% url 'chemical_delete' target=target pk=chem.pk %}">Delete</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <a href="{% url 'chemical_new' target=target %}">New Chem</a>
+    <a href="{% url 'upload_chemicals' target=target %}">Upload Chemicals</a>
+    <form method="post" action="{% url 'logout' %}">
+        {% csrf_token %}
+        <button type="submit">Logout</button>
+    </form>
+    <a href="{% url 'home' %}">Home</a>
+</body>
+</html>>

@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Chemical Form</title>
+</head>
+<body>
+    <h2>Chemical Form</h2>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Save</button>
+    </form>
+    <a href="{% url 'target_view' target=target %}">Cancel</a>
+</body>
+</html>
