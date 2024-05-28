@@ -39,3 +39,15 @@ class Pharmacokinetic(models.Model):
 
     def __str__(self):
         return f'{self.chemical.chem_id} - {self.date}'
+
+class Cytotoxicity(models.Model):
+    chemical = models.ForeignKey(Chemical, on_delete=models.CASCADE)
+    date = models.DateField()
+    VERO = models.FloatField()
+    HFL_1 = models.FloatField()
+    L929 = models.FloatField()
+    NIH_3T3 = models.FloatField()
+    CHO_K1 = models.FloatField()
+
+    def __str__(self):
+        return f'{self.chemical.chem_id} - {self.date}'

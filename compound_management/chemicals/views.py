@@ -2,8 +2,8 @@ from django.shortcuts import render
 
 # Create your views here.
 from django.shortcuts import render, redirect, get_object_or_404
-from .models import Chemical, Pharmacokinetic
-from .forms import ChemicalForm, ChemicalUploadForm, PharmacokineticForm
+from .models import Chemical, Pharmacokinetic, Cytotoxicity
+from .forms import ChemicalForm, ChemicalUploadForm, PharmacokineticForm, CytotoxicityForm
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.decorators import login_required
@@ -135,7 +135,12 @@ def upload_chemicals(request, target):
 def pharmacokinetic_list(request, target, chem_id):
     chemical = get_object_or_404(Chemical, chem_id=chem_id)
     pharmacokinetics = Pharmacokinetic.objects.filter(chemical=chemical)
-    return render(request, 'chemicals/pharmacokinetic_list.html', {'chemical': chemical, 'pharmacokinetics': pharmacokinetics})
+    cytotoxicities = Cytotoxicity.objects.filter(chemical=chemical)
+    return render(request, 'chemicals/pharmacokinetic_list.html', {
+        'chemical': chemical,
+        'pharmacokinetics': pharmacokinetics,
+        'cytotoxicities': cytotoxicities
+    })
 
 @login_required
 def pharmacokinetic_add(request, target, chem_id):
@@ -151,6 +156,19 @@ def pharmacokinetic_add(request, target, chem_id):
         form = PharmacokineticForm()
     return render(request, 'chemicals/pharmacokinetic_form.html', {'form': form, 'chemical': chemical})
 
+@login_required
+def cytotoxicity_add(request, target, chem_id):
+    chemical = get_object_or_404(Chemical, chem_id=chem_id)
+    if request.method == 'POST':
+        form = CytotoxicityForm(request.POST)
+        if form.is_valid():
+            cytotoxicity = form.save(commit=False)
+            cytotoxicity.chemical = chemical
+            cytotoxicity.save()
+            return redirect('pharmacokinetic_list', target=target, chem_id=chem_id)
+    else:
+        form = CytotoxicityForm()
+    return render(request, 'chemicals/cytotoxicity_form.html', {'form': form, 'chemical': chemical})
 def register_view(request):
     if request.method == 'POST':
         form = UserCreationForm(request.POST)
