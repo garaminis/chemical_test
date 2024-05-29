@@ -112,3 +112,13 @@ class SchrödingerModel(models.Model):
 
     def __str__(self):
         return f'{self.chemical.chem_id} Schrödinger Model'
+
+class LiverMicrosomalStability(models.Model):
+    chemical = models.ForeignKey(Chemical, on_delete=models.CASCADE)
+    date = models.DateField()
+    mouse = models.FloatField()
+    rat = models.FloatField()
+    human = models.FloatField()
+
+    def __str__(self):
+        return f'{self.chemical.chem_id} - {self.date} Liver Microsomal Stability'

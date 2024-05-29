@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Add Liver Microsomal Stability Data for {{ chemical.chem_id }}</title>
+</head>
+<body>
+    <h2>Add Liver Microsomal Stability Data for {{ chemical.chem_id }}</h2>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Save</button>
+    </form>
+    <a href="{% url 'pharmacokinetic_list' target=chemical.target chem_id=chemical.chem_id %}">Cancel</a>
+</body>
+</html>

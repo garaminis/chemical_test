@@ -1,5 +1,6 @@
 from django import forms
-from .models import Chemical, Pharmacokinetic, Cytotoxicity, SchrödingerModel
+from .models import Chemical, Pharmacokinetic, Cytotoxicity, SchrödingerModel,LiverMicrosomalStability
+
 
 class DateInput(forms.DateInput):
     input_type = 'date'
@@ -36,3 +37,11 @@ class SchrödingerModelForm(forms.ModelForm):
 
 class SchrödingerModelUploadForm(forms.Form):
     file = forms.FileField()
+
+class LiverMicrosomalStabilityForm(forms.ModelForm):
+    class Meta:
+        model = LiverMicrosomalStability
+        fields = ['date', 'mouse', 'rat', 'human']
+        widgets = {
+            'date': DateInput(),  # DateInput 위젯 사용
+        }

@@ -2,8 +2,8 @@ from django.shortcuts import render
 
 # Create your views here.
 from django.shortcuts import render, redirect, get_object_or_404
-from .models import Chemical, Pharmacokinetic, Cytotoxicity, SchrödingerModel
-from .forms import ChemicalForm, ChemicalUploadForm, PharmacokineticForm, CytotoxicityForm, SchrödingerModelForm, SchrödingerModelUploadForm
+from .models import Chemical, Pharmacokinetic, Cytotoxicity, SchrödingerModel, LiverMicrosomalStability
+from .forms import ChemicalForm, ChemicalUploadForm, PharmacokineticForm, CytotoxicityForm, SchrödingerModelForm, SchrödingerModelUploadForm, LiverMicrosomalStabilityForm
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.decorators import login_required
@@ -151,10 +151,12 @@ def pharmacokinetic_list(request, target, chem_id):
     chemical = get_object_or_404(Chemical, chem_id=chem_id)
     pharmacokinetics = Pharmacokinetic.objects.filter(chemical=chemical)
     cytotoxicities = Cytotoxicity.objects.filter(chemical=chemical)
+    liver_stabilities = LiverMicrosomalStability.objects.filter(chemical=chemical)
     return render(request, 'chemicals/pharmacokinetic_list.html', {
         'chemical': chemical,
         'pharmacokinetics': pharmacokinetics,
-        'cytotoxicities': cytotoxicities
+        'cytotoxicities': cytotoxicities,
+        'liver_stabilities': liver_stabilities
     })
 
 @login_required
@@ -244,3 +246,17 @@ def schrodinger_model_upload(request, target, chem_id):
     else:
         form = SchrödingerModelUploadForm()
     return render(request, 'chemicals/schrodinger_model_upload.html', {'form': form, 'chemical': chemical})
+
+@login_required
+def liver_stability_add(request, target, chem_id):
+    chemical = get_object_or_404(Chemical, chem_id=chem_id)
+    if request.method == 'POST':
+        form = LiverMicrosomalStabilityForm(request.POST)
+        if form.is_valid():
+            liver_stability = form.save(commit=False)
+            liver_stability.chemical = chemical
+            liver_stability.save()
+            return redirect('pharmacokinetic_list', target=target, chem_id=chem_id)
+    else:
+        form = LiverMicrosomalStabilityForm()
+    return render(request, 'chemicals/liver_stability_form.html', {'form': form, 'chemical': chemical})
