@@ -1,5 +1,5 @@
 from django import forms
-from .models import Chemical, Pharmacokinetic, Cytotoxicity, SchrödingerModel,LiverMicrosomalStability
+from .models import Chemical, Pharmacokinetic, Cytotoxicity, SchrödingerModel,LiverMicrosomalStability, CYPInhibition
 
 
 class DateInput(forms.DateInput):
@@ -33,7 +33,7 @@ class CytotoxicityForm(forms.ModelForm):
 class SchrödingerModelForm(forms.ModelForm):
     class Meta:
         model = SchrödingerModel
-        fields = ['field_1', 'field_2', 'field_3', 'field_4', 'field_5', 'field_6', 'field_7', 'field_8', 'field_9', 'field_10', 'field_11', 'field_12', 'field_13', 'field_14', 'field_15', 'field_16', 'field_17', 'field_18', 'field_19', 'field_20']
+        fields = ['QPlogS', 'QPlogHERG', 'QPPCaco', 'QPlogBB', 'QPPMDCK', 'Metab', 'QPlogKhsa', 'HOralAbs', 'PerHOralAbs', 'field_11']
 
 class SchrödingerModelUploadForm(forms.Form):
     file = forms.FileField()
@@ -42,6 +42,14 @@ class LiverMicrosomalStabilityForm(forms.ModelForm):
     class Meta:
         model = LiverMicrosomalStability
         fields = ['date', 'mouse', 'rat', 'human']
+        widgets = {
+            'date': DateInput(),  # DateInput 위젯 사용
+        }
+
+class CYPInhibitionForm(forms.ModelForm):
+    class Meta:
+        model = CYPInhibition
+        fields = ['date', 'cyp_1a2', 'cyp_2c9', 'cyp_2c19', 'cyp_2d6', 'cyp_3a4']
         widgets = {
             'date': DateInput(),  # DateInput 위젯 사용
         }

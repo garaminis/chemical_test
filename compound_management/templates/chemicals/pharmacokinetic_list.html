@@ -5,7 +5,7 @@
 </head>
 <body>
     <h2>{{ chemical.chem_id }}</h2>
-    <h2>Pharmacokinetics</h2>
+    <h3>Pharmacokinetics</h3>
     <table>
         <thead>
             <tr>
@@ -40,7 +40,7 @@
         <button type="submit">Add Pharmacokinetic Data</button>
     </form>
 
-    <h2>Cytotoxicity</h2>
+    <h3>Cytotoxicity</h3>
     <table>
         <thead>
             <tr>
@@ -97,6 +97,37 @@
         {% csrf_token %}
         {{ form.as_p }}
         <button type="submit">Add Liver Microsomal Stability Data</button>
+    </form>
+
+    <h3>CYP Inhibition Data</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>CYP 1A2</th>
+                    <th>CYP 2C9</th>
+                    <th>CYP 2C19</th>
+                    <th>CYP 2D6</th>
+                    <th>CYP 3A4</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for cyp in cyp_inhibitions %}
+                <tr>
+                    <td>{{ cyp.date }}</td>
+                    <td>{{ cyp.cyp_1a2 }}</td>
+                    <td>{{ cyp.cyp_2c9 }}</td>
+                    <td>{{ cyp.cyp_2c19 }}</td>
+                    <td>{{ cyp.cyp_2d6 }}</td>
+                    <td>{{ cyp.cyp_3a4 }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+         <form method="post" action="{% url 'cyp_inhibition_add' target=chemical.target chem_id=chemical.chem_id %}">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Add CYP inhibition Data</button>
     </form>
 
 </body>

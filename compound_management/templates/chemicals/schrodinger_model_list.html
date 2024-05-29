@@ -8,51 +8,32 @@
     <table>
         <thead>
             <tr>
-                <th>Field 1</th>
-                <th>Field 2</th>
-                <th>Field 3</th>
-                <th>Field 4</th>
-                <th>Field 5</th>
-                <th>Field 6</th>
-                <th>Field 7</th>
-                <th>Field 8</th>
-                <th>Field 9</th>
-                <th>Field 10</th>
+                <th>QPlogS</th>
+                <th>QPlogHERG</th>
+                <th>QPPCaco</th>
+                <th>QPlogBB</th>
+                <th>QPPMDCK</th>
+                <th>Metab</th>
+                <th>QPlogKhsa</th>
+                <th>HOralAbs</th>
+                <th>PerHOralAbs</th>
                 <th>Field 11</th>
-                <th>Field 12</th>
-                <th>Field 13</th>
-                <th>Field 14</th>
-                <th>Field 15</th>
-                <th>Field 16</th>
-                <th>Field 17</th>
-                <th>Field 18</th>
-                <th>Field 19</th>
-                <th>Field 20</th>
             </tr>
         </thead>
         <tbody>
             {% for model in models %}
             <tr>
-                <td>{{ model.field_1 }}</td>
-                <td>{{ model.field_2 }}</td>
-                <td>{{ model.field_3 }}</td>
-                <td>{{ model.field_4 }}</td>
-                <td>{{ model.field_5 }}</td>
-                <td>{{ model.field_6 }}</td>
-                <td>{{ model.field_7 }}</td>
-                <td>{{ model.field_8 }}</td>
-                <td>{{ model.field_9 }}</td>
-                <td>{{ model.field_10 }}</td>
+                <td>{{ model.QPlogS }}</td>
+                <td>{{ model.QPlogHERG }}</td>
+                <td>{{ model.QPPCaco }}</td>
+                <td>{{ model.QPlogBB }}</td>
+                <td>{{ model.QPPMDCK }}</td>
+                <td>{{ model.Metab }}</td>
+                <td>{{ model.QPlogKhsa }}</td>
+                <td>{{ model.HOralAbs }}</td>
+                <td>{{ model.PerHOralAbs }}</td>
                 <td>{{ model.field_11 }}</td>
-                <td>{{ model.field_12 }}</td>
-                <td>{{ model.field_13 }}</td>
-                <td>{{ model.field_14 }}</td>
-                <td>{{ model.field_15 }}</td>
-                <td>{{ model.field_16 }}</td>
-                <td>{{ model.field_17 }}</td>
-                <td>{{ model.field_18 }}</td>
-                <td>{{ model.field_19 }}</td>
-                <td>{{ model.field_20 }}</td>
+
             </tr>
             {% endfor %}
         </tbody>

@@ -2,8 +2,8 @@ from django.shortcuts import render
 
 # Create your views here.
 from django.shortcuts import render, redirect, get_object_or_404
-from .models import Chemical, Pharmacokinetic, Cytotoxicity, SchrödingerModel, LiverMicrosomalStability
-from .forms import ChemicalForm, ChemicalUploadForm, PharmacokineticForm, CytotoxicityForm, SchrödingerModelForm, SchrödingerModelUploadForm, LiverMicrosomalStabilityForm
+from .models import Chemical, Pharmacokinetic, Cytotoxicity, SchrödingerModel, LiverMicrosomalStability, CYPInhibition
+from .forms import ChemicalForm, ChemicalUploadForm, PharmacokineticForm, CytotoxicityForm, SchrödingerModelForm, SchrödingerModelUploadForm, LiverMicrosomalStabilityForm, CYPInhibitionForm
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.decorators import login_required
@@ -45,20 +45,6 @@ def target_view(request, target):
     else:
         logger.debug(f'Found chemicals for target {target}: {chemicals}')
     return render(request, 'chemicals/target.html', {'chemicals': chemicals, 'target': target})
-def calculate_cLogP(smiles):
-    mol = Chem.MolFromSmiles(smiles)
-    if mol:
-        return round(Descriptors.MolLogP(mol), 1)
-    return None
-
-def generate_image(smiles):
-    mol = Chem.MolFromSmiles(smiles)
-    if mol:
-        img = Draw.MolToImage(mol)
-        buffer = BytesIO()
-        img.save(buffer, format="PNG")
-        return buffer.getvalue()
-    return None
 
 @login_required
 def chemical_new_view(request, target):
@@ -152,11 +138,13 @@ def pharmacokinetic_list(request, target, chem_id):
     pharmacokinetics = Pharmacokinetic.objects.filter(chemical=chemical)
     cytotoxicities = Cytotoxicity.objects.filter(chemical=chemical)
     liver_stabilities = LiverMicrosomalStability.objects.filter(chemical=chemical)
+    cyp_inhibitions = CYPInhibition.objects.filter(chemical=chemical)
     return render(request, 'chemicals/pharmacokinetic_list.html', {
         'chemical': chemical,
         'pharmacokinetics': pharmacokinetics,
         'cytotoxicities': cytotoxicities,
-        'liver_stabilities': liver_stabilities
+        'liver_stabilities': liver_stabilities,
+        'cyp_inhibitions': cyp_inhibitions
     })
 
 @login_required
@@ -220,26 +208,15 @@ def schrodinger_model_upload(request, target, chem_id):
             for row in reader:
                 model = SchrödingerModel(
                     chemical=chemical,
-                    field_1=row.get('field_1', 0),
-                    field_2=row.get('field_2', 0),
-                    field_3=row.get('field_3', 0),
-                    field_4=row.get('field_4', 0),
-                    field_5=row.get('field_5', 0),
-                    field_6=row.get('field_6', 0),
-                    field_7=row.get('field_7', 0),
-                    field_8=row.get('field_8', 0),
-                    field_9=row.get('field_9', 0),
-                    field_10=row.get('field_10', 0),
-                    field_11=row.get('field_11', 0),
-                    field_12=row.get('field_12', 0),
-                    field_13=row.get('field_13', 0),
-                    field_14=row.get('field_14', 0),
-                    field_15=row.get('field_15', 0),
-                    field_16=row.get('field_16', 0),
-                    field_17=row.get('field_17', 0),
-                    field_18=row.get('field_18', 0),
-                    field_19=row.get('field_19', 0),
-                    field_20=row.get('field_20', 0)
+                    QPlogS=row.get('QPlogS', 0),
+                    QPlogHERG=row.get('QPlogHERG', 0),
+                    QPPCaco=row.get('QPPCaco', 0),
+                    QPlogBB=row.get('QPlogBB', 0),
+                    QPPMDCK=row.get('QPPMDCK', 0),
+                    Metab=row.get('Metab', 0),
+                    QPlogKhsa=row.get('QPlogKhsa', 0),
+                    HOralAbs=row.get('HOralAbs', 0),
+                    PerHOralAbs=row.get('PerHOralAbs', 0),
                 )
                 model.save()
             return redirect('schrodinger_model_list', target=target, chem_id=chem_id)
@@ -260,3 +237,17 @@ def liver_stability_add(request, target, chem_id):
     else:
         form = LiverMicrosomalStabilityForm()
     return render(request, 'chemicals/liver_stability_form.html', {'form': form, 'chemical': chemical})
+
+@login_required
+def cyp_inhibition_add(request, target, chem_id):
+    chemical = get_object_or_404(Chemical, chem_id=chem_id)
+    if request.method == 'POST':
+        form = CYPInhibitionForm(request.POST)
+        if form.is_valid():
+            cyp_inhibition = form.save(commit=False)
+            cyp_inhibition.chemical = chemical
+            cyp_inhibition.save()
+            return redirect('pharmacokinetic_list', target=target, chem_id=chem_id)
+    else:
+        form = CYPInhibitionForm()
+    return render(request, 'chemicals/cyp_inhibition_form.html', {'form': form, 'chemical': chemical})
