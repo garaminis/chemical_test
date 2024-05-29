@@ -1,5 +1,5 @@
 from django import forms
-from .models import Chemical, Pharmacokinetic, Cytotoxicity
+from .models import Chemical, Pharmacokinetic, Cytotoxicity, SchrödingerModel
 
 class DateInput(forms.DateInput):
     input_type = 'date'
@@ -28,3 +28,11 @@ class CytotoxicityForm(forms.ModelForm):
         widgets = {
             'date': DateInput(),  # DateInput 위젯 사용
         }
+
+class SchrödingerModelForm(forms.ModelForm):
+    class Meta:
+        model = SchrödingerModel
+        fields = ['field_1', 'field_2', 'field_3', 'field_4', 'field_5', 'field_6', 'field_7', 'field_8', 'field_9', 'field_10', 'field_11', 'field_12', 'field_13', 'field_14', 'field_15', 'field_16', 'field_17', 'field_18', 'field_19', 'field_20']
+
+class SchrödingerModelUploadForm(forms.Form):
+    file = forms.FileField()

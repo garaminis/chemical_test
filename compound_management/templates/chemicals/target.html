@@ -14,6 +14,7 @@
                 <th>cLogP</th>
                 <th>Actions</th>
                 <th>Results</th>
+                <th>Modeling</th>
             </tr>
         </thead>
         <tbody>
@@ -33,6 +34,9 @@
                 </td>
                 <td>
                     <a href="{% url 'pharmacokinetic_list' target=target chem_id=chem.chem_id %}">Link</a>
+                </td>
+                <td>
+                    <a href="{% url 'schrodinger_model_list' target=target chem_id=chem.chem_id %}">Link</a> <!-- 추가된 부분 -->
                 </td>
             </tr>
             {% endfor %}

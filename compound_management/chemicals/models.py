@@ -51,3 +51,29 @@ class Cytotoxicity(models.Model):
 
     def __str__(self):
         return f'{self.chemical.chem_id} - {self.date}'
+
+class SchrödingerModel(models.Model):
+    chemical = models.ForeignKey(Chemical, on_delete=models.CASCADE)
+    field_1 = models.FloatField()
+    field_2 = models.FloatField()
+    field_3 = models.FloatField()
+    field_4 = models.FloatField()
+    field_5 = models.FloatField()
+    field_6 = models.FloatField()
+    field_7 = models.FloatField()
+    field_8 = models.FloatField()
+    field_9 = models.FloatField()
+    field_10 = models.FloatField()
+    field_11 = models.FloatField()
+    field_12 = models.FloatField()
+    field_13 = models.FloatField()
+    field_14 = models.FloatField()
+    field_15 = models.FloatField()
+    field_16 = models.FloatField()
+    field_17 = models.FloatField()
+    field_18 = models.FloatField()
+    field_19 = models.FloatField()
+    field_20 = models.FloatField()
+
+    def __str__(self):
+        return f'{self.chemical.chem_id} Schrödinger Model'

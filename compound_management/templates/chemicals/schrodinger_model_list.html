@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Schrödinger Modeling for {{ chemical.chem_id }}</title>
+</head>
+<body>
+    <h2>Schrödinger Modeling for {{ chemical.chem_id }}</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Field 1</th>
+                <th>Field 2</th>
+                <th>Field 3</th>
+                <th>Field 4</th>
+                <th>Field 5</th>
+                <th>Field 6</th>
+                <th>Field 7</th>
+                <th>Field 8</th>
+                <th>Field 9</th>
+                <th>Field 10</th>
+                <th>Field 11</th>
+                <th>Field 12</th>
+                <th>Field 13</th>
+                <th>Field 14</th>
+                <th>Field 15</th>
+                <th>Field 16</th>
+                <th>Field 17</th>
+                <th>Field 18</th>
+                <th>Field 19</th>
+                <th>Field 20</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for model in models %}
+            <tr>
+                <td>{{ model.field_1 }}</td>
+                <td>{{ model.field_2 }}</td>
+                <td>{{ model.field_3 }}</td>
+                <td>{{ model.field_4 }}</td>
+                <td>{{ model.field_5 }}</td>
+                <td>{{ model.field_6 }}</td>
+                <td>{{ model.field_7 }}</td>
+                <td>{{ model.field_8 }}</td>
+                <td>{{ model.field_9 }}</td>
+                <td>{{ model.field_10 }}</td>
+                <td>{{ model.field_11 }}</td>
+                <td>{{ model.field_12 }}</td>
+                <td>{{ model.field_13 }}</td>
+                <td>{{ model.field_14 }}</td>
+                <td>{{ model.field_15 }}</td>
+                <td>{{ model.field_16 }}</td>
+                <td>{{ model.field_17 }}</td>
+                <td>{{ model.field_18 }}</td>
+                <td>{{ model.field_19 }}</td>
+                <td>{{ model.field_20 }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <a href="{% url 'schrodinger_model_add' target=chemical.target chem_id=chemical.chem_id %}">Add Modeling Data</a>
+    <form method="post" action="{% url 'schrodinger_model_upload' target=chemical.target chem_id=chemical.chem_id %}" enctype="multipart/form-data">
+        {% csrf_token %}
+        <button type="submit">Upload</button>
+    </form>
+    <a href="{% url 'target_view' target=chemical.target %}">Back to {{ chemical.target }}</a>
+    <a href="{% url 'home' %}">Home</a>
+</body>
+</html>

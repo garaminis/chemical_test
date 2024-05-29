@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Upload Schrödinger Modeling Data for {{ chemical.chem_id }}</title>
+</head>
+<body>
+    <h2>Upload Schrödinger Modeling Data for {{ chemical.chem_id }}</h2>
+     <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Upload</button>
+    </form>
+    <a href="{% url 'schrodinger_model_list' target=chemical.target chem_id=chemical.chem_id %}">Back to Modeling List</a>
+</body>
+</html>
