@@ -12,6 +12,10 @@
                 <th>Str_Image</th>
                 <th>MW</th>
                 <th>cLogP</th>
+                <th>TPSA</th>
+                <th>H_donors</th>
+                <th>H_acceptors</th>
+                <th>lipinski</th>
                 <th>Actions</th>
                 <th>Results</th>
                 <th>Modeling</th>
@@ -28,6 +32,10 @@
                 </td>
                 <td>{{ chem.MW }}</td>
                 <td>{{ chem.cLogP }}</td>
+                <td>{{ chem.TPSA }}</td>
+                <td>{{ chem.H_donors }}</td>
+                <td>{{ chem.H_acceptors }}</td>
+                <td>{{ chem.lipinski }}</td>
                 <td>
                     <a href="{% url 'chemical_edit' target=target chem_id=chem.chem_id %}">Edit</a>
                     <a href="{% url 'chemical_delete' target=target chem_id=chem.chem_id %}">Delete</a>

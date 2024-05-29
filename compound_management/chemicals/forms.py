@@ -8,7 +8,7 @@ class DateInput(forms.DateInput):
 class ChemicalForm(forms.ModelForm):
     class Meta:
         model = Chemical
-        fields = ['chem_id', 'smiles', 'image', 'MW', 'cLogP']
+        fields = ['chem_id', 'smiles', 'image', 'MW', 'cLogP', 'TPSA','H_donors', 'H_acceptors', 'lipinski' ]
 
 class ChemicalUploadForm(forms.Form):
     file = forms.FileField()

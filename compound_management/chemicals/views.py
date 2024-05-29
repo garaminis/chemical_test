@@ -66,11 +66,11 @@ def chemical_new_view(request, target):
         form = ChemicalForm(request.POST, request.FILES)
         if form.is_valid():
             chemical = form.save(commit=False)
-            chemical.target = target
-            chemical.cLogP = calculate_cLogP(chemical.smiles)
-            image_data = generate_image(chemical.smiles)
-            if image_data:
-                chemical.image.save(f'{chemical.chem_id}.png', ContentFile(image_data), save=False)
+            # chemical.target = target
+            # chemical.cLogP = calculate_cLogP(chemical.smiles)
+            # image_data = generate_image(chemical.smiles)
+            # if image_data:
+            #     chemical.image.save(f'{chemical.chem_id}.png', ContentFile(image_data), save=False)
             chemical.save()
             logger.debug(f'Chemical saved: {chemical}')
             return redirect('target_view', target=target)
@@ -88,10 +88,10 @@ def chemical_edit_view(request, target, chem_id):
         form = ChemicalForm(request.POST, instance=chemical)
         if form.is_valid():
             chemical = form.save(commit=False)
-            chemical.cLogP = calculate_cLogP(chemical.smiles)
-            image_data = generate_image(chemical.smiles)
-            if image_data:
-                chemical.image.save(f'{chemical.chem_id}.png', ContentFile(image_data), save=False)
+            # chemical.cLogP = calculate_cLogP(chemical.smiles)
+            # image_data = generate_image(chemical.smiles)
+            # if image_data:
+            #     chemical.image.save(f'{chemical.chem_id}.png', ContentFile(image_data), save=False)
             chemical.save()
             logger.debug(f'Chemical updated: {chemical}')
             return redirect('target_view', target=target)

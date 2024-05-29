@@ -1,5 +1,6 @@
 from django.db import models
-
+from rdkit import Chem
+from rdkit.Chem import Descriptors, Crippen
 # Create your models here.
 from django.contrib.auth.models import User
 
@@ -12,10 +13,44 @@ class Chemical(models.Model):
  #   image = models.ImageField(upload_to='chemical_images/', blank=True, null=True)
     MW = models.FloatField()
     cLogP = models.FloatField(null=True, blank=True)
-
+    TPSA = models.FloatField(blank=True, null=True)
+    H_donors = models.IntegerField(blank=True, null=True)
+    H_acceptors = models.IntegerField(blank=True, null=True)
+    lipinski = models.BooleanField(default=False)
 
     def __str__(self):
         return f"{self.chem_id} - {self.smiles} - {self.target}"
+
+    def save(self, *args, **kwargs):
+        mol = Chem.MolFromSmiles(self.smiles)
+        if mol:
+            self.MW = round(Descriptors.MolWt(mol), 1)
+            self.cLogP = round(Crippen.MolLogP(mol), 1)
+            self.TPSA = round(Descriptors.TPSA(mol), 1)
+            self.H_donors = Descriptors.NumHDonors(mol)
+            self.H_acceptors = Descriptors.NumHAcceptors(mol)
+            # 리핀스키의 규칙 체크
+            self.lipinski = (self.MW < 500 and
+                             self.cLogP < 5 and
+                             self.H_donors <= 5 and
+                             self.H_acceptors <= 10)
+            # 분자 이미지 생성
+            image_data = generate_image(self.smiles)
+            if image_data:
+                self.image.save(f'{self.chem_id}.png', ContentFile(image_data), save=False)
+        super().save(*args, **kwargs)
+# 이미지 생성 함수
+from rdkit.Chem import Draw
+from io import BytesIO
+from django.core.files.base import ContentFile
+def generate_image(smiles):
+    mol = Chem.MolFromSmiles(smiles)
+    if mol:
+        img = Draw.MolToImage(mol)
+        buffer = BytesIO()
+        img.save(buffer, format="PNG")
+        return buffer.getvalue()
+    return None
 
 class Result(models.Model):
     chemical = models.ForeignKey(Chemical, on_delete=models.CASCADE)
