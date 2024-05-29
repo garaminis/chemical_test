@@ -52,11 +52,11 @@ def chemical_new_view(request, target):
         form = ChemicalForm(request.POST, request.FILES)
         if form.is_valid():
             chemical = form.save(commit=False)
-            # chemical.target = target
-            # chemical.cLogP = calculate_cLogP(chemical.smiles)
-            # image_data = generate_image(chemical.smiles)
-            # if image_data:
-            #     chemical.image.save(f'{chemical.chem_id}.png', ContentFile(image_data), save=False)
+            chemical.target = target
+            chemical.cLogP = calculate_cLogP(chemical.smiles)
+            image_data = generate_image(chemical.smiles)
+            if image_data:
+                 chemical.image.save(f'{chemical.chem_id}.png', ContentFile(image_data), save=False)
             chemical.save()
             logger.debug(f'Chemical saved: {chemical}')
             return redirect('target_view', target=target)
@@ -66,7 +66,19 @@ def chemical_new_view(request, target):
         form = ChemicalForm()
     logger.debug(f'New chemical form for {target}')
     return render(request, 'chemicals/chemical_form.html', {'form': form, 'target': target})
-
+def calculate_cLogP(smiles):
+    mol = Chem.MolFromSmiles(smiles)
+    if mol:
+        return Descriptors.MolLogP(mol)
+    return None
+def generate_image(smiles):
+    mol = Chem.MolFromSmiles(smiles)
+    if mol:
+        img = Draw.MolToImage(mol)
+        buffer = BytesIO()
+        img.save(buffer, format="PNG")
+        return buffer.getvalue()
+    return None
 @login_required
 def chemical_edit_view(request, target, chem_id):
     chemical = get_object_or_404(Chemical, chem_id=chem_id)
@@ -74,10 +86,10 @@ def chemical_edit_view(request, target, chem_id):
         form = ChemicalForm(request.POST, instance=chemical)
         if form.is_valid():
             chemical = form.save(commit=False)
-            # chemical.cLogP = calculate_cLogP(chemical.smiles)
-            # image_data = generate_image(chemical.smiles)
-            # if image_data:
-            #     chemical.image.save(f'{chemical.chem_id}.png', ContentFile(image_data), save=False)
+            chemical.cLogP = calculate_cLogP(chemical.smiles)
+            image_data = generate_image(chemical.smiles)
+            if image_data:
+               chemical.image.save(f'{chemical.chem_id}.png', ContentFile(image_data), save=False)
             chemical.save()
             logger.debug(f'Chemical updated: {chemical}')
             return redirect('target_view', target=target)
