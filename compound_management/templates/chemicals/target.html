@@ -5,12 +5,10 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
         $(document).ready(function() {
-            // 전체 선택/해제 기능
             $('#select_all').click(function() {
                 $('input[name="selected_chems"]').prop('checked', this.checked);
             });
 
-            // 선택된 항목 삭제
             $('#delete_selected').click(function() {
                 var selected = [];
                 $('input[name="selected_chems"]:checked').each(function() {
@@ -39,6 +37,13 @@
                 }
             });
         });
+        function getSortOrder(currentOrder, column) {
+            if (currentOrder === 'asc' || currentOrder === '') {
+                return 'desc';
+            } else {
+                return 'asc';
+            }
+        }
     </script>
 </head>
 <head>
@@ -51,11 +56,19 @@
         <thead>
             <tr>
                 <th><input type="checkbox" id="select_all"> Select All</th>
-                <th>Chem ID</th>
+                <th>
+                    <a href="?sort_by=chem_id&sort_order={% if sort_by == 'chem_id' and sort_order == 'asc' %}desc{% else %}asc{% endif %}">Chem ID</a>
+                </th>
                 <th>Str_Image</th>
-                <th>MW</th>
-                <th>cLogP</th>
-                <th>TPSA</th>
+                <th>
+                    <a href="?sort_by=MW&sort_order={% if sort_by == 'MW' and sort_order == 'asc' %}desc{% else %}asc{% endif %}">MW</a>
+                </th>
+                <th>
+                    <a href="?sort_by=cLogP&sort_order={% if sort_by == 'cLogP' and sort_order == 'asc' %}desc{% else %}asc{% endif %}">cLogP</a>
+                </th>
+                <th>
+                    <a href="?sort_by=TPSA&sort_order={% if sort_by == 'TPSA' and sort_order == 'asc' %}desc{% else %}asc{% endif %}">cLogP</a>
+                </th>
                 <th>H_donors</th>
                 <th>H_acceptors</th>
                 <th>lipinski</th>

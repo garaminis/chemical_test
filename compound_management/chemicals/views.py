@@ -40,12 +40,26 @@ def home_view(request):
 
 @login_required
 def target_view(request, target):
-    chemicals = Chemical.objects.filter(target__iexact=target)
-    if not chemicals.exists():
-        logger.debug(f'No chemicals found for target: {target}')
+    sort_by = request.GET.get('sort_by', 'chem_id')
+    sort_order = request.GET.get('sort_order', 'asc')
+
+    if sort_order == 'asc':
+        chemicals = Chemical.objects.filter(target=target).order_by(sort_by)
     else:
-        logger.debug(f'Found chemicals for target {target}: {chemicals}')
-    return render(request, 'chemicals/target.html', {'chemicals': chemicals, 'target': target})
+        chemicals = Chemical.objects.filter(target=target).order_by('-' + sort_by)
+
+    return render(request, 'chemicals/target.html', {
+        'chemicals': chemicals,
+        'target': target,
+        'sort_by': sort_by,
+        'sort_order': sort_order,
+    })
+    # chemicals = Chemical.objects.filter(target__iexact=target)
+    # if not chemicals.exists():
+    #     logger.debug(f'No chemicals found for target: {target}')
+    # else:
+    #     logger.debug(f'Found chemicals for target {target}: {chemicals}')
+    # return render(request, 'chemicals/target.html', {'chemicals': chemicals, 'target': target,})
 @login_required
 def delete_selected_chems(request, target):
     if request.method == 'POST':
