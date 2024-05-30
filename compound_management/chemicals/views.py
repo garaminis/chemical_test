@@ -14,6 +14,7 @@ from io import BytesIO
 from django.core.files.base import ContentFile
 import logging
 import csv
+from django.http import JsonResponse
 from django.http import HttpResponse
 # 로거 설정
 logger = logging.getLogger(__name__)
@@ -45,7 +46,13 @@ def target_view(request, target):
     else:
         logger.debug(f'Found chemicals for target {target}: {chemicals}')
     return render(request, 'chemicals/target.html', {'chemicals': chemicals, 'target': target})
-
+@login_required
+def delete_selected_chems(request, target):
+    if request.method == 'POST':
+        selected_chems = request.POST.getlist('selected_chems[]')
+        Chemical.objects.filter(pk__in=selected_chems).delete()
+        return JsonResponse({'status': 'success'})
+    return JsonResponse({'status': 'error'}, status=400)
 @login_required
 def chemical_new_view(request, target):
     if request.method == 'POST':
@@ -263,3 +270,4 @@ def cyp_inhibition_add(request, target, chem_id):
     else:
         form = CYPInhibitionForm()
     return render(request, 'chemicals/cyp_inhibition_form.html', {'form': form, 'chemical': chemical})
+

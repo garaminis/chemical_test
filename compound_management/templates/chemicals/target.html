@@ -1,13 +1,56 @@
 <!DOCTYPE html>
 <html>
 <head>
+    <title>{{ target }} Chemicals</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            // 전체 선택/해제 기능
+            $('#select_all').click(function() {
+                $('input[name="selected_chems"]').prop('checked', this.checked);
+            });
+
+            // 선택된 항목 삭제
+            $('#delete_selected').click(function() {
+                var selected = [];
+                $('input[name="selected_chems"]:checked').each(function() {
+                    selected.push($(this).val());
+                });
+
+                if (selected.length > 0) {
+                    if (confirm('Are you sure you want to delete the selected chemicals?')) {
+                        $.ajax({
+                            url: "{% url 'delete_selected_chems' target=target %}",
+                            method: "POST",
+                            data: {
+                                'selected_chems': selected,
+                                'csrfmiddlewaretoken': '{{ csrf_token }}'
+                            },
+                            success: function(response) {
+                                location.reload();
+                            },
+                            error: function(xhr, status, error) {
+                                alert('An error occurred while deleting the selected chemicals: ' + error);
+                            }
+                        });
+                    }
+                } else {
+                    alert('Please select at least one chemical to delete.');
+                }
+            });
+        });
+    </script>
+</head>
+<head>
     <title>{{ target }}</title>
 </head>
 <body>
     <h2>{{ target }} Chemicals</h2>
+    <button id="delete_selected">Delete Selected</button>
     <table>
         <thead>
             <tr>
+                <th><input type="checkbox" id="select_all"> Select All</th>
                 <th>Chem ID</th>
                 <th>Str_Image</th>
                 <th>MW</th>
@@ -24,6 +67,7 @@
         <tbody>
             {% for chem in chemicals %}
             <tr>
+                <td><input type="checkbox" name="selected_chems" value="{{ chem.pk }}"></td>
                 <td>{{ chem.chem_id }}</td>
                 <td>
                     {% if chem.image %}
