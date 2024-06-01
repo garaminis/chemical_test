@@ -7,7 +7,10 @@ from .forms import ChemicalForm, ChemicalUploadForm, PharmacokineticForm, Cytoto
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.decorators import login_required
-
+# R2Py
+import subprocess
+import pandas as pd
+# RDKIT
 from rdkit import Chem
 from rdkit.Chem import Descriptors, Draw
 from io import BytesIO
@@ -18,7 +21,6 @@ from django.http import JsonResponse
 from django.http import HttpResponse
 # 로거 설정
 logger = logging.getLogger(__name__)
-
 
 def register_view(request):
     if request.method == 'POST':
@@ -285,3 +287,30 @@ def cyp_inhibition_add(request, target, chem_id):
         form = CYPInhibitionForm()
     return render(request, 'chemicals/cyp_inhibition_form.html', {'form': form, 'chemical': chemical})
 
+def run_r_script_and_get_results(patient_id):
+    # R 스크립트 파일 읽기
+    with open("/Users/sangjoonshin/Desktop/231218_cosine_similarity.R", "r") as file:
+        r_script = file.readlines()
+
+    # selected_patient_id 설정
+    patient_id_line = f'selected_patient_id <- "{patient_id}"\n'
+    r_script.insert(0, patient_id_line)  # 스크립트 시작 부분에 삽입
+
+    # 수정된 R 스크립트 파일 임시 저장
+    with open("/Users/sangjoonshin/Desktop/temp_cosine_jy.R", "w") as file:
+        file.writelines(r_script)
+
+    # 수정된 R 스크립트 실행
+    subprocess.run(["/usr/local/bin/Rscript", "/Users/sangjoonshin/Desktop/temp_cosine_jy.R"])
+
+    # 결과 파일 읽기
+    results_df = pd.read_csv("/Users/sangjoonshin/Desktop/top_10_cell_lines.csv")
+    return results_df
+def patient_input(request):
+    context = {}
+    if request.method == 'POST':
+        patient_id = request.POST.get('patient_id')
+        results_df = run_r_script_and_get_results(patient_id)
+        context['results'] = results_df.to_html()  # DataFrame을 HTML로 변환
+        context['patient_id'] = patient_id
+    return render(request, 'r.html', context)
