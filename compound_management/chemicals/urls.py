@@ -22,5 +22,6 @@ urlpatterns = [
     path('chemicals/<str:target>/liver_stability/<str:chem_id>/add/', views.liver_stability_add, name='liver_stability_add'),
     path('chemicals/<str:target>/cyp_inhibition/<str:chem_id>/add/', views.cyp_inhibition_add, name='cyp_inhibition_add'),
     path('chemicals/<str:target>/delete_selected/', delete_selected_chems, name='delete_selected_chems'),
-    path('r/', views.patient_input, name='patient_input')
+    path('r/', views.patient_input, name='patient_input'),
+    path('sl/', views.SLselected_gene_input, name='SLselected_gene_input'),
 ]

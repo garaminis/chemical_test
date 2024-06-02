@@ -314,3 +314,31 @@ def patient_input(request):
         context['results'] = results_df.to_html()  # DataFrame을 HTML로 변환
         context['patient_id'] = patient_id
     return render(request, 'r.html', context)
+
+def run_r_SL(SLselected_gene):
+    # R 스크립트 파일 읽기
+    with open("/Users/sangjoonshin/Downloads/SL/Synthetic_Lethal.R", "r") as file:
+        r_script = file.readlines()
+
+    # selected_patient_id 설정
+    SLselected_gene = f'SLselected_gene <- "{SLselected_gene}"\n'
+    r_script.insert(0, SLselected_gene)  # 스크립트 시작 부분에 삽입
+
+    # 수정된 R 스크립트 파일 임시 저장
+    with open("/Users/sangjoonshin/Downloads/SL/temp_SL.R", "w") as file:
+        file.writelines(r_script)
+
+    # 수정된 R 스크립트 실행
+    subprocess.run(["/usr/local/bin/Rscript", "/Users/sangjoonshin/Downloads/SL/temp_SL.R"])
+
+    # 결과 파일 읽기
+    results_df = pd.read_csv("/Users/sangjoonshin/Downloads/SL/DEGene.csv")
+    return results_df
+def SLselected_gene_input(request):
+    context = {}
+    if request.method == 'POST':
+        SLselected_gene = request.POST.get('SLselected_gene')
+        results_df = run_r_SL(SLselected_gene)
+        context['results'] = results_df.to_html()  # DataFrame을 HTML로 변환
+        context['SLselected_gene'] = SLselected_gene
+    return render(request, 'sl.html', context)

@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>SLselected_gene Input</title>
+</head>
+<body>
+    <h1>Enter SLselected_gene</h1>
+    <form method="post">
+        {% csrf_token %}
+        <input type="text" name="SLselected_gene" placeholder="SLselected Gene">
+        <button type="submit">Submit</button>
+    </form>
+   {% if SLselected_gene %}
+        <h2>Results for Gene: {{ SLselected_gene }}</h2>
+    {% endif %}
+
+    {% if results %}
+        {{ results|safe }}
+    {% endif %}
+</body>
+</html>
