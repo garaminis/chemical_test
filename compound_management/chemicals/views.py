@@ -321,6 +321,7 @@ def run_r_SL(SLselected_gene):
         r_script = file.readlines()
 
     # selected_patient_id 설정
+    file_path = f"/Users/sangjoonshin/Downloads/SL/DEGene_{SLselected_gene}.csv"
     SLselected_gene = f'SLselected_gene <- "{SLselected_gene}"\n'
     r_script.insert(0, SLselected_gene)  # 스크립트 시작 부분에 삽입
 
@@ -332,7 +333,8 @@ def run_r_SL(SLselected_gene):
     subprocess.run(["/usr/local/bin/Rscript", "/Users/sangjoonshin/Downloads/SL/temp_SL.R"])
 
     # 결과 파일 읽기
-    results_df = pd.read_csv("/Users/sangjoonshin/Downloads/SL/DEGene.csv")
+
+    results_df = pd.read_csv(file_path)
     return results_df
 def SLselected_gene_input(request):
     context = {}
