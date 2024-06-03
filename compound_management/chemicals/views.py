@@ -18,6 +18,8 @@ from django.core.files.base import ContentFile
 import logging
 import csv
 from django.http import JsonResponse
+import os
+from django.conf import settings
 from django.http import HttpResponse
 # 로거 설정
 logger = logging.getLogger(__name__)
@@ -343,4 +345,13 @@ def SLselected_gene_input(request):
         results_df = run_r_SL(SLselected_gene)
         context['results'] = results_df.to_html()  # DataFrame을 HTML로 변환
         context['SLselected_gene'] = SLselected_gene
+
+        # 두 번째 기능: 이미지 경로 설정
+        img_relative_path = f'images/CRISPR_Gene_Effect_{SLselected_gene}.png'
+        full_img_path = os.path.join(settings.MEDIA_ROOT, img_relative_path)
+        if os.path.exists(full_img_path):
+            context['img_path'] = os.path.join(settings.MEDIA_URL, img_relative_path)
+        else:
+            context['img_path'] = None
     return render(request, 'sl.html', context)
+

@@ -1,7 +1,9 @@
 
 from . import views
-from django.urls import path, include
+from django.urls import path
+from django.conf import settings
 from .views import delete_selected_chems
+from django.conf.urls.static import static
 
 urlpatterns = [
     path('login/', views.login_view, name='login'),
@@ -25,3 +27,5 @@ urlpatterns = [
     path('r/', views.patient_input, name='patient_input'),
     path('sl/', views.SLselected_gene_input, name='SLselected_gene_input'),
 ]
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
