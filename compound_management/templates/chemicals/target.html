@@ -36,7 +36,15 @@
                     alert('Please select at least one chemical to delete.');
                 }
             });
+
+            // 이미지 클릭 이벤트 처리
+            $(document).on('click', '.image-popup', function(event) {
+                var src = $(this).attr('src');
+                var imgWindow = window.open("", "Image", "width=600,height=600");
+                imgWindow.document.write('<img src="' + src + '" style="width:100%">');
+            });
         });
+
         function getSortOrder(currentOrder, column) {
             if (currentOrder === 'asc' || currentOrder === '') {
                 return 'desc';
@@ -45,9 +53,6 @@
             }
         }
     </script>
-</head>
-<head>
-    <title>{{ target }}</title>
 </head>
 <body>
     <h2>{{ target }} Chemicals</h2>
@@ -67,7 +72,7 @@
                     <a href="?sort_by=cLogP&sort_order={% if sort_by == 'cLogP' and sort_order == 'asc' %}desc{% else %}asc{% endif %}">cLogP</a>
                 </th>
                 <th>
-                    <a href="?sort_by=TPSA&sort_order={% if sort_by == 'TPSA' and sort_order == 'asc' %}desc{% else %}asc{% endif %}">cLogP</a>
+                    <a href="?sort_by=TPSA&sort_order={% if sort_by == 'TPSA' and sort_order == 'asc' %}desc{% else %}asc{% endif %}">TPSA</a>
                 </th>
                 <th>H_donors</th>
                 <th>H_acceptors</th>
@@ -84,7 +89,7 @@
                 <td>{{ chem.chem_id }}</td>
                 <td>
                     {% if chem.image %}
-                    <img src="{{ chem.image.url }}" alt="Structure Image" style="max-width: 180px;">
+                    <img src="{{ chem.image.url }}" alt="Structure Image" class="image-popup" style="max-width: 180px; cursor: pointer;">
                     {% endif %}
                 </td>
                 <td>{{ chem.MW }}</td>
@@ -115,4 +120,4 @@
     </form>
     <a href="{% url 'home' %}">Home</a>
 </body>
-</html>>
+</html>

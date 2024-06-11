@@ -43,7 +43,7 @@ class Chemical(models.Model):
 from rdkit.Chem import Draw
 from io import BytesIO
 from django.core.files.base import ContentFile
-def generate_image(smiles):
+def generate_image(smiles, size=(1800, 1800)):
     mol = Chem.MolFromSmiles(smiles)
     if mol:
         img = Draw.MolToImage(mol)
