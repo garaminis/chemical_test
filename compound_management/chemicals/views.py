@@ -157,7 +157,7 @@ def upload_chemicals(request, target):
                     chem_id=chem_id,
                     smiles=smiles,
                     target=target,
-                    MW=float(MW),
+                    MW=MW,
                     cLogP=calculate_cLogP(smiles)
                 )
                 image_data = generate_image(smiles)
