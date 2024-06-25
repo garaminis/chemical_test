@@ -11,7 +11,7 @@ class Chemical(models.Model):
     smiles = models.TextField()
     image = models.ImageField(upload_to='chemicals/', blank=True, null=True)
  #   image = models.ImageField(upload_to='chemical_images/', blank=True, null=True)
-    MW = models.FloatField()
+    MW = models.FloatField(null=True, blank=True)
     cLogP = models.FloatField(null=True, blank=True)
     TPSA = models.FloatField(blank=True, null=True)
     H_donors = models.IntegerField(blank=True, null=True)

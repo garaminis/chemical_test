@@ -141,6 +141,7 @@ def login_view(request):
             login(request, user)
             return redirect('home')
     return render(request, 'chemicals/login.html')
+
 @login_required
 def upload_chemicals(request, target):
     if request.method == 'POST':
@@ -153,22 +154,25 @@ def upload_chemicals(request, target):
                 smiles = row['smiles']
                 MW = row['MW']
                 chem_id = row['chem_id']
-                chemical = Chemical(
-                    chem_id=chem_id,
-                    smiles=smiles,
-                    target=target,
-                    MW=MW,
-                    cLogP=calculate_cLogP(smiles)
-                )
-                image_data = generate_image(smiles)
-                if image_data:
-                    chemical.image.save(f'{chemical.chem_id}.png', ContentFile(image_data), save=False)
-                chemical.save()
+                try:
+                    MW_value = float(MW) if MW else 0
+                    chemical = Chemical(
+                        chem_id=chem_id,
+                        smiles=smiles,
+                        target=target,
+                        MW=MW_value,
+                        cLogP=calculate_cLogP(smiles)
+                    )
+                    image_data = generate_image(smiles)
+                    if image_data:
+                        chemical.image.save(f'{chemical.chem_id}.png', ContentFile(image_data), save=False)
+                    chemical.save()
+                except ValueError as e:
+                    print(f"Skipping chemical with chem_id {chem_id} due to error: {e}")
         return redirect('target_view', target=target)
     else:
         form = ChemicalUploadForm()
     return render(request, 'chemicals/upload_chemicals.html', {'form': form, 'target': target})
-
 @login_required
 def pharmacokinetic_list(request, target, chem_id):
     chemical = get_object_or_404(Chemical, chem_id=chem_id)
