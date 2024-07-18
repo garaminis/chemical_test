@@ -1,15 +1,97 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>{{target}} Chemical Form</title>
-</head>
-<body>
+{% extends 'base.html' %}
+{% block title %} {{target}} Chemical Form {% endblock %}
+{% block content %}
     <h2>{{target}} Chemical Form</h2>
-    <form method="post">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit">Save</button>
-    </form>
+<!-- <form method="post">-->
+<!--        {% csrf_token %}-->
+<!--       {{ form.as_p }}-->
+<!--     <button type="submit">Save</button>-->
+<!--    </form>-->
+<div class="col-lg-6">
+  <div class="card">
+    <div class="card-body">
+      <h5 class="card-title">{{target}} Chemical Form</h5>
+        <form method="post">
+       {% csrf_token %}
+        <div class="row mb-3">
+          <label for="id_chem_id" class="col-sm-2 col-form-label">Chem id</label>
+          <div class="col-sm-10">
+            <input type="text" class="form-control" id="id_chem_id" name="chem_id">
+          </div>
+        </div>
+
+        <div class="row mb-3">
+          <label for="id_smiles" class="col-sm-2 col-form-label">Smiles</label>
+          <div class="col-sm-10">
+              <textarea class="form-control" name="smiles" id="id_smiles" ></textarea>
+          </div>
+        </div>
+
+        <div class="row mb-3">
+          <label for="id_image" class="col-sm-2 col-form-label">Image</label>
+          <div class="col-sm-10">
+            <input class="form-control" type="file" id="id_image" name="image" accept="image/*">
+          </div>
+        </div>
+
+      <div class="row mb-3">
+          <label for="id_MW" class="col-sm-2 col-form-label">MW</label>
+          <div class="col-sm-10">
+            <input type="number" class="form-control" id="id_MW" name="MW">
+          </div>
+      </div>
+
+      <div class="row mb-3">
+          <label for="id_cLogP" class="col-sm-2 col-form-label">CLogP</label>
+          <div class="col-sm-10">
+            <input type="text" class="form-control" id="id_cLogP" name="cLogP"  step="any">
+          </div>
+      </div>
+
+      <div class="row mb-3">
+          <label for="id_TPSA" class="col-sm-2 col-form-label">TPSA</label>
+          <div class="col-sm-10">
+            <input type="number" class="form-control" id="id_TPSA" name="TPSA" step="any">
+          </div>
+      </div>
+
+      <div class="row mb-3">
+          <label for="id_H_donors" class="col-sm-2 col-form-label">H_donors</label>
+          <div class="col-sm-10">
+            <input type="number" class="form-control" id="id_H_donors" name="H_donors">
+          </div>
+      </div>
+
+       <div class="row mb-3">
+          <label for="id_H_acceptors" class="col-sm-2 col-form-label">H_acceptors</label>
+          <div class="col-sm-10">
+            <input type="number" class="form-control" id="id_H_acceptors" name="H_acceptors">
+          </div>
+       </div>
+
+        <div class="row mb-3">
+            <legend class="col-form-label col-sm-2 pt-0">lipinski</legend>
+            <div class="col-sm-10">
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="id_lipinski" name="lipinski">
+                    <label class="form-check-label" for="id_lipinski"> </label>
+                </div>
+            </div>
+        </div>
+
+        <div class="row mb-3">
+          <label class="col-sm-2 col-form-label"></label>
+          <div class="col-sm-10">
+            <button type="submit" class="btn btn-primary">Submit Form</button>
+            <button class="btn btn-primary">cancle</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+    <a href="{% url 'target_view' target=target %}">Back to {{ target }}</a>
+
+
     <a href="{% url 'target_view' target=target %}">Cancel</a>
-</body>
-</html>
+{% endblock %}

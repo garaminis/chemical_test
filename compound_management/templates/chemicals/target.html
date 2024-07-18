@@ -1,123 +1,146 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>{{ target }} Chemicals</title>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script>
-        $(document).ready(function() {
-            $('#select_all').click(function() {
-                $('input[name="selected_chems"]').prop('checked', this.checked);
-            });
+{% extends 'base.html' %}
 
-            $('#delete_selected').click(function() {
-                var selected = [];
-                $('input[name="selected_chems"]:checked').each(function() {
-                    selected.push($(this).val());
-                });
+{% block title %}
+    {{ target }} Chemicals
+{% endblock %}
 
-                if (selected.length > 0) {
-                    if (confirm('Are you sure you want to delete the selected chemicals?')) {
-                        $.ajax({
-                            url: "{% url 'delete_selected_chems' target=target %}",
-                            method: "POST",
-                            data: {
-                                'selected_chems': selected,
-                                'csrfmiddlewaretoken': '{{ csrf_token }}'
-                            },
-                            success: function(response) {
-                                location.reload();
-                            },
-                            error: function(xhr, status, error) {
-                                alert('An error occurred while deleting the selected chemicals: ' + error);
-                            }
-                        });
-                    }
-                } else {
-                    alert('Please select at least one chemical to delete.');
-                }
-            });
-
-            // 이미지 클릭 이벤트 처리
-            $(document).on('click', '.image-popup', function(event) {
-                var src = $(this).attr('src');
-                var imgWindow = window.open("", "Image", "width=600,height=600");
-                imgWindow.document.write('<img src="' + src + '" style="width:100%">');
-            });
+{% block extra_js %}
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function() {
+        $('#select_all').click(function() {
+            $('input[name="selected_chems"]').prop('checked', this.checked);
         });
 
-        function getSortOrder(currentOrder, column) {
-            if (currentOrder === 'asc' || currentOrder === '') {
-                return 'desc';
-            } else {
-                return 'asc';
+    $('#delete_selected').click(function() {
+        var selected = [];
+        $('input[name="selected_chems"]:checked').each(function() {
+            selected.push($(this).val());
+        });
+
+        if (selected.length > 0) {
+            if (confirm('Are you sure you want to delete the selected chemicals?')) {
+                $.ajax({
+                    url: "{% url 'delete_selected_chems' target=target %}",
+                    method: "POST",
+                    data: {
+                        'selected_chems': selected,
+                        'csrfmiddlewaretoken': '{{ csrf_token }}'
+                    },
+                    success: function(response) {
+                        location.reload();
+                    },
+                    error: function(xhr, status, error) {
+                        alert('An error occurred while deleting the selected chemicals: ' + error);
+                    }
+                });
             }
+        } else {
+            alert('Please select at least one chemical to delete.');
         }
-    </script>
-</head>
-<body>
-    <h2>{{ target }} Chemicals</h2>
-    <button id="delete_selected">Delete Selected</button>
-    <table>
-        <thead>
-            <tr>
-                <th><input type="checkbox" id="select_all"> Select All</th>
-                <th>
-                    <a href="?sort_by=chem_id&sort_order={% if sort_by == 'chem_id' and sort_order == 'asc' %}desc{% else %}asc{% endif %}">Chem ID</a>
-                </th>
-                <th>Str_Image</th>
-                <th>
-                    <a href="?sort_by=MW&sort_order={% if sort_by == 'MW' and sort_order == 'asc' %}desc{% else %}asc{% endif %}">MW</a>
-                </th>
-                <th>
-                    <a href="?sort_by=cLogP&sort_order={% if sort_by == 'cLogP' and sort_order == 'asc' %}desc{% else %}asc{% endif %}">cLogP</a>
-                </th>
-                <th>
-                    <a href="?sort_by=TPSA&sort_order={% if sort_by == 'TPSA' and sort_order == 'asc' %}desc{% else %}asc{% endif %}">TPSA</a>
-                </th>
-                <th>H_donors</th>
-                <th>H_acceptors</th>
-                <th>lipinski</th>
-                <th>Actions</th>
-                <th>Results</th>
-                <th>Modeling</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for chem in chemicals %}
-            <tr>
-                <td><input type="checkbox" name="selected_chems" value="{{ chem.pk }}"></td>
-                <td>{{ chem.chem_id }}</td>
-                <td>
-                    {% if chem.image %}
-                    <img src="{{ chem.image.url }}" alt="Structure Image" class="image-popup" style="max-width: 180px; cursor: pointer;">
-                    {% endif %}
-                </td>
-                <td>{{ chem.MW }}</td>
-                <td>{{ chem.cLogP }}</td>
-                <td>{{ chem.TPSA }}</td>
-                <td>{{ chem.H_donors }}</td>
-                <td>{{ chem.H_acceptors }}</td>
-                <td>{{ chem.lipinski }}</td>
-                <td>
-                    <a href="{% url 'chemical_edit' target=target chem_id=chem.chem_id %}">Edit</a>
-                    <a href="{% url 'chemical_delete' target=target chem_id=chem.chem_id %}">Delete</a>
-                </td>
-                <td>
-                    <a href="{% url 'pharmacokinetic_list' target=target chem_id=chem.chem_id %}">Link</a>
-                </td>
-                <td>
-                    <a href="{% url 'schrodinger_model_list' target=target chem_id=chem.chem_id %}">Link</a> <!-- 추가된 부분 -->
-                </td>
-            </tr>
-            {% endfor %}
-       </tbody>
-    </table>
-    <a href="{% url 'chemical_new' target=target %}">New Chem</a>
-    <a href="{% url 'upload_chemicals' target=target %}">Upload Chemicals</a>
-    <form method="post" action="{% url 'logout' %}">
-        {% csrf_token %}
-        <button type="submit">Logout</button>
-    </form>
-    <a href="{% url 'home' %}">Home</a>
-</body>
-</html>
+    });
+
+    // 이미지 클릭 이벤트 처리
+    $(document).on('click', '.image-popup', function(event) {
+        var src = $(this).attr('src');
+        var imgWindow = window.open("", "Image", "width=600,height=600");
+        imgWindow.document.write('<img src="' + src + '" style="width:100%">');
+        });
+    });
+
+    function getSortOrder(currentOrder, column) {
+        if (currentOrder === 'asc' || currentOrder === '') {
+            return 'desc';
+        } else {
+            return 'asc';
+        }
+    }
+</script>
+<style>
+.card-body {
+    text-align: right;
+}
+</style>
+{% endblock %}
+{% block content %}
+<h2>{{ target }} Chemicals</h2>
+<div class="container my-3">
+    <div class="row">
+        <div class="col-lg-12">
+          <div class="card">
+            <div class="card-body">
+                    <a href="{% url 'chemical_new' target=target %}" class="bi bi-plus-square"> New Chem </a>
+                    <a href="{% url 'upload_chemicals' target=target %}" class="bi bi-plus-square">  Upload Chemical </a>
+              <table class="table datatable">
+                <thead>
+                    <tr>
+                        <th><input type="checkbox" id="select_all"></th>
+                        <th>
+                            <a href="?sort_by=chem_id&sort_order={% if sort_by == 'chem_id' and sort_order == 'asc' %}desc{% else %}asc{% endif %}">chme_ID</a>
+                        </th>
+                        <th>Str_Image</th>
+                        <th>
+                            <a href="?sort_by=MW&sort_order={% if sort_by == 'MW' and sort_order == 'asc' %}desc{% else %}asc{% endif %}">MW</a>
+                        </th>
+                        <th>
+                            <a href="?sort_by=cLogP&sort_order={% if sort_by == 'cLogP' and sort_order == 'asc' %}desc{% else %}asc{% endif %}">cLogP</a>
+                        </th>
+                        <th>
+                            <a href="?sort_by=TPSA&sort_order={% if sort_by == 'TPSA' and sort_order == 'asc' %}desc{% else %}asc{% endif %}">TPSA</a>
+                        </th>
+                        <th>H_donors</th>
+                        <th>H_acceptors</th>
+                        <th>lipinski</th>
+                        <th>Results</th>
+                        <th>Modeling</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for chem in chemicals %}
+                    <tr>
+                        <td><input type="checkbox" name="selected_chems" value="{{ chem.pk }}"></td>
+                        <td>{{ chem.chem_id }}</td>
+                        <td>
+                            {% if chem.image %}
+                            <img src="{{ chem.image.url }}" alt="Structure Image" class="image-popup" style="max-width: 180px; cursor: pointer;">
+                            {% endif %}
+                        </td>
+                        <td>{{ chem.MW }}</td>
+                        <td>{{ chem.cLogP }}</td>
+                        <td>{{ chem.TPSA }}</td>
+                        <td>{{ chem.H_donors }}</td>
+                        <td>{{ chem.H_acceptors }}</td>
+                        <td>{{ chem.lipinski }}</td>
+                        <td>
+                            <a href="{% url 'pharmacokinetic_list' target=target chem_id=chem.chem_id %}">Link</a>
+                        </td>
+                        <td>
+                            <a href="{% url 'schrodinger_model_list' target=target chem_id=chem.chem_id %}">Link</a> <!-- 추가된 부분 -->
+                        </td>
+                        <td>
+                            <a href="{% url 'chemical_edit' target=target chem_id=chem.chem_id %}">Edit</a><br>
+                            <a href="{% url 'chemical_delete' target=target chem_id=chem.chem_id %}">Delete</a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+                </table>
+                    <button id="delete_selected" class="btn btn-primary rounded-pill">Delete Selected</button>
+            </div>
+          </div>
+        </div>
+      </div>
+</div>
+
+
+
+<!--<a href="{% url 'chemical_new' target=target %}">New Chem</a>-->
+<!--<a href="{% url 'upload_chemicals' target=target %}">Upload Chemicals</a>-->
+<!--<form method="post" action="{% url 'logout' %}">-->
+<!--    {% csrf_token %}-->
+<!--    <button type="submit">Logout</button>-->
+<!--</form>-->
+<!--<a href="{% url 'home' %}">Home</a>-->
+{% endblock %}
+

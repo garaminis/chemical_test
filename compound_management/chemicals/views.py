@@ -1,3 +1,4 @@
+from django.contrib import messages
 from django.shortcuts import render
 
 # Create your views here.
@@ -21,6 +22,7 @@ from django.http import JsonResponse
 import os
 from django.conf import settings
 from django.http import HttpResponse
+
 # 로거 설정
 logger = logging.getLogger(__name__)
 
@@ -137,9 +139,12 @@ def login_view(request):
         username = request.POST['username']
         password = request.POST['password']
         user = authenticate(request, username=username, password=password)
+        print(user)
         if user is not None:
             login(request, user)
             return redirect('home')
+        else:
+            messages.error(request, '로그인에 실패하였습니다.')
     return render(request, 'chemicals/login.html')
 
 @login_required
