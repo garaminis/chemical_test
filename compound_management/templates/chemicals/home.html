@@ -1,14 +1,69 @@
 {% extends 'base.html' %}
+{% load static %}
 {% block title %} HOME {% endblock %}
 {% block content %}
-<div class="container d-flex justify-content-center align-items-center vh-100">
-  <div class="text-center">
-      <h2>Welcome to the Chemical Management System</h2>
-      <div class="mt-4">
-        <a href="{% url 'target_view' target='TNIK' %}" class="btn btn-outline-info btn-lg mx-4 mb-3">TNIK</a>
-        <a href="{% url 'target_view' target='FOXM1' %}" class="btn btn-outline-info btn-lg mx-4 mb-3">FOXM1</a>
-        <a href="{% url 'target_view' target='IRP2' %}" class="btn btn-outline-info btn-lg mx-4 mb-3">IRP2</a>
-     </div>
- </div>
+<div class="container d-flex flex-column justify-content-center align-items-center ">
+  <div class="text-center mb-4">
+    <h2 class="mt-5">Welcome to the Chemical Management System</h2>
+  </div>
+  <div class="d-flex justify-content-center mt-3">
+    <div class="card mx-2 mb-3">
+      <a href="{% url 'target_view' target='TNIK' %}">
+       <img src="{% static 'assets/img/chemi2.jpg' %}" class="card-img-top" alt="TNIK">
+        <div class="card-img-overlay">
+          <h5 class="card-title">TNIK</h5>
+        </div>
+      </a>
+    </div>
+    <div class="card mx-2 mb-3">
+      <a href="{% url 'target_view' target='FOXM1' %}">
+        <img src="{% static 'assets/img/chemi2.jpg' %}" class="card-img-top" alt="FOXM1">
+        <div class="card-img-overlay">
+          <h5 class="card-title">FOXM1</h5>
+        </div>
+      </a>
+    </div>
+    <div class="card mx-2 mb-3">
+      <a href="{% url 'target_view' target='IRP2' %}">
+        <img src="{% static 'assets/img/chemi2.jpg' %}"class="card-img-top" alt="IRP2">
+        <div class="card-img-overlay">
+          <h5 class="card-title">IRP2</h5>
+        </div>
+      </a>
+    </div>
+  </div>
+
+  <div class="text-center mt-4">
+    <h2 class="lead">Assay</h2>
+  </div>
+  <!-- 새로운 가로로 배치된 div들 추가 -->
+  <div class="d-flex justify-content-center mt-3">
+    <div class="card mx-2 mb-3">
+      <a href="#">
+        <img src="{% static 'assets/img/card.jpg' %}" class="card-img-top" alt="New Card 1">
+        <div class="card-body">
+          <h5 class="card-title">New </h5>
+        </div>
+      </a>
+    </div>
+    <div class="card mx-2 mb-3">
+      <a href="#">
+        <img src="{% static 'assets/img/card.jpg' %}" class="card-img-top" alt="New Card 2">
+        <div class="card-body">
+          <h5 class="card-title">New </h5>
+        </div>
+      </a>
+    </div>
+    <div class="card mx-2 mb-3">
+      <a href="#">
+        <img src="{% static 'assets/img/card.jpg' %}" class="card-img-top" alt="New Card 3">
+        <div class="card-body">
+          <h5 class="card-title">New </h5>
+        </div>
+      </a>
+    </div>
+  </div>
 </div>
+
+
 {% endblock %}
