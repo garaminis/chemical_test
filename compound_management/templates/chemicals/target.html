@@ -12,6 +12,8 @@
             $('input[name="selected_chems"]').prop('checked', this.checked);
         });
 
+
+
     $('#delete_selected').click(function() {
         var selected = [];
         $('input[name="selected_chems"]:checked').each(function() {
@@ -76,17 +78,21 @@
                     <tr>
                         <th><input type="checkbox" id="select_all"></th>
                         <th>
-                            <a href="?sort_by=chem_id&sort_order={% if sort_by == 'chem_id' and sort_order == 'asc' %}desc{% else %}asc{% endif %}">chme_ID</a>
+<!--                        <a href="?sort_by=chem_id&sort_order={% if sort_by == 'chem_id' and sort_order == 'asc' %}desc{% else %}asc{% endif %}">chme_ID</a>-->
+                            <a>chem_ID</a>
                         </th>
                         <th>Str_Image</th>
                         <th>
-                            <a href="?sort_by=MW&sort_order={% if sort_by == 'MW' and sort_order == 'asc' %}desc{% else %}asc{% endif %}">MW</a>
+<!--                        <a href="?sort_by=MW&sort_order={% if sort_by == 'MW' and sort_order == 'asc' %}desc{% else %}asc{% endif %}">MW</a>-->
+                            <a>MW</a>
                         </th>
                         <th>
-                            <a href="?sort_by=cLogP&sort_order={% if sort_by == 'cLogP' and sort_order == 'asc' %}desc{% else %}asc{% endif %}">cLogP</a>
+<!--                        <a href="?sort_by=cLogP&sort_order={% if sort_by == 'cLogP' and sort_order == 'asc' %}desc{% else %}asc{% endif %}">cLogP</a>-->
+                            <a>cLogP</a>
                         </th>
                         <th>
-                            <a href="?sort_by=TPSA&sort_order={% if sort_by == 'TPSA' and sort_order == 'asc' %}desc{% else %}asc{% endif %}">TPSA</a>
+<!--                        <a href="?sort_by=TPSA&sort_order={% if sort_by == 'TPSA' and sort_order == 'asc' %}desc{% else %}asc{% endif %}">TPSA</a>-->
+                            <a>TPSA</a>
                         </th>
                         <th>H_donors</th>
                         <th>H_acceptors</th>
