@@ -1,9 +1,10 @@
+from django.contrib.auth.models import BaseUserManager, AbstractBaseUser
 from django.db import models
+from django.utils import timezone
 from rdkit import Chem
 from rdkit.Chem import Descriptors, Crippen
-# Create your models here.
-from django.contrib.auth.models import User
 
+# Create your models here.
 # User 모델을 확장하거나 기본 User 모델을 사용할 수 있습니다.
 class Chemical(models.Model):
     target = models.CharField(max_length=50)
@@ -17,6 +18,8 @@ class Chemical(models.Model):
     H_donors = models.IntegerField(blank=True, null=True)
     H_acceptors = models.IntegerField(blank=True, null=True)
     lipinski = models.BooleanField(default=False)
+    # user = models.ForeignKey('chemicals.User',on_delete=models.PROTECT)
+
 
     def __str__(self):
         return f"{self.chem_id} - {self.smiles} - {self.target}"
@@ -57,6 +60,8 @@ class Result(models.Model):
     description = models.TextField()
     value = models.FloatField()
     timestamp = models.DateTimeField(auto_now_add=True)
+
+
 
     def __str__(self):
         return f"{self.chemical} - {self.description}"
@@ -125,3 +130,55 @@ class CYPInhibition(models.Model):
 
     def __str__(self):
         return f'{self.chemical.chem_id} - {self.date} CYP Inhibition'
+
+class UserManager(BaseUserManager):
+    # 일반 user 생성
+    def create_user(self, email, name, password=None):
+        if not email:
+            raise ValueError('must have user email')
+        if not name:
+            raise ValueError('must have user name')
+
+        user = self.model(
+            email=self.normalize_email(email),
+            name=name
+        )
+        user.set_password(password)
+        user.save(using=self._db)
+        return user
+
+    # 관리자 user 생성
+    def create_superuser(self, email, name, password=None):
+        user = self.create_user(
+            email,
+            password=password,
+            name=name,
+        )
+        user.is_admin = True
+        user.is_staff = True
+        user.save(using=self._db)
+        return user
+
+class User(AbstractBaseUser):
+    id = models.AutoField(primary_key=True)
+    userID = models.CharField(default='', max_length=100, null=False, blank=False, unique=True)
+    email = models.EmailField(default='', max_length=100, null=False, blank=False, unique=True)
+    name = models.CharField(default='', max_length=100, null=False, blank=False)
+    roll = models.CharField(default='', max_length=100, blank=False)
+    group = models.CharField(default='', max_length=100, blank=False)
+    date_joined = models.DateTimeField(default=timezone.now, blank=False)
+    is_staff = models.BooleanField(default=False)
+
+    # User 모델의 필수 field
+    is_active = models.BooleanField(default=True)
+    is_admin = models.BooleanField(default=False)
+
+    # 헬퍼 클래스 사용
+    objects = UserManager()
+
+    USERNAME_FIELD = 'userID'
+    # 필수로 작성해야하는 field
+    REQUIRED_FIELDS = ['email', 'name']
+
+    def __str__(self):
+        return self.userID

@@ -4,7 +4,8 @@ from django.shortcuts import render
 # Create your views here.
 from django.shortcuts import render, redirect, get_object_or_404
 from .models import Chemical, Pharmacokinetic, Cytotoxicity, SchrödingerModel, LiverMicrosomalStability, CYPInhibition
-from .forms import ChemicalForm, ChemicalUploadForm, PharmacokineticForm, CytotoxicityForm, SchrödingerModelForm, SchrödingerModelUploadForm, LiverMicrosomalStabilityForm, CYPInhibitionForm
+from .forms import ChemicalForm, ChemicalUploadForm, PharmacokineticForm, CytotoxicityForm, SchrödingerModelForm, \
+    SchrödingerModelUploadForm, LiverMicrosomalStabilityForm, CYPInhibitionForm, UserForm
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.decorators import login_required
@@ -28,13 +29,28 @@ logger = logging.getLogger(__name__)
 
 def register_view(request):
     if request.method == 'POST':
-        form = UserCreationForm(request.POST)
+        form = UserForm(request.POST)
         if form.is_valid():
             form.save()
             return redirect('login')
+
     else:
-        form = UserCreationForm()
+        form = UserForm()
     return render(request, 'chemicals/register.html', {'form': form})
+
+def login_view(request):
+    if request.method == 'POST':
+        username = request.POST['username']
+        password = request.POST['password']
+        user = authenticate(request, username=username, password=password)
+        print(user)
+        if user is not None:
+            login(request, user)
+            return redirect('home')
+        else:
+            messages.error(request, '로그인에 실패하였습니다.')
+    return render(request, 'chemicals/login.html')
+
 
 def logout_view(request):
     logout(request)
@@ -134,19 +150,6 @@ def chemical_delete_view(request, target, chem_id):
         logger.debug(f'Chemical deleted: {chemical}')
         return redirect('target_view', target=target)
     return render(request, 'chemicals/chemical_confirm_delete.html', {'chemical': chemical, 'target': target})
-def login_view(request):
-    if request.method == 'POST':
-        username = request.POST['username']
-        password = request.POST['password']
-        user = authenticate(request, username=username, password=password)
-        print(user)
-        if user is not None:
-            login(request, user)
-            return redirect('home')
-        else:
-            messages.error(request, '로그인에 실패하였습니다.')
-    return render(request, 'chemicals/login.html')
-
 @login_required
 def upload_chemicals(request, target):
     if request.method == 'POST':

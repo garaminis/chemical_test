@@ -31,6 +31,8 @@ ALLOWED_HOSTS = []
 # settings.py 상단에 로그인 URL 설정 추가
 LOGIN_URL = 'login'
 
+AUTH_USER_MODEL = 'chemicals.User'
+
 # Application definition
 
 INSTALLED_APPS = [
