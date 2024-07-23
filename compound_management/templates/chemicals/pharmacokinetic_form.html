@@ -1,7 +1,5 @@
 {% extends 'base.html' %}
-
 {% block title %}Add Pharmacokinetic Data{% endblock %}
-
 {% block extra_head %}
 <style>
     .datepicker {
@@ -11,13 +9,18 @@
 {% endblock %}
 
 {% block content %}
-<h2>Add Pharmacokinetic Data for {{ chemical.chem_id }}</h2>
+
+
+<h2>Pharmacokinetic Data for {{ chemical.chem_id }}</h2>
 <form method="post">
     {% csrf_token %}
     {{ form.as_p }}
     <button type="submit">Save</button>
 </form>
 <a href="{% url 'pharmacokinetic_list' target=chemical.target chem_id=chemical.chem_id %}">Cancel</a>
+
+
+
 {% endblock %}
 
 {% block extra_js %}

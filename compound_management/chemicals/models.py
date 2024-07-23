@@ -175,10 +175,10 @@ class User(AbstractBaseUser):
 
     # 헬퍼 클래스 사용
     objects = UserManager()
-
+    # 인증에 사용되는 기본 필드
     USERNAME_FIELD = 'userID'
-    # 필수로 작성해야하는 field
-    REQUIRED_FIELDS = ['email', 'name']
+    # 필수로 작성해야하는 field(모델 생성할때 추가로 필요한 필드)
+    REQUIRED_FIELDS = ['email', 'name', 'password', 'roll', 'group']
 
     def __str__(self):
         return self.userID

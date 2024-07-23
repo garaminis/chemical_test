@@ -1,138 +1,201 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Pharmacokinetics and Cytotoxicity for {{ chemical.chem_id }}</title>
-</head>
-<body>
-    <h2>{{ chemical.chem_id }}</h2>
-    <h3>Pharmacokinetics</h3>
-    <table>
-        <thead>
-            <tr>
-                <th>Date</th>
-                <th>Cmax</th>
-                <th>Tmax</th>
-                <th>AUC</th>
-                <th>t1/2</th>
-                <th>Vss</th>
-                <th>Vd</th>
-                <th>BA</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for pk in pharmacokinetics %}
-            <tr>
-                <td>{{ pk.date }}</td>
-                <td>{{ pk.cmax }}</td>
-                <td>{{ pk.tmax }}</td>
-                <td>{{ pk.AUC }}</td>
-                <td>{{ pk.t_half }}</td>
-                <td>{{ pk.Vss }}</td>
-                <td>{{ pk.Vd }}</td>
-                <td>{{ pk.BA }}</td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-    <form method="post" action="{% url 'pharmacokinetic_add' target=chemical.target chem_id=chemical.chem_id %}">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit">Add Pharmacokinetic Data</button>
-    </form>
+{% extends 'base.html' %}
+{% load static %}
+{% block title %} Pharmacokinetics and Cytotoxicity for {{ chemical.chem_id }}{% endblock %}
+{% block content %}
+<div class="card">
+    <div class="card-body"><br>
+          <h3>{{ chemical.chem_id }}</h3>
+          <!-- Default Tabs -->
+          <ul class="nav nav-tabs" id="myTab" role="tablist">
+            <li class="nav-item" role="presentation">
+              <button class="nav-link active" id="home-tab" data-bs-toggle="tab" data-bs-target="#home" type="button" role="tab" aria-controls="home" aria-selected="true">Chemical Property</button>
+            </li>
+            <li class="nav-item" role="presentation">
+              <button class="nav-link" id="profile-tab" data-bs-toggle="tab" data-bs-target="#profile" type="button" role="tab" aria-controls="profile" aria-selected="false">In vitro assay</button>
+            </li>
+            <li class="nav-item" role="presentation">
+              <button class="nav-link" id="contact-tab" data-bs-toggle="tab" data-bs-target="#contact" type="button" role="tab" aria-controls="contact" aria-selected="false">In vivo assay</button>
+            </li>
+          </ul>
 
-    <h3>Cytotoxicity</h3>
-    <table>
-        <thead>
-            <tr>
-                <th>Date</th>
-                <th>VERO</th>
-                <th>HFL-1</th>
-                <th>L929</th>
-                <th>NIH 3T3</th>
-                <th>CHO-K1</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for ct in cytotoxicities %}
-            <tr>
-                <td>{{ ct.date }}</td>
-                <td>{{ ct.VERO }}</td>
-                <td>{{ ct.HFL_1 }}</td>
-                <td>{{ ct.L929 }}</td>
-                <td>{{ ct.NIH_3T3 }}</td>
-                <td>{{ ct.CHO_K1 }}</td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-    <form method="post" action="{% url 'cytotoxicity_add' target=chemical.target chem_id=chemical.chem_id %}">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit">Add Cytotoxicity Data</button>
-    </form>
-    </table>
+          <div class="tab-content pt-2" id="myTabContent">
+            <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
+               <h5 class="card-title"> Pharmacokinetics </h5>
 
-    <h3>Liver Microsomal Stability</h3>
-    <table>
-        <thead>
-            <tr>
-                <th>Date</th>
-                <th>Mouse</th>
-                <th>Rat</th>
-                <th>Human</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for ls in liver_stabilities %}
-            <tr>
-                <td>{{ ls.date }}</td>
-                <td>{{ ls.mouse }}</td>
-                <td>{{ ls.rat }}</td>
-                <td>{{ ls.human }}</td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-    <form method="post" action="{% url 'liver_stability_add' target=chemical.target chem_id=chemical.chem_id %}">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit">Add Liver Microsomal Stability Data</button>
-    </form>
+                 <div class="d-flex justify-content-end">
+                  <form method="post" action="{% url 'pharmacokinetic_add' target=chemical.target chem_id=chemical.chem_id %}" >
+                    {% csrf_token %}
+                    {{ form.as_p }}
+                    <button type="submit" class="btn btn-outline-primary btn-sm"><i class="bi bi-plus-square"></i> Pharmacokinetic</button>
+                  </form>
+                </div>
 
-    <h3>CYP Inhibition Data</h3>
-        <table>
-            <thead>
-                <tr>
-                    <th>Date</th>
-                    <th>CYP 1A2</th>
-                    <th>CYP 2C9</th>
-                    <th>CYP 2C19</th>
-                    <th>CYP 2D6</th>
-                    <th>CYP 3A4</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for cyp in cyp_inhibitions %}
-                <tr>
-                    <td>{{ cyp.date }}</td>
-                    <td>{{ cyp.cyp_1a2 }}</td>
-                    <td>{{ cyp.cyp_2c9 }}</td>
-                    <td>{{ cyp.cyp_2c19 }}</td>
-                    <td>{{ cyp.cyp_2d6 }}</td>
-                    <td>{{ cyp.cyp_3a4 }}</td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-         <form method="post" action="{% url 'cyp_inhibition_add' target=chemical.target chem_id=chemical.chem_id %}">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit">Add CYP inhibition Data</button>
-    </form>
+               <div class="card-body">
+                 <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th scope="col">#</th>
+                            <th scope="col">Date</th>
+                            <th scope="col">Administration route</th>
+                            <th scope="col">Tmax(h)</th>
+                            <th scope="col">Cmax(μg/mL)</th>
+                            <th scope="col">t1/2(h)</th>
+                            <th scope="col">AUCt(μg·h/mL)</th>
+                            <th scope="col">CL(L/h/kg)</th>
+                            <th scope="col">Vss(L/kg)</th>
+                            <th scope="col">F(%)</th>
+                            <th scope="col">Row data</th>
+                            <th scope="col"></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for pk in pharmacokinetics %}
+                        <tr>
+                            <th scope="row"></th>
+                            <td>{{ pk.date }}</td>
+                            <td> PO </td>
+                            <td>{{ pk.cmax }}</td>
+                            <td>{{ pk.tmax }}</td>
+                            <td>{{ pk.AUC }}</td>
+                            <td>{{ pk.t_half }}</td>
+                            <td>{{ pk.Vss }}</td>
+                            <td>{{ pk.Vd }}</td>
+                            <td>{{ pk.BA }}</td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+               </div>
 
-</body>
-</html>
-    <a href="{% url 'target_view' target=chemical.target %}">Back to {{ chemical.target }}</a>
-    <a href="{% url 'home' %}">Home</a>
-</body>
-</html>
+              <div class="card-body">
+                <h4 class="card-title">Cytotoxicity</h4>
+                <table  class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th scope="col">#</th>
+                            <th scope="col">Date</th>
+                            <th scope="col">VERO</th>
+                            <th scope="col">HFL-1</th>
+                            <th scope="col">L929</th>
+                            <th scope="col">NIH 3T3</th>
+                            <th scope="col">CHO-K1</th>
+                            <th scope="col">Row data</th>
+                            <th scope="col"></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for ct in cytotoxicities %}
+                        <tr>
+                            <th scope="row"></th>
+                            <td>{{ ct.date }}</td>
+                            <td>{{ ct.VERO }}</td>
+                            <td>{{ ct.HFL_1 }}</td>
+                            <td>{{ ct.L929 }}</td>
+                            <td>{{ ct.NIH_3T3 }}</td>
+                            <td>{{ ct.CHO_K1 }}</td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                <form method="post" action="{% url 'cytotoxicity_add' target=chemical.target chem_id=chemical.chem_id %}">
+                    {% csrf_token %}
+                    {{ form.as_p }}
+                    <button type="submit" class="btn btn-outline-primary btn-sm"><i class="bi bi-plus-square"></i> Cytotoxicity</button>
+                </form>
+                </table>
+              </div>
+
+              <div class="card-body">
+                <h4 class="card-title">Liver Microsomal Stability</h4>
+                <table  class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th scope="col">#</th>
+                            <th scope="col">Date</th>
+                            <th scope="col">Mouse(%)</th>
+                            <th scope="col">Rat(%)</th>
+                            <th scope="col">Human(%)</th>
+                            <th scope="col">Row data</th>
+                            <th scope="col"></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for ls in liver_stabilities %}
+                        <tr>
+                            <th scope="row"></th>
+                            <td>{{ ls.date }}</td>
+                            <td>{{ ls.mouse }}</td>
+                            <td>{{ ls.rat }}</td>
+                            <td>{{ ls.human }}</td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                <form method="post" action="{% url 'liver_stability_add' target=chemical.target chem_id=chemical.chem_id %}">
+                    {% csrf_token %}
+                    {{ form.as_p }}
+                    <button type="submit" class="btn btn-outline-primary btn-sm"><i class="bi bi-plus-square"></i> Liver Microsomal Stability</button>
+                </form>
+              </div>
+
+              <div class="card-body">
+                <h3>CYP Inhibition Data</h3>
+                    <table  class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th scope="col">#</th>
+                                <th scope="col">Date</th>
+                                <th scope="col">CYP 1A2</th>
+                                <th scope="col">CYP 2C9</th>
+                                <th scope="col">CYP 2C19</th>
+                                <th scope="col">CYP 2D6</th>
+                                <th scope="col">CYP 3A4</th>
+                                <th scope="col">Row data</th>
+                                <th scope="col"></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for cyp in cyp_inhibitions %}
+                            <tr>
+                                <th scope="row"></th>
+                                <td>{{ cyp.date }}</td>
+                                <td>{{ cyp.cyp_1a2 }}</td>
+                                <td>{{ cyp.cyp_2c9 }}</td>
+                                <td>{{ cyp.cyp_2c19 }}</td>
+                                <td>{{ cyp.cyp_2d6 }}</td>
+                                <td>{{ cyp.cyp_3a4 }}</td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                     <form method="post" action="{% url 'cyp_inhibition_add' target=chemical.target chem_id=chemical.chem_id %}">
+                    {% csrf_token %}
+                    {{ form.as_p }}
+                    <button type="submit" class="btn btn-outline-primary btn-sm"><i class="bi bi-plus-square"></i> CYP inhibition</button>
+                </form>
+                <br>
+                <a href="{% url 'target_view' target=chemical.target %}"  class="btn btn-outline-primary btn-sm">Back to {{ chemical.target }}</a>
+<!--                <a href="{% url 'home' %}" class="btn btn-outline-primary btn-sm">Home</a>-->
+              </div>
+            </div>
+
+
+            <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab" >
+              추가예정1
+            </div>
+            <div class="tab-pane fade" id="contact" role="tabpanel" aria-labelledby="contact-tab">
+              추가예정2
+            </div>
+          </div><!-- End Default Tabs -->
+    </div>
+</div>
+
+{% endblock %}

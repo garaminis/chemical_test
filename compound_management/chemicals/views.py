@@ -33,10 +33,9 @@ def register_view(request):
         if form.is_valid():
             form.save()
             return redirect('login')
-
     else:
         form = UserForm()
-    return render(request, 'chemicals/register.html', {'form': form})
+    return render(request, 'chemicals/register.html', {'form': form}) # 오류 렌더링
 
 def login_view(request):
     if request.method == 'POST':

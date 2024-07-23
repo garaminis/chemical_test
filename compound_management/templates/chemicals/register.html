@@ -30,7 +30,7 @@
           <div class="row justify-content-center">
             <div class="col-lg-4 col-md-6 d-flex flex-column align-items-center justify-content-center">
               <div class="d-flex justify-content-center py-4">
-                <a href="index.html" class="logo d-flex align-items-center w-auto">
+                <a href="{% url 'login' %}" class="logo d-flex align-items-center w-auto">
                   <span class="d-none d-lg-block">SJS</span>
                 </a>
               </div><!-- End Logo -->
@@ -41,52 +41,77 @@
                   </div>
                   <form  method="post" action="{% url 'register' %}" class="row g-3 needs-validation" novalidate>
                      {% csrf_token %}
+
                     <div class="col-12">
-                      <label for="yourUsername" class="form-label">ID</label>
-                      <div class="input-group has-validation">
-                        <input type="text" name="userID" class="form-control" id="yourUsername" required >
-                        <div class="invalid-feedback">Please choose a username.</div>
-                      </div>
-                  </div>
+                        <label for="yourUsername" class="form-label">ID</label>
+                        <div class="input-group has-validation">
+                            <input type="text" name="userID" id="yourUsername" class="form-control {% if form.userID.errors %}is-invalid{% endif %}" value="{{ form.userID.value }}" required>
+                            {% if form.userID.errors %}
+                                <div class="invalid-feedback">
+                                    {% for error in form.userID.errors %}
+                                        {{ error }}
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+                   </div>
+
                   <div class="col-12">
                       <label for="yourPassword1" class="form-label">Password</label>
-                      <input type="password" name="password" class="form-control" id="yourPassword1" required>
-                      <div class="invalid-feedback">Please enter your password!</div>
+                      <input type="password" name="password" id="yourPassword1"  class="form-control {% if form.password.errors %}is-invalid{% endif %}" required>
+                        {% if form.password.errors %}
+                          <div class="invalid-feedback">
+                             {% for error in form.password.errors %}
+                              {{ error }}
+                            {% endfor %}
+                          </div>
+                        {% endif %}
                   </div>
-                  <div class="col-12">
+
+                 <div class="col-12">
                       <label for="yourPassword2" class="form-label">Confirmed Password</label>
                       <input type="password" name="password2" class="form-control" id="yourPassword2" required>
-                      <div class="invalid-feedback">Please enter your password!</div>
+                      <div class="pswcheck"></div>
                   </div>
+
                   <div class="col-12">
                       <label for="firstName" class="form-label">Name</label>
-                      <input type="text" name="name" class="form-control" id="firstName" required>
-                      <div class="invalid-feedback">Please, enter your name!</div>
+                      <input type="text" name="name" class="form-control" id="firstName" value="{{ form.name.value }}" required>
+                       <div class="invalid-feedback"> </div>
                   </div>
+
                   <div class="col-12">
                       <label for="yourEmail" class="form-label">Email</label>
                        <div class="input-group has-validation">
                          <span class="input-group-text" id="inputGroupPrepend">@</span>
-                        <input type="email" name="email" class="form-control" id="yourEmail" required>
-                        <div class="invalid-feedback">Please enter a valid Email adddress!</div>
+                        <input type="email" name="email" id="yourEmail" class="form-control  {% if form.email.errors %}is-invalid{% endif %}" value="{{ form.email.value }}" required>
+                        {% if form.email.errors %}
+                          <div class="invalid-feedback">
+                             {% for error in form.email.errors %}
+                              {{ error }}
+                            {% endfor %}
+                          </div>
+                          {% endif %}
                        </div>
                   </div>
+
                   <div class="col-12">
                       <label for="roll" class="form-label">자격</label>
                        <div class="input-group has-validation">
-                          <select class="form-select" aria-label="Default select example" id="roll" name="roll" required>
-                              <option value="" selected disabled hidden>자격을 선택해주세요.</option>
-                              <option value="CRC">CRC</option>
+                          <select class="form-select" aria-label="Default select example" id="roll" name="roll" value="{{ form.roll.value }}" required>
+                              <option value="" selected disabled hidden>(자격 선택)*</option>
+                              <option value="PI">PI</option>
                               <option value="Researcher">Researcher</option>
                           </select>
 <!--                        <input type="roll" name="roll" class="form-control" id="roll" required>-->
                        </div>
                   </div>
+
                   <div class="col-12">
                       <label for="group" class="form-label">기관</label>
                        <div class="input-group has-validation">
                          <select class="form-select" aria-label="Default select example" id="group" name="group" required>
-                              <option value="" selected disabled hidden>기관을 선택해주세요.</option>
+                              <option value="" selected disabled hidden>(기관 선택)*</option>
                               <option value="연세대">연세대</option>
                               <option value="한국화학연구원">한국화학연구원</option>
                           </select>
@@ -96,7 +121,7 @@
                       <button class="btn btn-primary w-100" type="submit">Create Account</button>
                     </div>
                     <div class="col-12">
-                      <p class="small mb-0">Already have an account? <a href="login.html">Log in</a></p>
+                      <p class="small mb-0">Already have an account? <a href="{% url 'login' %}">Log in</a></p>
                     </div>
                   </form>
                 </div>
@@ -123,19 +148,25 @@
   <script src="{% static 'assets/js/main.js' %}"></script>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
-<!--$(document)-->
-<!--.ready(function() {-->
+$(document)
+.ready(function() {
 
-<!--})-->
-<!--$('form').submit(function(event) {-->
-<!--  if (조건을 충족하는 경우) {-->
-<!--        console.log('안녕!!');-->
-<!--        // 폼을 제출합니다.-->
-<!--        $(this).unbind('submit').submit();-->
-<!--    } else {-->
-<!--        event.preventDefault(); // 조건이 충족되지 않으면 폼 제출을 막습니다.-->
-<!--    }-->
-<!--});-->
+})
+$('form').submit(function(event) {
+  if ($("#yourPassword1").val() == $("#yourPassword2").val() ) {
+     $(this).unbind('submit').submit();
+  } else {
+     event.preventDefault();
+  }
+});
+
+$('#yourPassword2').on('keyup', function() {
+    if ($('#yourPassword1').val() !== $('#yourPassword2').val()) {
+      $('.pswcheck').html('<span style="color: red;">비밀번호가 일치하지 않습니다.</span>');
+    } else {
+      $('.pswcheck').html('<span style="color: green;">비밀번호가 일치합니다.</span>');
+    }
+});
 </script>
 </body>
 

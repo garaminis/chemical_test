@@ -1,9 +1,8 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Add CYP Inhibition Data for {{ chemical.chem_id }}</title>
-</head>
-<body>
+{% extends 'base.html' %}
+{% block title %}
+    Add CYP Inhibition Data for {{ chemical.chem_id }}
+{% endblock %}
+{% block content %}
     <h2>Add CYP Inhibition Data for {{ chemical.chem_id }}</h2>
     <form method="post">
         {% csrf_token %}
@@ -11,5 +10,4 @@
         <button type="submit">Save</button>
     </form>
     <a href="{% url 'pharmacokinetic_list' target=chemical.target chem_id=chemical.chem_id %}">Cancel</a>
-</body>
-</html>
+{% endblock %}

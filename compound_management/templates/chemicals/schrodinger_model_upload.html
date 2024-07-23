@@ -1,15 +1,14 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Upload Schrödinger Modeling Data for {{ chemical.chem_id }}</title>
-</head>
-<body>
+{% extends 'base.html' %}
+{% block title %}
+    Upload Schrödinger Modeling Data for {{ chemical.chem_id }}
+{% endblock %}
+{% block content %}
     <h2>Upload Schrödinger Modeling Data for {{ chemical.chem_id }}</h2>
      <form method="post" enctype="multipart/form-data">
         {% csrf_token %}
         {{ form.as_p }}
-        <button type="submit">Upload</button>
+        <button type="submit"  class="btn btn-primary btn-sm" > <i class="bi bi-upload"></i> Upload</button>
     </form>
-    <a href="{% url 'schrodinger_model_list' target=chemical.target chem_id=chemical.chem_id %}">Back to Modeling List</a>
-</body>
-</html>
+    <br>
+    <a href="{% url 'schrodinger_model_list' target=chemical.target chem_id=chemical.chem_id %}" class="btn btn-outline-primary btn-sm">Back to Modeling List</a>
+{% endblock %}
