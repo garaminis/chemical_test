@@ -1,9 +1,7 @@
 {% extends 'base.html' %}
-
 {% block title %}
     {{ target }} Chemicals
 {% endblock %}
-
 {% block extra_js %}
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
@@ -58,7 +56,6 @@
 
 <style>
 table, th, tr, td {
-  border: 1px solid gainsboro;
   text-align: center;
 }
 .table thead th {
@@ -78,44 +75,40 @@ table, th, tr, td {
         <div class="col-lg-12">
           <div class="card">
             <div class="card-body"> <br>
-                <button id="delete_selected" class="btn btn-primary rounded-pill"><i class="bi bi-trash"></i>Delete</button>
+                <button id="delete_selected" class="btn btn-primary btn-sm"><i class="bi bi-trash"></i> 선택삭제</button>
                 <div class="btn-group" role="group" aria-label="Basic outlined example">
                     <a href="{% url 'chemical_new' target=target %}" class="btn btn-outline-primary btn-sm"><i class="bi bi-plus-square"></i> New</a>
                     <a href="{% url 'upload_chemicals' target=target %}" class="btn btn-outline-primary btn-sm"><i class="bi bi-files"></i> Upload </a>
-               </div>
+                </div>
 <!--                <a href="{% url 'chemical_new' target=target %}" class="btn btn-success rounded-pill"><i class="bi bi-plus-square"></i> New</a>-->
 <!--                <a href="{% url 'upload_chemicals' target=target %}" class="btn btn-success rounded-pill"><i class="bi bi-files"></i> Upload </a>-->
-                <table class="table datatable">
+                <table  class="table table-bordered">
                 <thead>
                     <tr>
                         <th class="no-bootstrap-feature">
                             <input type="checkbox" id="select_all">
                         </th>
                         <th>
-<!--                        <a href="?sort_by=chem_id&sort_order={% if sort_by == 'chem_id' and sort_order == 'asc' %}desc{% else %}asc{% endif %}">chme_ID</a>-->
-                            chemID
+                            <a href="?sort_by=chem_id&sort_order={% if sort_by == 'chem_id' and sort_order == 'asc' %}desc{% else %}asc{% endif %}">chme_ID</a>
                         </th>
                         <th>
                             Str_Image
                         </th>
                         <th>
-<!--                        <a href="?sort_by=MW&sort_order={% if sort_by == 'MW' and sort_order == 'asc' %}desc{% else %}asc{% endif %}">MW</a>-->
-                            MW
+                            <a href="?sort_by=MW&sort_order={% if sort_by == 'MW' and sort_order == 'asc' %}desc{% else %}asc{% endif %}">MW</a>
                         </th>
                         <th>
-<!--                        <a href="?sort_by=cLogP&sort_order={% if sort_by == 'cLogP' and sort_order == 'asc' %}desc{% else %}asc{% endif %}">cLogP</a>-->
-                            cLogP
+                            <a href="?sort_by=cLogP&sort_order={% if sort_by == 'cLogP' and sort_order == 'asc' %}desc{% else %}asc{% endif %}">cLogP</a>
                         </th>
                         <th>
-<!--                        <a href="?sort_by=TPSA&sort_order={% if sort_by == 'TPSA' and sort_order == 'asc' %}desc{% else %}asc{% endif %}">TPSA</a>-->
-                            TPSA
+                            <a href="?sort_by=TPSA&sort_order={% if sort_by == 'TPSA' and sort_order == 'asc' %}desc{% else %}asc{% endif %}">TPSA</a>
                         </th>
                         <th>H_donors</th>
                         <th>H_acceptors</th>
                         <th>lipinski</th>
-<!--                        <th>Results</th>-->
-                        <th style="pointer-events: none;"></th>
-                        <th style="pointer-events: none;"></th>
+<!--                    <th>Results</th>-->
+                        <th ></th>
+                        <th ></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -146,6 +139,46 @@ table, th, tr, td {
                     {% endfor %}
                 </tbody>
                 </table>
+
+                <ul class="pagination disabled justify-content-right">
+                  <li class="page-item ">
+                  {% if chemicals.has_previous %}
+                    <a class="page-link" href="?page={{ chemicals.previous_page_number }}" aria-label="Previous">
+                      <span aria-hidden="true">&laquo;</span>
+                    </a>
+                  {% else %}
+                   <li class="page-item disabled">
+                     <a class="page-link" tabindex="-1" aria-disabled="true" href="#">&laquo;</a>
+                   </li>
+                  {% endif %}
+                 </li>
+                <!--       페이지 갯수           -->
+                {% for page_number in page_range %}
+                {% if page_number == chemicals.number %}
+                    <li class="page-item active">
+                        <a class="page-link" href="?page={{ page_number }}">{{ page_number }}</a>
+                    </li>
+                {% else %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ page_number }}">{{ page_number }}</a>
+                    </li>
+                {% endif %}
+                {% endfor %}
+
+               <li class="page-item ">
+                 {% if chemicals.has_next %}
+                 <a class="page-link" href="?page={{ chemicals.next_page_number }}" aria-label="Next">
+                   <span aria-hidden="true">&raquo;</span>
+                 </a>
+               </li>
+                {% else %}
+                <li class="page-item disabled">
+                    <a class="page-link" tabindex="-1" aria-disabled="true" href="#">&raquo;</a>
+                </li>
+                {% endif %}
+                  </li>
+                </ul>
+
             </div>
           </div>
         </div>

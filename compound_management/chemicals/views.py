@@ -1,4 +1,5 @@
 from django.contrib import messages
+from django.core.paginator import Paginator
 from django.shortcuts import render
 
 # Create your views here.
@@ -61,6 +62,7 @@ def home_view(request):
 
 @login_required
 def target_view(request, target):
+
     sort_by = request.GET.get('sort_by', 'chem_id')
     sort_order = request.GET.get('sort_order', 'asc')
 
@@ -69,11 +71,21 @@ def target_view(request, target):
     else:
         chemicals = Chemical.objects.filter(target=target).order_by('-' + sort_by)
 
+    paginator = Paginator(chemicals, 10)  # 갯수 정해서 보여줌
+    page_number = request.GET.get('page') #get요청된 페이지 번호
+    page_obj = paginator.get_page(page_number) # 해당 번호에 맞는 페이지 가져옴
+
+    start_index = (page_obj.number - 1) // 10 * 10 + 1
+    end_index = min(page_obj.number + 9, paginator.num_pages)
+    page_range = range(start_index, end_index + 1)
+
     return render(request, 'chemicals/target.html', {
-        'chemicals': chemicals,
+        'chemicals': page_obj,
+        # 'chemicals': chemicals,
         'target': target,
         'sort_by': sort_by,
         'sort_order': sort_order,
+        'page_range': page_range,
     })
     # chemicals = Chemical.objects.filter(target__iexact=target)
     # if not chemicals.exists():
@@ -365,4 +377,12 @@ def SLselected_gene_input(request):
         else:
             context['img_path'] = None
     return render(request, 'sl.html', context)
+
+# def chem_page (request):
+#     page = request.GET.get('page', '1')  # 페이지
+#     chemical_list = Chemical.objects.filter(target='{target}').order_by('-create_date')
+#     paginator = Paginator(chemical_list, 10)  # 페이지당 10개씩 보여주기
+#     page_obj = paginator.get_page(page)
+#     context = {'chemical_list': page_obj}
+#     return render(request, 'chemicals/target.html', context)
 

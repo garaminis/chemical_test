@@ -19,6 +19,7 @@
           </ul>
 
           <div class="tab-content pt-2" id="myTabContent">
+                <a href="{% url 'target_view' target=chemical.target %}"  class="btn btn-outline-primary btn-sm">Back to {{ chemical.target }}</a>
             <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
                <h5 class="card-title"> Pharmacokinetics </h5>
 
@@ -44,7 +45,7 @@
                             <th scope="col">CL(L/h/kg)</th>
                             <th scope="col">Vss(L/kg)</th>
                             <th scope="col">F(%)</th>
-                            <th scope="col">Row data</th>
+                            <th scope="col">Raw data</th>
                             <th scope="col"></th>
                         </tr>
                     </thead>
@@ -81,7 +82,7 @@
                             <th scope="col">L929</th>
                             <th scope="col">NIH 3T3</th>
                             <th scope="col">CHO-K1</th>
-                            <th scope="col">Row data</th>
+                            <th scope="col">Raw data</th>
                             <th scope="col"></th>
                         </tr>
                     </thead>
@@ -119,7 +120,7 @@
                             <th scope="col">Mouse(%)</th>
                             <th scope="col">Rat(%)</th>
                             <th scope="col">Human(%)</th>
-                            <th scope="col">Row data</th>
+                            <th scope="col">Raw data</th>
                             <th scope="col"></th>
                         </tr>
                     </thead>
@@ -156,7 +157,7 @@
                                 <th scope="col">CYP 2C19</th>
                                 <th scope="col">CYP 2D6</th>
                                 <th scope="col">CYP 3A4</th>
-                                <th scope="col">Row data</th>
+                                <th scope="col">Raw data</th>
                                 <th scope="col"></th>
                             </tr>
                         </thead>
@@ -182,7 +183,6 @@
                     <button type="submit" class="btn btn-outline-primary btn-sm"><i class="bi bi-plus-square"></i> CYP inhibition</button>
                 </form>
                 <br>
-                <a href="{% url 'target_view' target=chemical.target %}"  class="btn btn-outline-primary btn-sm">Back to {{ chemical.target }}</a>
 <!--                <a href="{% url 'home' %}" class="btn btn-outline-primary btn-sm">Home</a>-->
               </div>
             </div>
