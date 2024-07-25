@@ -16,14 +16,15 @@
         <div class="row mb-3">
           <label for="id_chem_id" class="col-sm-2 col-form-label">Chem id</label>
           <div class="col-sm-10">
-            <input type="text" class="form-control" id="id_chem_id" name="chem_id">
+            <input type="text" class="form-control" id="id_chem_id" name="chem_id"
+             value="{{ form.chem_id.value|default_if_none:'' }}">  <!-- 필드의 초기값을 폼에서 가져와서 입력 필드에 설정 -->
           </div>
         </div>
 
         <div class="row mb-3">
           <label for="id_smiles" class="col-sm-2 col-form-label">Smiles</label>
           <div class="col-sm-10">
-              <textarea class="form-control" name="smiles" id="id_smiles" ></textarea>
+              <textarea class="form-control" name="smiles" id="id_smiles" >{{ form.smiles.value|default_if_none:'' }}</textarea>  <!-- 사이에 직접 정의 -->
           </div>
         </div>
 
@@ -44,35 +45,35 @@
       <div class="row mb-3">
           <label for="id_MW" class="col-sm-2 col-form-label">MW</label>
           <div class="col-sm-10">
-            <input type="number" class="form-control" id="id_MW" name="MW">
+            <input type="number" class="form-control" id="id_MW" name="MW"  value="{{ form.MW.value|default_if_none:'' }}">
           </div>
       </div>
 
       <div class="row mb-3">
           <label for="id_cLogP" class="col-sm-2 col-form-label">CLogP</label>
           <div class="col-sm-10">
-            <input type="text" class="form-control" id="id_cLogP" name="cLogP"  step="any">
+            <input type="text" class="form-control" id="id_cLogP" name="cLogP"  step="any" value="{{ form.cLogP.value|default_if_none:'' }}">
           </div>
       </div>
 
       <div class="row mb-3">
           <label for="id_TPSA" class="col-sm-2 col-form-label">TPSA</label>
           <div class="col-sm-10">
-            <input type="number" class="form-control" id="id_TPSA" name="TPSA" step="any">
+            <input type="number" class="form-control" id="id_TPSA" name="TPSA" step="any"  value="{{ form.TPSA.value|default_if_none:'' }}">
           </div>
       </div>
 
       <div class="row mb-3">
           <label for="id_H_donors" class="col-sm-2 col-form-label">H_donors</label>
           <div class="col-sm-10">
-            <input type="number" class="form-control" id="id_H_donors" name="H_donors">
+            <input type="number" class="form-control" id="id_H_donors" name="H_donors" value="{{ form.H_donors.value|default_if_none:'' }}">
           </div>
       </div>
 
        <div class="row mb-3">
           <label for="id_H_acceptors" class="col-sm-2 col-form-label">H_acceptors</label>
           <div class="col-sm-10">
-            <input type="number" class="form-control" id="id_H_acceptors" name="H_acceptors">
+            <input type="number" class="form-control" id="id_H_acceptors" name="H_acceptors" value="{{ form.H_acceptors.value|default_if_none:'' }}">
           </div>
        </div>
 
@@ -80,7 +81,7 @@
             <legend class="col-form-label col-sm-2 pt-0">lipinski</legend>
             <div class="col-sm-10">
                 <div class="form-check">
-                    <input class="form-check-input" type="checkbox" id="id_lipinski" name="lipinski">
+                    <input class="form-check-input" type="checkbox" id="id_lipinski" name="lipinski" value="{{ form.lipinski.value|default_if_none:'' }}">
                     <label class="form-check-label" for="id_lipinski"> </label>
                 </div>
             </div>
