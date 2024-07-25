@@ -61,10 +61,11 @@ class CYPInhibitionForm(forms.ModelForm):
 class UserForm(forms.ModelForm):
     # 패스워드 필드를 정의하며, 입력 시 비밀번호 입력 필드를 사용합니다.
     password = forms.CharField(widget=forms.PasswordInput)
+    password2 = forms.CharField(widget=forms.PasswordInput())
 
     class Meta:
         model = User
-        fields = ['userID', 'email', 'name', 'password','roll', 'group']
+        fields = ['userID', 'email', 'name', 'password', 'password2', 'roll', 'group']
 
     def clean_password(self):
         password = self.cleaned_data.get('password')
@@ -92,5 +93,16 @@ class UserForm(forms.ModelForm):
         # 이메일 형식 검증을 위한 정규 표현식
         email_regex = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
         return re.match(email_regex, email) is not None
+
+    def save(self, commit=True):
+        # 기본 save 메서드를 호출하여 User 인스턴스를 가져옵니다.
+        user = super().save(commit=False)
+        # 입력받은 패스워드를 해시화하여 User 인스턴스에 설정합니다.
+        user.set_password(self.cleaned_data['password'])
+        # commit이 True일 경우, 데이터베이스에 저장합니다.
+        if commit:
+            user.save()
+        # 저장된 User 인스턴스를 반환합니다.
+        return user
 
 

@@ -1,3 +1,4 @@
+from django.contrib.auth.hashers import make_password
 from django.contrib.auth.models import BaseUserManager, AbstractBaseUser
 from django.db import models
 from django.utils import timezone
@@ -132,12 +133,9 @@ class CYPInhibition(models.Model):
         return f'{self.chemical.chem_id} - {self.date} CYP Inhibition'
 
 class UserManager(BaseUserManager):
-    # 일반 user 생성
     def create_user(self, email, name, password=None):
         if not email:
-            raise ValueError('must have user email')
-        if not name:
-            raise ValueError('must have user name')
+            raise ValueError('Must have user email')
 
         user = self.model(
             email=self.normalize_email(email),
@@ -147,8 +145,7 @@ class UserManager(BaseUserManager):
         user.save(using=self._db)
         return user
 
-    # 관리자 user 생성
-    def create_superuser(self, email, name, password=None):
+    def create_superuser(self, email, name, password):
         user = self.create_user(
             email,
             password=password,
@@ -168,17 +165,12 @@ class User(AbstractBaseUser):
     group = models.CharField(default='', max_length=100, blank=False)
     date_joined = models.DateTimeField(default=timezone.now, blank=False)
     is_staff = models.BooleanField(default=False)
-
-    # User 모델의 필수 field
     is_active = models.BooleanField(default=True)
     is_admin = models.BooleanField(default=False)
 
-    # 헬퍼 클래스 사용
     objects = UserManager()
-    # 인증에 사용되는 기본 필드
     USERNAME_FIELD = 'userID'
-    # 필수로 작성해야하는 field(모델 생성할때 추가로 필요한 필드)
-    REQUIRED_FIELDS = ['email', 'name', 'password', 'roll', 'group']
+    REQUIRED_FIELDS = ['email', 'name']
 
     def __str__(self):
         return self.userID

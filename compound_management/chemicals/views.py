@@ -1,10 +1,12 @@
 from django.contrib import messages
+from django.contrib.auth.hashers import check_password
 from django.core.paginator import Paginator
 from django.shortcuts import render
 
 # Create your views here.
 from django.shortcuts import render, redirect, get_object_or_404
-from .models import Chemical, Pharmacokinetic, Cytotoxicity, SchrödingerModel, LiverMicrosomalStability, CYPInhibition
+from .models import Chemical, Pharmacokinetic, Cytotoxicity, SchrödingerModel, LiverMicrosomalStability, CYPInhibition, \
+    User
 from .forms import ChemicalForm, ChemicalUploadForm, PharmacokineticForm, CytotoxicityForm, SchrödingerModelForm, \
     SchrödingerModelUploadForm, LiverMicrosomalStabilityForm, CYPInhibitionForm, UserForm
 from django.contrib.auth import authenticate, login, logout
@@ -40,9 +42,9 @@ def register_view(request):
 
 def login_view(request):
     if request.method == 'POST':
-        username = request.POST['username']
+        userID = request.POST['userID'] #userID = request.POST.get('userID')도 가능
         password = request.POST['password']
-        user = authenticate(request, username=username, password=password)
+        user = authenticate(request, username=userID, password=password)
         print(user)
         if user is not None:
             login(request, user)
@@ -50,7 +52,6 @@ def login_view(request):
         else:
             messages.error(request, '로그인에 실패하였습니다.')
     return render(request, 'chemicals/login.html')
-
 
 def logout_view(request):
     logout(request)
