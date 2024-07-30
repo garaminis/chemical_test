@@ -2,22 +2,108 @@
 {% block title %}Add Pharmacokinetic Data{% endblock %}
 {% block extra_head %}
 <style>
-    .datepicker {
-        z-index: 10000;
-    }
+<!--    .datepicker {-->
+<!--        z-index: 10000;-->
+<!--    }-->
+
 </style>
 {% endblock %}
-
 {% block content %}
+<!--<h2>Pharmacokinetic Data for {{ chemical.chem_id }}</h2>-->
+<!--<form method="post">-->
+<!--    {% csrf_token %}-->
+<!--    {{ form.as_p }}-->
+<!--    <button type="submit">Save</button>-->
+<!--</form>-->
+<!--<a href="{% url 'pharmacokinetic_list' target=chemical.target chem_id=chemical.chem_id %}">Cancel</a>-->
 
 
-<h2>Pharmacokinetic Data for {{ chemical.chem_id }}</h2>
-<form method="post">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit">Save</button>
-</form>
-<a href="{% url 'pharmacokinetic_list' target=chemical.target chem_id=chemical.chem_id %}">Cancel</a>
+<div class="col-lg-6">
+  <div class="card">
+    <div class="card-body">
+      <h4 class="card-title">Pharmacokinetic Data for {{ chemical.chem_id }}</h4>
+        <form method="post">
+       {% csrf_token %}
+            <div class="row mb-3">
+              <label for="date" class="col-sm-2 col-form-label">Date</label>
+              <div class="col-sm-10">
+                <input type="date" class="form-control" id="date" name="date"
+                 value="{{ form.date.value|default_if_none:'' }}">  <!-- 필드의 초기값을 폼에서 가져와서 입력 필드에 설정 -->
+              </div>
+            </div>
+
+            <div class="row mb-3">
+              <label for="Route" class="col-sm-2 col-form-label">Route</label>
+              <div class="col-sm-10">
+                 <select class="form-select" aria-label="Default select example" id="Route" name="Route" value="{{ form.Route.value|default_if_none:'' }}" required>
+                      <option value="" selected disabled hidden>Administration route*</option>
+                      <option value="PO">PO</option>
+                      <option value="IV">IV</option>
+                  </select>
+    <!--               <input type="text" class="form-control" id="Route" name="Route" value="{{ form.Route.value|default_if_none:'' }}">-->
+              </div>
+            </div>
+
+            <div class="row mb-3">
+              <label for="Tmax" class="col-sm-2 col-form-label">Tmax(h)</label>
+              <div class="col-sm-10">
+                  <input type="number" step="any" class="form-control" id="Tmax" name="tmax" value="{{ form.Tmax.value|default_if_none:'' }}">
+              </div>
+            </div>
+
+          <div class="row mb-3">
+              <label for="Cmax" class="col-sm-2 col-form-label">Cmax(μg/mL)</label>
+              <div class="col-sm-10">
+                  <input type="number" step="any" class="form-control" id="Cmax" name="cmax" value="{{ form.Cmax.value|default_if_none:'' }}">
+              </div>
+          </div>
+
+          <div class="row mb-3">
+              <label for="t_half" class="col-sm-2 col-form-label">t1/2(h)</label>
+              <div class="col-sm-10">
+                <input type="number" step="any"class="form-control" id="t_half" name="t_half"  value="{{ form.t_half.value|default_if_none:'' }}">
+              </div>
+          </div>
+
+          <div class="row mb-3">
+              <label for="AUC" class="col-sm-2 col-form-label">AUCt(μg·h/mL)</label>
+              <div class="col-sm-10">
+                <input type="number" step="any" class="form-control" id="AUC" name="AUC"  value="{{ form.AUC.value|default_if_none:'' }}">
+              </div>
+          </div>
+
+          <div class="row mb-3">
+              <label for="CL" class="col-sm-2 col-form-label">CL(L/h/kg)</label>
+              <div class="col-sm-10">
+                <input type="number" step="any" class="form-control" id="CL" name="CL" value="{{ form.CL.value|default_if_none:'' }}">
+              </div>
+          </div>
+
+          <div class="row mb-3">
+              <label for="Vss" class="col-sm-2 col-form-label">Vss(L/kg)</label>
+              <div class="col-sm-10">
+                <input type="number" step="any" class="form-control" id="Vss" name="Vss" value="{{ form.Vss.value|default_if_none:'' }}">
+              </div>
+          </div>
+
+         <div class="row mb-3">
+            <label for="id_F" class="col-sm-2 col-form-label" >F(%)</label>
+            <div class="col-sm-10">
+                <input class="form-control" type="number" step="any" id="id_F" name="F" value="{{ form.F.value|default_if_none:'' }}">
+            </div>
+         </div>
+
+        <div class="row mb-3">
+          <label class="col-sm-2 col-form-label"></label>
+          <div class="col-sm-10">
+            <button type="submit" class="btn btn-primary">Submit Form</button>
+            <button class="btn btn-primary">cancel</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
 
 
 
@@ -25,12 +111,12 @@
 
 {% block extra_js %}
 <script>
-    $(document).ready(function(){
-        $('#id_date').datepicker({
-            format: 'yyyy-mm-dd',
-            autoclose: true,
-            todayHighlight: true
-        });
-    });
+<!--    $(document).ready(function(){-->
+<!--        $('#date').datepicker({-->
+<!--            format: 'yyyy-mm-dd',-->
+<!--            autoclose: true,-->
+<!--            todayHighlight: true-->
+<!--        });-->
+<!--    });-->
 </script>
 {% endblock %}

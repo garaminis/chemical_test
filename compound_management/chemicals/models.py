@@ -1,5 +1,5 @@
 from django.contrib.auth.hashers import make_password
-from django.contrib.auth.models import BaseUserManager, AbstractBaseUser
+from django.contrib.auth.models import BaseUserManager, AbstractBaseUser, PermissionsMixin
 from django.db import models
 from django.utils import timezone
 from rdkit import Chem
@@ -19,7 +19,7 @@ class Chemical(models.Model):
     H_donors = models.IntegerField(blank=True, null=True)
     H_acceptors = models.IntegerField(blank=True, null=True)
     lipinski = models.BooleanField(default=False)
-    # user = models.ForeignKey('chemicals.User',on_delete=models.PROTECT)
+    user = models.CharField(max_length=200, null=True)
 
 
     def __str__(self):
@@ -62,8 +62,6 @@ class Result(models.Model):
     value = models.FloatField()
     timestamp = models.DateTimeField(auto_now_add=True)
 
-
-
     def __str__(self):
         return f"{self.chemical} - {self.description}"
 
@@ -75,8 +73,11 @@ class Pharmacokinetic(models.Model):
     AUC = models.FloatField()
     t_half = models.FloatField()  # t1/2
     Vss = models.FloatField()
-    Vd = models.FloatField()
-    BA = models.FloatField()  # Bioavailability
+    F = models.FloatField()
+    # BA = models.FloatField()  # Bioavailability
+    CL = models.FloatField()
+    Route = models.CharField(max_length=200, null=True)
+    user = models.CharField(max_length=200, null=True)
 
     def __str__(self):
         return f'{self.chemical.chem_id} - {self.date}'
@@ -156,7 +157,7 @@ class UserManager(BaseUserManager):
             raise ValueError('Superuser must have is_superuser=True.')
         return self.create_user(email, userID, password, **extra_fields)
 
-class User(AbstractBaseUser):
+class User(AbstractBaseUser,PermissionsMixin):
     id = models.AutoField(primary_key=True)
     userID = models.CharField(default='', max_length=100, null=False, blank=False, unique=True)
     email = models.EmailField(default='', max_length=100, null=False, blank=False, unique=True)
@@ -174,3 +175,9 @@ class User(AbstractBaseUser):
 
     def __str__(self):
         return self.userID
+
+    def has_perm(self, perm, obj=None): # 슈퍼유저는 모든 권한을 가짐.
+        return self.is_superuser
+
+    # def has_module_perms(self, app_label): # 모든 app에서 슈퍼유저의 권한 부여
+    #     return self.is_superuser

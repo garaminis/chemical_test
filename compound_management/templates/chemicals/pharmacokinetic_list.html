@@ -2,6 +2,11 @@
 {% load static %}
 {% block title %} Pharmacokinetics and Cytotoxicity for {{ chemical.chem_id }}{% endblock %}
 {% block content %}
+<style>
+table, th, tr, td {
+  text-align: center;
+}
+</style>
 <div class="card">
     <div class="card-body"><br>
           <h3>{{ chemical.chem_id }}</h3>
@@ -19,25 +24,28 @@
           </ul>
 
           <div class="tab-content pt-2" id="myTabContent">
-                <a href="{% url 'target_view' target=chemical.target %}"  class="btn btn-outline-primary btn-sm">Back to {{ chemical.target }}</a>
+            <a href="{% url 'target_view' target=chemical.target %}"  class="btn btn-outline-primary btn-sm">Back to {{ chemical.target }}</a>
             <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
-               <h5 class="card-title"> Pharmacokinetics </h5>
 
-                 <div class="d-flex justify-content-end">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center">
+                  <div class="text-start">
+                    <h4 class="card-title"> Pharmacokinetics </h4>
+                  </div>
+                  <div class="d-flex justify-content-end">
                   <form method="post" action="{% url 'pharmacokinetic_add' target=chemical.target chem_id=chemical.chem_id %}" >
                     {% csrf_token %}
                     {{ form.as_p }}
                     <button type="submit" class="btn btn-outline-primary btn-sm"><i class="bi bi-plus-square"></i> Pharmacokinetic</button>
                   </form>
-                </div>
-
-               <div class="card-body">
-                 <table class="table table-hover">
+                  </div>
+               </div>
+                 <table class="table table-hover"  id="data-table" >
                     <thead>
                         <tr>
                             <th scope="col">#</th>
                             <th scope="col">Date</th>
-                            <th scope="col">Administration route</th>
+                            <th scope="col">Route</th>
                             <th scope="col">Tmax(h)</th>
                             <th scope="col">Cmax(μg/mL)</th>
                             <th scope="col">t1/2(h)</th>
@@ -52,18 +60,21 @@
                     <tbody>
                         {% for pk in pharmacokinetics %}
                         <tr>
-                            <th scope="row"></th>
-                            <td>{{ pk.date }}</td>
-                            <td> PO </td>
-                            <td>{{ pk.cmax }}</td>
+                            <th scope="row">{{ forloop.counter }}</th>
+                            <td>{{ pk.date|date:"Y-m-d" }}</td>
+                            <td>{{ pk.Route }} </td>
                             <td>{{ pk.tmax }}</td>
-                            <td>{{ pk.AUC }}</td>
+                            <td>{{ pk.cmax }}</td>
                             <td>{{ pk.t_half }}</td>
+                            <td>{{ pk.AUC }}</td>
+                            <td>{{ pk.CL }}</td>
                             <td>{{ pk.Vss }}</td>
-                            <td>{{ pk.Vd }}</td>
-                            <td>{{ pk.BA }}</td>
-                            <td></td>
-                            <td></td>
+                            <td>{{ pk.F }}</td>
+                            <td>raw data</td>
+                            <td>
+                                <a href="" class ="btn btn-outline-secondary btn-sm">수정</a>
+                                <a href="" class ="btn btn-outline-danger btn-sm">삭제</a>
+                            </td>
                         </tr>
                         {% endfor %}
                     </tbody>
@@ -71,7 +82,18 @@
                </div>
 
               <div class="card-body">
-                <h4 class="card-title">Cytotoxicity</h4>
+              <div class="d-flex justify-content-between align-items-center">
+                  <div class="text-start">
+                    <h4 class="card-title" >Cytotoxicity</h4>
+                  </div>
+                  <div class="d-flex justify-content-end">
+                  <form method="post" action="{% url 'cytotoxicity_add' target=chemical.target chem_id=chemical.chem_id %}">
+                    {% csrf_token %}
+                    {{ form.as_p }}
+                    <button type="submit" class="btn btn-outline-primary btn-sm"><i class="bi bi-plus-square"></i> Cytotoxicity</button>
+                  </form>
+                  </div>
+              </div>
                 <table  class="table table-hover">
                     <thead>
                         <tr>
@@ -102,16 +124,22 @@
                         {% endfor %}
                     </tbody>
                 </table>
-                <form method="post" action="{% url 'cytotoxicity_add' target=chemical.target chem_id=chemical.chem_id %}">
-                    {% csrf_token %}
-                    {{ form.as_p }}
-                    <button type="submit" class="btn btn-outline-primary btn-sm"><i class="bi bi-plus-square"></i> Cytotoxicity</button>
-                </form>
-                </table>
               </div>
 
+
               <div class="card-body">
-                <h4 class="card-title">Liver Microsomal Stability</h4>
+                 <div class="d-flex justify-content-between align-items-center">
+                      <div class="text-start">
+                     <h4 class="card-title">Liver Microsomal Stability</h4>
+                  </div>
+                  <div class="d-flex justify-content-end">
+                    <form method="post" action="{% url 'liver_stability_add' target=chemical.target chem_id=chemical.chem_id %}">
+                        {% csrf_token %}
+                        {{ form.as_p }}
+                        <button type="submit" class="btn btn-outline-primary btn-sm"><i class="bi bi-plus-square"></i> Liver Microsomal Stability</button>
+                    </form>
+                  </div>
+                 </div>
                 <table  class="table table-hover">
                     <thead>
                         <tr>
@@ -138,15 +166,21 @@
                         {% endfor %}
                     </tbody>
                 </table>
-                <form method="post" action="{% url 'liver_stability_add' target=chemical.target chem_id=chemical.chem_id %}">
-                    {% csrf_token %}
-                    {{ form.as_p }}
-                    <button type="submit" class="btn btn-outline-primary btn-sm"><i class="bi bi-plus-square"></i> Liver Microsomal Stability</button>
-                </form>
               </div>
 
               <div class="card-body">
-                <h3>CYP Inhibition Data</h3>
+                <div class="d-flex justify-content-between align-items-center">
+                  <div class="text-start">
+                     <h4 class="card-title">CYP Inhibition Data</h4>
+                  </div>
+                  <div class="d-flex justify-content-end">
+                  <form method="post" action="{% url 'cyp_inhibition_add' target=chemical.target chem_id=chemical.chem_id %}">
+                    {% csrf_token %}
+                    {{ form.as_p }}
+                    <button type="submit" class="btn btn-outline-primary btn-sm"><i class="bi bi-plus-square"></i> CYP inhibition</button>
+                 </form>
+                  </div>
+              </div>
                     <table  class="table table-hover">
                         <thead>
                             <tr>
@@ -177,12 +211,6 @@
                             {% endfor %}
                         </tbody>
                     </table>
-                     <form method="post" action="{% url 'cyp_inhibition_add' target=chemical.target chem_id=chemical.chem_id %}">
-                    {% csrf_token %}
-                    {{ form.as_p }}
-                    <button type="submit" class="btn btn-outline-primary btn-sm"><i class="bi bi-plus-square"></i> CYP inhibition</button>
-                </form>
-                <br>
 <!--                <a href="{% url 'home' %}" class="btn btn-outline-primary btn-sm">Home</a>-->
               </div>
             </div>
@@ -194,8 +222,6 @@
             <div class="tab-pane fade" id="contact" role="tabpanel" aria-labelledby="contact-tab">
               추가예정2
             </div>
-          </div><!-- End Default Tabs -->
-    </div>
+    </div><!-- End Default Tabs -->
 </div>
-
 {% endblock %}

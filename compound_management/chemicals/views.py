@@ -155,9 +155,19 @@ def chemical_edit_view(request, target, chem_id):
     logger.debug(f'Edit chemical form for {chemical}')
     return render(request, 'chemicals/chemical_form.html', {'form': form, 'target': target})
 @login_required
+
 def chemical_delete_view(request, target, chem_id):
     chemical = get_object_or_404(Chemical, chem_id=chem_id)
     if request.method == 'POST':
+
+        if chemical.image : # 이미지 파일 여부 확인
+            if os.path.isfile(chemical.image.path) : #경로의 파일인지 아닌지
+                os.remove(chemical.image.path)
+            image_folder = os.path.dirname(chemical.image.path)
+            png_file_path = os.path.join(image_folder, f"{chemical.chem_id}.png")
+            if os.path.isfile(png_file_path):
+                os.remove(png_file_path)
+
         chemical.delete()
         logger.debug(f'Chemical deleted: {chemical}')
         return redirect('target_view', target=target)
@@ -221,6 +231,38 @@ def pharmacokinetic_add(request, target, chem_id):
     else:
         form = PharmacokineticForm()
     return render(request, 'chemicals/pharmacokinetic_form.html', {'form': form, 'chemical': chemical})
+
+# @login_required
+# def pharmacokinetic_edit_view(request, target,pharmacokinetic):
+#     chemical = get_object_or_404(Chemical, chem_id=chem_id)
+#     if request.method == 'POST':
+#         form = PharmacokineticForm(request.POST, instance=pharmacokinetic)
+#         if form.is_valid():
+#             pharmacokinetic = form.save(commit=False)
+#             # chemical.cLogP = calculate_cLogP(chemical.smiles)
+#             pharmacokinetic.save()
+#             return redirect('pharmacokinetic_list', target=target, chem_id=chem_id)
+#     else:
+#         form = PharmacokineticForm(instance=pharmacokinetic)
+#     return render(request, 'chemicals/pharmacokinetic_form.html', {'form': form, 'Pharmacokinetic': Pharmacokinetic})
+# @login_required
+# def chemical_delete_view(request, target, chem_id):
+#     chemical = get_object_or_404(Chemical, chem_id=chem_id)
+#     if request.method == 'POST':
+#
+#         if chemical.image : # 이미지 파일 여부 확인
+#             if os.path.isfile(chemical.image.path) : #경로의 파일인지 아닌지
+#                 os.remove(chemical.image.path)
+#             image_folder = os.path.dirname(chemical.image.path)
+#             png_file_path = os.path.join(image_folder, f"{chemical.chem_id}.png")
+#             if os.path.isfile(png_file_path):
+#                 os.remove(png_file_path)
+#
+#         chemical.delete()
+#         logger.debug(f'Chemical deleted: {chemical}')
+#         return redirect('target_view', target=target)
+#     return render(request, 'chemicals/chemical_confirm_delete.html', {'chemical': chemical, 'target': target})
+
 
 @login_required
 def cytotoxicity_add(request, target, chem_id):
@@ -378,12 +420,4 @@ def SLselected_gene_input(request):
         else:
             context['img_path'] = None
     return render(request, 'sl.html', context)
-
-# def chem_page (request):
-#     page = request.GET.get('page', '1')  # 페이지
-#     chemical_list = Chemical.objects.filter(target='{target}').order_by('-create_date')
-#     paginator = Paginator(chemical_list, 10)  # 페이지당 10개씩 보여주기
-#     page_obj = paginator.get_page(page)
-#     context = {'chemical_list': page_obj}
-#     return render(request, 'chemicals/target.html', context)
 

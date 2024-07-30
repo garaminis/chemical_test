@@ -9,11 +9,10 @@ from .models import Chemical, Pharmacokinetic, Cytotoxicity, SchrödingerModel, 
 class DateInput(forms.DateInput):
     input_type = 'date'
 
-
 class ChemicalForm(forms.ModelForm):
     class Meta:
         model = Chemical
-        fields = ['chem_id', 'smiles', 'image', 'MW', 'cLogP', 'TPSA','H_donors', 'H_acceptors', 'lipinski' ]
+        fields = ['chem_id', 'smiles', 'image', 'MW', 'cLogP', 'TPSA','H_donors', 'H_acceptors', 'lipinski']
 
 class ChemicalUploadForm(forms.Form):
     file = forms.FileField()
@@ -21,7 +20,7 @@ class ChemicalUploadForm(forms.Form):
 class PharmacokineticForm(forms.ModelForm):
     class Meta:
         model = Pharmacokinetic
-        fields = ['date', 'cmax', 'tmax', 'AUC', 't_half', 'Vss', 'Vd', 'BA']
+        fields = ['date', 'cmax', 'tmax', 'AUC', 't_half', 'Vss', 'F', 'CL', 'Route']
         widgets = {
             'date': DateInput(),  # DateInput 위젯 사용
         }
@@ -95,14 +94,10 @@ class UserForm(forms.ModelForm):
         return re.match(email_regex, email) is not None
 
     def save(self, commit=True):
-        # 기본 save 메서드를 호출하여 User 인스턴스를 가져옵니다.
-        user = super().save(commit=False)
-        # 입력받은 패스워드를 해시화하여 User 인스턴스에 설정합니다.
-        user.set_password(self.cleaned_data['password'])
-        # commit이 True일 경우, 데이터베이스에 저장합니다.
-        if commit:
+        user = super().save(commit=False) #save메서드 호출,커밋 하지 않은 상태로 user생성
+        user.set_password(self.cleaned_data['password']) # 비밀번호 가져와서 set_password메서드 사용하여 해시화
+        if commit: #커밋이 true이면 저장
             user.save()
-        # 저장된 User 인스턴스를 반환합니다.
         return user
 
 
