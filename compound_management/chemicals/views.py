@@ -6,9 +6,9 @@ from django.shortcuts import render
 # Create your views here.
 from django.shortcuts import render, redirect, get_object_or_404
 from .models import Chemical, Pharmacokinetic, Cytotoxicity, SchrödingerModel, LiverMicrosomalStability, CYPInhibition, \
-    User
+    User, In_vitro
 from .forms import ChemicalForm, ChemicalUploadForm, PharmacokineticForm, CytotoxicityForm, SchrödingerModelForm, \
-    SchrödingerModelUploadForm, LiverMicrosomalStabilityForm, CYPInhibitionForm, UserForm
+    SchrödingerModelUploadForm, LiverMicrosomalStabilityForm, CYPInhibitionForm, UserForm, invitroForm
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.decorators import login_required
@@ -42,7 +42,7 @@ def register_view(request):
 
 def login_view(request):
     if request.method == 'POST':
-        userID = request.POST['userID'] #userID = request.POST.get('userID')도 가능
+        userID = request.POST['userID']     #userID = request.POST.get('userID')도 가능
         password = request.POST['password']
         user = authenticate(request, username=userID, password=password)
         print(user)
@@ -107,6 +107,8 @@ def chemical_new_view(request, target):
         form = ChemicalForm(request.POST, request.FILES)
         if form.is_valid():
             chemical = form.save(commit=False)
+            user = request.POST.get('user')
+            chemical.user = user
             chemical.target = target
             chemical.cLogP = calculate_cLogP(chemical.smiles)
             image_data = generate_image(chemical.smiles)
@@ -153,20 +155,19 @@ def chemical_edit_view(request, target, chem_id):
     else:
         form = ChemicalForm(instance=chemical)
     logger.debug(f'Edit chemical form for {chemical}')
-    return render(request, 'chemicals/chemical_form.html', {'form': form, 'target': target})
+    return render(request, 'chemicals/chemical_forsm.html', {'form': form, 'target': target})
 @login_required
-
 def chemical_delete_view(request, target, chem_id):
     chemical = get_object_or_404(Chemical, chem_id=chem_id)
     if request.method == 'POST':
 
-        if chemical.image : # 이미지 파일 여부 확인
-            if os.path.isfile(chemical.image.path) : #경로의 파일인지 아닌지
-                os.remove(chemical.image.path)
-            image_folder = os.path.dirname(chemical.image.path)
-            png_file_path = os.path.join(image_folder, f"{chemical.chem_id}.png")
-            if os.path.isfile(png_file_path):
-                os.remove(png_file_path)
+
+        if os.path.isfile(chemical.image.path) : #경로에 있는 파일이 실제파일인지 아닌지
+            os.remove(chemical.image.path) # 주어진 경로의 파일 삭제
+        image_folder = os.path.dirname(chemical.image.path) # 같은 경로 반환
+        png_file_path = os.path.join(image_folder, f"{chemical.chem_id}.png") #같은 경로의 png파일
+        if os.path.isfile(png_file_path):
+            os.remove(png_file_path)
 
         chemical.delete()
         logger.debug(f'Chemical deleted: {chemical}')
@@ -210,12 +211,14 @@ def pharmacokinetic_list(request, target, chem_id):
     cytotoxicities = Cytotoxicity.objects.filter(chemical=chemical)
     liver_stabilities = LiverMicrosomalStability.objects.filter(chemical=chemical)
     cyp_inhibitions = CYPInhibition.objects.filter(chemical=chemical)
+    in_vitro = In_vitro.objects.filter(chemical=chemical)
     return render(request, 'chemicals/pharmacokinetic_list.html', {
         'chemical': chemical,
         'pharmacokinetics': pharmacokinetics,
         'cytotoxicities': cytotoxicities,
         'liver_stabilities': liver_stabilities,
-        'cyp_inhibitions': cyp_inhibitions
+        'cyp_inhibitions': cyp_inhibitions,
+        'in_vitro': in_vitro,
     })
 
 @login_required
@@ -233,35 +236,17 @@ def pharmacokinetic_add(request, target, chem_id):
     return render(request, 'chemicals/pharmacokinetic_form.html', {'form': form, 'chemical': chemical})
 
 # @login_required
-# def pharmacokinetic_edit_view(request, target,pharmacokinetic):
-#     chemical = get_object_or_404(Chemical, chem_id=chem_id)
+# def pharmacokinetic_edit(request, target, chem_id, id):
+#     pharmacokinetic = get_object_or_404(Pharmacokinetic, id=id)
 #     if request.method == 'POST':
-#         form = PharmacokineticForm(request.POST, instance=pharmacokinetic)
+#         form = ChemicalForm(request.POST, instance=pharmacokinetic)
 #         if form.is_valid():
 #             pharmacokinetic = form.save(commit=False)
-#             # chemical.cLogP = calculate_cLogP(chemical.smiles)
 #             pharmacokinetic.save()
-#             return redirect('pharmacokinetic_list', target=target, chem_id=chem_id)
+#             return redirect('pharmacokinetic_edit', target=target, chem_id=chem_id ,id=id)
 #     else:
-#         form = PharmacokineticForm(instance=pharmacokinetic)
-#     return render(request, 'chemicals/pharmacokinetic_form.html', {'form': form, 'Pharmacokinetic': Pharmacokinetic})
-# @login_required
-# def chemical_delete_view(request, target, chem_id):
-#     chemical = get_object_or_404(Chemical, chem_id=chem_id)
-#     if request.method == 'POST':
-#
-#         if chemical.image : # 이미지 파일 여부 확인
-#             if os.path.isfile(chemical.image.path) : #경로의 파일인지 아닌지
-#                 os.remove(chemical.image.path)
-#             image_folder = os.path.dirname(chemical.image.path)
-#             png_file_path = os.path.join(image_folder, f"{chemical.chem_id}.png")
-#             if os.path.isfile(png_file_path):
-#                 os.remove(png_file_path)
-#
-#         chemical.delete()
-#         logger.debug(f'Chemical deleted: {chemical}')
-#         return redirect('target_view', target=target)
-#     return render(request, 'chemicals/chemical_confirm_delete.html', {'chemical': chemical, 'target': target})
+#         form = ChemicalForm(instance=pharmacokinetic)
+#     return render(request, 'chemicals/pharmacokinetic_form.html', {'form': form, 'pharmacokinetic': pharmacokinetic})
 
 
 @login_required
@@ -354,6 +339,21 @@ def cyp_inhibition_add(request, target, chem_id):
     else:
         form = CYPInhibitionForm()
     return render(request, 'chemicals/cyp_inhibition_form.html', {'form': form, 'chemical': chemical})
+
+@login_required
+def in_vitro_add(request, target, chem_id):
+    chemical = get_object_or_404(Chemical, chem_id=chem_id)
+    if request.method == 'POST':
+        form = invitroForm(request.POST)
+        if form.is_valid():
+            in_vitro = form.save(commit=False)
+            in_vitro.chemical = chemical
+            in_vitro.save()
+            return redirect('pharmacokinetic_list', target=target, chem_id=chem_id)
+    else:
+        form = invitroForm()
+    return render(request, 'chemicals/In_vitro_form.html', {'form': form, 'chemical': chemical})
+
 
 def run_r_script_and_get_results(patient_id):
     # R 스크립트 파일 읽기

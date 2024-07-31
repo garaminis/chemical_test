@@ -2,7 +2,9 @@ import re
 
 from django import forms
 from .models import Chemical, Pharmacokinetic, Cytotoxicity, SchrödingerModel, LiverMicrosomalStability, CYPInhibition, \
-    User
+    User, In_vitro
+
+
 # from compound_management.chemicals.models import Chemical, Pharmacokinetic, Cytotoxicity, SchrödingerModel, LiverMicrosomalStability, CYPInhibition, User
 
 
@@ -20,7 +22,7 @@ class ChemicalUploadForm(forms.Form):
 class PharmacokineticForm(forms.ModelForm):
     class Meta:
         model = Pharmacokinetic
-        fields = ['date', 'cmax', 'tmax', 'AUC', 't_half', 'Vss', 'F', 'CL', 'Route']
+        fields = ['date', 'cmax', 'tmax', 'AUC', 't_half', 'Vss', 'F', 'CL', 'Route','user']
         widgets = {
             'date': DateInput(),  # DateInput 위젯 사용
         }
@@ -56,6 +58,18 @@ class CYPInhibitionForm(forms.ModelForm):
         widgets = {
             'date': DateInput(),  # DateInput 위젯 사용
         }
+
+class invitroForm(forms.ModelForm):
+    class Meta:
+        model = In_vitro
+        fields = ['date', 'user', 'assay', 'cell', 'IC50', 'Taret_IC50' , 'Out', 'image','comment','vitro_at_10']
+        widgets = {
+            'date': DateInput(),  # DateInput 위젯 사용
+        }
+# class invitroimgForm(forms.ModelForm):
+#     class Meta:
+#         model = In_vitro_Image
+#         fields = ['image']
 
 class UserForm(forms.ModelForm):
     # 패스워드 필드를 정의하며, 입력 시 비밀번호 입력 필드를 사용합니다.

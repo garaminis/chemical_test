@@ -27,7 +27,7 @@ table, th, tr, td {
             <a href="{% url 'target_view' target=chemical.target %}"  class="btn btn-outline-primary btn-sm">Back to {{ chemical.target }}</a>
             <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
 
-            <div class="card-body">
+              <div class="card-body">
                 <div class="d-flex justify-content-between align-items-center">
                   <div class="text-start">
                     <h4 class="card-title"> Pharmacokinetics </h4>
@@ -72,7 +72,12 @@ table, th, tr, td {
                             <td>{{ pk.F }}</td>
                             <td>raw data</td>
                             <td>
-                                <a href="" class ="btn btn-outline-secondary btn-sm">수정</a>
+                                 <a href="" class ="btn btn-outline-secondary btn-sm">수정</a>
+<!--                                <form method="post" action="">-->
+<!--                                    {% csrf_token %}-->
+<!--                                    {{ form.as_p }}-->
+<!--                                    <button type="submit" class="btn btn-outline-secondary btn-sm">저장</button>-->
+<!--                                </form>-->
                                 <a href="" class ="btn btn-outline-danger btn-sm">삭제</a>
                             </td>
                         </tr>
@@ -125,7 +130,6 @@ table, th, tr, td {
                     </tbody>
                 </table>
               </div>
-
 
               <div class="card-body">
                  <div class="d-flex justify-content-between align-items-center">
@@ -213,12 +217,190 @@ table, th, tr, td {
                     </table>
 <!--                <a href="{% url 'home' %}" class="btn btn-outline-primary btn-sm">Home</a>-->
               </div>
-            </div>
 
+            </div>
 
             <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab" >
-              추가예정1
+              <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center">
+                  <div class="text-start">
+                     <h4 class="card-title">CCK assay</h4>
+                  </div>
+                  <div class="d-flex justify-content-end">
+                     <a href="{% url 'in_vitro_add' target=chemical.target chem_id=chemical.chem_id %}" class="btn btn-outline-primary btn-sm"><i class="bi bi-plus-square"></i> CCK assay</a>
+                  </div>
+              </div>
+                    <table  class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th scope="col">#</th>
+                                <th scope="col">Date</th>
+                                <th scope="col">진행자</th>
+                                <th scope="col">세포주</th>
+                                <th scope="col">IC50(μM)</th>
+                                <th scope="col">석출여부</th>
+                                <th scope="col">Comment</th>
+                                <th scope="col">Image</th>
+                                <th scope="col">Raw data</th>
+                                <th scope="col"></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for vi in in_vitro %}
+                             {% if vi.assay == "CCK" %}
+                            <tr>
+                                <th scope="row">{{ forloop.counter }}</th>
+                                <td>{{ vi.date|date:"Y-m-d" }}</td>
+                                <td>{{ vi.user }}</td>
+                                <td>{{ vi.cell }}</td>
+                                <td>{{ vi.IC50 }}</td>
+                                <td>{{ vi.Out }}</td>
+                                <td>{{ vi.commnet }}</td>
+                                <td> <img src="{{ image.image.url }}" alt="Image for {{ chemical.name }}"></td>
+                                <td>raw data</td>
+                                <td>
+                                    <a href="" class ="btn btn-outline-secondary btn-sm">수정</a>
+                                    <a href="" class ="btn btn-outline-danger btn-sm">삭제</a>
+                                </td>
+                            </tr>
+                            {% endif %}
+                            {% endfor %}
+                        </tbody>
+                    </table>
+              </div>
+              <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center">
+                  <div class="text-start">
+                     <h4 class="card-title">Western blot</h4>
+                  </div>
+                  <div class="d-flex justify-content-end">
+                     <a href="{% url 'in_vitro_add' target=chemical.target chem_id=chemical.chem_id %}" class="btn btn-outline-primary btn-sm"><i class="bi bi-plus-square"></i> CCK assay</a>
+                  </div>
+              </div>
+                    <table  class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th scope="col">#</th>
+                                <th scope="col">Date</th>
+                                <th scope="col">진행자</th>
+                                <th scope="col">세포주</th>
+                                <th scope="col">Comment</th>
+                                <th scope="col">Image</th>
+                                <th scope="col">Raw data</th>
+                                <th scope="col"></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for vi in in_vitro %}
+                            {% if vi.assay == "WB" %}
+                            <tr>
+                                <th scope="row">{{ forloop.counter }}</th>
+                                <td>{{ vi.date|date:"Y-m-d" }}</td>
+                                <td>{{ vi.user }}</td>
+                                <td>{{ vi.cell }}</td>
+                                <td>{{ vi.commnet }}</td>
+                                <td>{{ vi.image }}</td>
+                                <td>raw data</td>
+                                <td>
+                                    <a href="" class ="btn btn-outline-secondary btn-sm">수정</a>
+                                    <a href="" class ="btn btn-outline-danger btn-sm">삭제</a>
+                                </td>
+                            </tr>
+                            {% endif %}
+                            {% endfor %}
+                        </tbody>
+                    </table>
+              </div>
+              <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center">
+                  <div class="text-start">
+                     <h4 class="card-title">In vitro Target Inhibition assay</h4>
+                  </div>
+                  <div class="d-flex justify-content-end">
+                     <a href="{% url 'in_vitro_add' target=chemical.target chem_id=chemical.chem_id %}" class="btn btn-outline-primary btn-sm"><i class="bi bi-plus-square"></i> CCK assay</a>
+                  </div>
+              </div>
+                    <table  class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th scope="col">#</th>
+                                <th scope="col">Date</th>
+                                <th scope="col">진행자</th>
+                                <th scope="col">In vitro inhibition at 10 μM(%)</th>
+                                <th scope="col">Target inhibition IC50(μM)</th>
+                                <th scope="col">Comment</th>
+                                <th scope="col">Image</th>
+                                <th scope="col">Raw data</th>
+                                <th scope="col"></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for vi in in_vitro %}
+                            {% if vi.assay == "Target" %}
+                            <tr>
+                                <th scope="row">{{ forloop.counter }}</th>
+                                <td>{{ vi.date|date:"Y-m-d" }}</td>
+                                <td>{{ vi.user }}</td>
+                                <td>{{ vi.vitro_at_10 }}</td>
+                                <td>{{ vi.Taret_IC50 }}</td>
+                                <td>{{ vi.commnet }}</td>
+                                <td>{{ vi.image }}</td>
+                                <td>raw data</td>
+                                <td>
+                                    <a href="" class ="btn btn-outline-secondary btn-sm">수정</a>
+                                    <a href="" class ="btn btn-outline-danger btn-sm">삭제</a>
+                                </td>
+                            </tr>
+                            {% endif %}
+                            {% endfor %}
+                        </tbody>
+                    </table>
+              </div>
+              <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center">
+                  <div class="text-start">
+                     <h4 class="card-title">기타실험</h4>
+                  </div>
+                  <div class="d-flex justify-content-end">
+                     <a href="{% url 'in_vitro_add' target=chemical.target chem_id=chemical.chem_id %}" class="btn btn-outline-primary btn-sm"><i class="bi bi-plus-square"></i> CCK assay</a>
+                  </div>
+              </div>
+                    <table  class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th scope="col">#</th>
+                                <th scope="col">실험명</th>
+                                <th scope="col">Date</th>
+                                <th scope="col">진행자</th>
+                                <th scope="col">Comment</th>
+                                <th scope="col">Image</th>
+                                <th scope="col">Raw data</th>
+                                <th scope="col"></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for vi in in_vitro %}
+                            {% if vi.assay == "기타실험" %}
+                            <tr>
+                                <th scope="row">{{ forloop.counter }}</th>
+                                <td>{{ vi.title }}</td>
+                                <td>{{ vi.date|date:"Y-m-d" }}</td>
+                                <td>{{ vi.user }}</td>
+                                <td>{{ vi.commnet }}</td>
+                                <td>{{ vi.image }}</td>
+                                <td>raw data</td>
+                                <td>
+                                    <a href="" class ="btn btn-outline-secondary btn-sm">수정</a>
+                                    <a href="" class ="btn btn-outline-danger btn-sm">삭제</a>
+                                </td>
+                            </tr>
+                            {% endif %}
+                            {% endfor %}
+                        </tbody>
+                    </table>
+              </div>
             </div>
+
             <div class="tab-pane fade" id="contact" role="tabpanel" aria-labelledby="contact-tab">
               추가예정2
             </div>

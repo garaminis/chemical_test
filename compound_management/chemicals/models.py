@@ -68,14 +68,14 @@ class Result(models.Model):
 class Pharmacokinetic(models.Model):
     chemical = models.ForeignKey(Chemical, on_delete=models.CASCADE)
     date = models.DateField()
-    cmax = models.FloatField()
-    tmax = models.FloatField()
-    AUC = models.FloatField()
-    t_half = models.FloatField()  # t1/2
-    Vss = models.FloatField()
-    F = models.FloatField()
+    cmax = models.FloatField(null=True, blank=True)
+    tmax = models.FloatField(null=True, blank=True)
+    AUC = models.FloatField(null=True, blank=True)
+    t_half = models.FloatField(null=True, blank=True)  # t1/2
+    Vss = models.FloatField(null=True, blank=True)
+    F = models.FloatField(null=True, blank=True)
     # BA = models.FloatField()  # Bioavailability
-    CL = models.FloatField()
+    CL = models.FloatField(null=True, blank=True)
     Route = models.CharField(max_length=200, null=True)
     user = models.CharField(max_length=200, null=True)
 
@@ -133,6 +133,30 @@ class CYPInhibition(models.Model):
     def __str__(self):
         return f'{self.chemical.chem_id} - {self.date} CYP Inhibition'
 
+class In_vitro(models.Model):
+    chemical = models.ForeignKey(Chemical, on_delete=models.CASCADE)
+    date = models.DateField()
+    user = models.CharField(max_length=200, null=True)
+    assay = models.CharField(max_length=200, null=True)
+    cell = models.TextField(null=True)
+    IC50 = models.FloatField(null=True, blank=True)
+    vitro_at_10 = models.FloatField(null=True, blank=True)
+    Taret_IC50 = models.FloatField(null=True, blank=True)
+    Out = models.CharField(max_length=200,null=True)
+    image = models.ImageField(upload_to='in_vitro/', blank=True, null=True)
+    comment = models.TextField(null=True)
+    title = models.CharField(max_length=200,default="NA")
+
+    def __str__(self):
+        return f'{self.chemical.chem_id} - {self.date} In_vitro'
+
+# class In_vitro_Image(models.Model):
+#     in_vitro_id = models.ForeignKey(In_vitro, related_name='images', on_delete=models.CASCADE)
+#     image = models.ImageField(upload_to='in_vitro/')
+#
+#     def __str__(self):
+#         return f"Image for {self.chemical.name}"
+
 class UserManager(BaseUserManager):
     def create_user(self, email, userID, password=None, **extra_fields):
 
@@ -173,7 +197,7 @@ class User(AbstractBaseUser,PermissionsMixin):
     USERNAME_FIELD = 'userID'
     REQUIRED_FIELDS = ['email', 'name']
 
-    def __str__(self):
+    def __str__(self): # 객체의 문자열 표현을 반환하는 메서드
         return self.userID
 
     def has_perm(self, perm, obj=None): # 슈퍼유저는 모든 권한을 가짐.
