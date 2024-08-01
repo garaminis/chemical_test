@@ -4,10 +4,81 @@
 {% endblock %}
 {% block content %}
     <h2>Add Cytotoxicity Data for {{ chemical.chem_id }}</h2>
-    <form method="post">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit">Save</button>
-    </form>
-    <a href="{% url 'pharmacokinetic_list' target=chemical.target chem_id=chemical.chem_id %}">Cancel</a>
+<!--    <form method="post">-->
+<!--        {% csrf_token %}-->
+<!--        {{ form.as_p }}-->
+<!--        <button type="submit">Save</button>-->
+<!--    </form>-->
+<!--    <a href="{% url 'pharmacokinetic_list' target=chemical.target chem_id=chemical.chem_id %}">Cancel</a>-->
+
+<div class="col-lg-6">
+  <div class="card">
+    <div class="card-body">
+      <h4 class="card-title">Pharmacokinetic Data for {{ chemical.chem_id }}</h4>
+
+        <form method="post" >
+         {% csrf_token %}
+            <div class="row mb-3">
+              <label for="date" class="col-sm-2 col-form-label">Date</label>
+              <div class="col-sm-10">
+                <input type="date" class="form-control" id="date" name="date"
+                 value="{{ form.date.value|default_if_none:'' }}">  <!-- 필드의 초기값을 폼에서 가져와서 입력 필드에 설정 -->
+              </div>
+            </div>
+
+            <div class="row mb-3">
+              <label for="VERO" class="col-sm-2 col-form-label">VERO</label>
+              <div class="col-sm-10">
+                  <input type="number" step="any" class="form-control" id="VERO" name="VERO" value="{{ form.VERO.value|default_if_none:'' }}">
+              </div>
+            </div>
+
+          <div class="row mb-3">
+              <label for="HFL_1" class="col-sm-2 col-form-label">HFL_1</label>
+              <div class="col-sm-10">
+                  <input type="number" step="any" class="form-control" id="HFL_1" name="HFL_1" value="{{ form.HFL_1.value|default_if_none:'' }}">
+              </div>
+          </div>
+
+          <div class="row mb-3">
+              <label for="L929" class="col-sm-2 col-form-label">L929</label>
+              <div class="col-sm-10">
+                <input type="number" step="any" class="form-control" id="L929" name="L929"  value="{{ form.L929.value|default_if_none:'' }}">
+              </div>
+          </div>
+
+          <div class="row mb-3">
+              <label for="NIH_3T3" class="col-sm-2 col-form-label">NIH_3T3</label>
+              <div class="col-sm-10">
+                <input type="number" step="any" class="form-control" id="NIH_3T3" name="NIH_3T3"  value="{{ form.NIH_3T3.value|default_if_none:'' }}">
+              </div>
+          </div>
+
+          <div class="row mb-3">
+              <label for="CHO-K1" class="col-sm-2 col-form-label">CHO-K1</label>
+              <div class="col-sm-10">
+                <input type="number" step="any" class="form-control" id="CHO-K1" name="CHO-K1" value="{{ form.CHO_K1.value|default_if_none:'' }}">
+              </div>
+          </div>
+
+        <div class="row mb-3">
+          <label class="col-sm-2 col-form-label"></label>
+          <div class="col-sm-10">
+            <button type="submit" class="btn btn-primary">Submit Form</button>
+            <button class="btn btn-primary">cancel</button>
+          </div>
+        </div>
+
+        <div class="row mb-3 " style="display:none">
+          <label for="id_userid" class="col-sm-2 col-form-label" > User</label>
+          <div class="col-sm-10">
+             <input class="form-control" type="text" id="id_userid" name="user" value="{{ user.name }}" readonly>
+          </div>
+        </div>
+
+      </form>
+
+    </div>
+  </div>
+</div>
 {% endblock %}

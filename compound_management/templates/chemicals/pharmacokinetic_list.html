@@ -116,15 +116,18 @@ table, th, tr, td {
                     <tbody>
                         {% for ct in cytotoxicities %}
                         <tr>
-                            <th scope="row"></th>
-                            <td>{{ ct.date }}</td>
+                            <th scope="row">{{ forloop.counter }}</th>
+                            <td>{{ ct.date|date:"Y-m-d"  }}</td>
                             <td>{{ ct.VERO }}</td>
                             <td>{{ ct.HFL_1 }}</td>
                             <td>{{ ct.L929 }}</td>
                             <td>{{ ct.NIH_3T3 }}</td>
                             <td>{{ ct.CHO_K1 }}</td>
-                            <td></td>
-                            <td></td>
+                            <td>raw data</td>
+                            <td>
+                                <a href="" class ="btn btn-outline-secondary btn-sm">수정</a>
+                                <a href="" class ="btn btn-outline-danger btn-sm">삭제</a>
+                            </td>
                         </tr>
                         {% endfor %}
                     </tbody>
@@ -159,13 +162,16 @@ table, th, tr, td {
                     <tbody>
                         {% for ls in liver_stabilities %}
                         <tr>
-                            <th scope="row"></th>
-                            <td>{{ ls.date }}</td>
+                            <th scope="row">{{ forloop.counter }}</th>
+                            <td>{{ ls.date|date:"Y-m-d"  }}</td>
                             <td>{{ ls.mouse }}</td>
                             <td>{{ ls.rat }}</td>
                             <td>{{ ls.human }}</td>
-                            <td></td>
-                            <td></td>
+                            <td>raw data </td>
+                            <td>
+                                <a href="" class ="btn btn-outline-secondary btn-sm">수정</a>
+                                <a href="" class ="btn btn-outline-danger btn-sm">삭제</a>
+                            </td>
                         </tr>
                         {% endfor %}
                     </tbody>
@@ -190,11 +196,11 @@ table, th, tr, td {
                             <tr>
                                 <th scope="col">#</th>
                                 <th scope="col">Date</th>
-                                <th scope="col">CYP 1A2</th>
-                                <th scope="col">CYP 2C9</th>
-                                <th scope="col">CYP 2C19</th>
-                                <th scope="col">CYP 2D6</th>
-                                <th scope="col">CYP 3A4</th>
+                                <th scope="col">CYP1A2</th>
+                                <th scope="col">CYP2C9</th>
+                                <th scope="col">CYP2C19</th>
+                                <th scope="col">CYP2D6</th>
+                                <th scope="col">CYP3A4</th>
                                 <th scope="col">Raw data</th>
                                 <th scope="col"></th>
                             </tr>
@@ -202,15 +208,18 @@ table, th, tr, td {
                         <tbody>
                             {% for cyp in cyp_inhibitions %}
                             <tr>
-                                <th scope="row"></th>
-                                <td>{{ cyp.date }}</td>
+                                <th scope="row">{{ forloop.counter }}</th>
+                                <td>{{ cyp.date|date:"Y-m-d" }}</td>
                                 <td>{{ cyp.cyp_1a2 }}</td>
                                 <td>{{ cyp.cyp_2c9 }}</td>
                                 <td>{{ cyp.cyp_2c19 }}</td>
                                 <td>{{ cyp.cyp_2d6 }}</td>
                                 <td>{{ cyp.cyp_3a4 }}</td>
-                                <td></td>
-                                <td></td>
+                                <td>raw data</td>
+                                <td>
+                                    <a href="" class ="btn btn-outline-secondary btn-sm">수정</a>
+                                    <a href="" class ="btn btn-outline-danger btn-sm">삭제</a>
+                                </td>
                             </tr>
                             {% endfor %}
                         </tbody>

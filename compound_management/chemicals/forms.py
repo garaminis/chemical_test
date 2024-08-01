@@ -14,7 +14,7 @@ class DateInput(forms.DateInput):
 class ChemicalForm(forms.ModelForm):
     class Meta:
         model = Chemical
-        fields = ['chem_id', 'smiles', 'image', 'MW', 'cLogP', 'TPSA','H_donors', 'H_acceptors', 'lipinski']
+        fields = ['chem_id', 'smiles', 'image', 'MW', 'cLogP', 'TPSA','H_donors', 'H_acceptors', 'lipinski','user']
 
 class ChemicalUploadForm(forms.Form):
     file = forms.FileField()
@@ -30,7 +30,7 @@ class PharmacokineticForm(forms.ModelForm):
 class CytotoxicityForm(forms.ModelForm):
     class Meta:
         model = Cytotoxicity
-        fields = ['date', 'VERO', 'HFL_1', 'L929', 'NIH_3T3', 'CHO_K1']
+        fields = ['date', 'VERO', 'HFL_1', 'L929', 'NIH_3T3', 'CHO_K1','user']
         widgets = {
             'date': DateInput(),  # DateInput 위젯 사용
         }
@@ -46,7 +46,7 @@ class SchrödingerModelUploadForm(forms.Form):
 class LiverMicrosomalStabilityForm(forms.ModelForm):
     class Meta:
         model = LiverMicrosomalStability
-        fields = ['date', 'mouse', 'rat', 'human']
+        fields = ['date', 'mouse', 'rat', 'human','user']
         widgets = {
             'date': DateInput(),  # DateInput 위젯 사용
         }
@@ -54,7 +54,7 @@ class LiverMicrosomalStabilityForm(forms.ModelForm):
 class CYPInhibitionForm(forms.ModelForm):
     class Meta:
         model = CYPInhibition
-        fields = ['date', 'cyp_1a2', 'cyp_2c9', 'cyp_2c19', 'cyp_2d6', 'cyp_3a4']
+        fields = ['date', 'cyp_1a2', 'cyp_2c9', 'cyp_2c19', 'cyp_2d6', 'cyp_3a4','user']
         widgets = {
             'date': DateInput(),  # DateInput 위젯 사용
         }

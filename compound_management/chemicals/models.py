@@ -90,6 +90,7 @@ class Cytotoxicity(models.Model):
     L929 = models.FloatField()
     NIH_3T3 = models.FloatField()
     CHO_K1 = models.FloatField()
+    user = models.CharField(max_length=200, null=True)
 
     def __str__(self):
         return f'{self.chemical.chem_id} - {self.date}'
@@ -117,6 +118,7 @@ class LiverMicrosomalStability(models.Model):
     mouse = models.FloatField()
     rat = models.FloatField()
     human = models.FloatField()
+    user = models.CharField(max_length=200, null=True)
 
     def __str__(self):
         return f'{self.chemical.chem_id} - {self.date} Liver Microsomal Stability'
@@ -129,6 +131,7 @@ class CYPInhibition(models.Model):
     cyp_2c19 = models.FloatField()
     cyp_2d6 = models.FloatField()
     cyp_3a4 = models.FloatField()
+    user = models.CharField(max_length=200, null=True)
 
     def __str__(self):
         return f'{self.chemical.chem_id} - {self.date} CYP Inhibition'
