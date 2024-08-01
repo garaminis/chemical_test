@@ -155,7 +155,7 @@ def chemical_edit_view(request, target, chem_id):
     else:
         form = ChemicalForm(instance=chemical)
     logger.debug(f'Edit chemical form for {chemical}')
-    return render(request, 'chemicals/chemical_forsm.html', {'form': form, 'target': target})
+    return render(request, 'chemicals/chemical_form.html', {'form': form, 'target': target})
 @login_required
 def chemical_delete_view(request, target, chem_id):
     chemical = get_object_or_404(Chemical, chem_id=chem_id)
@@ -211,14 +211,22 @@ def pharmacokinetic_list(request, target, chem_id):
     cytotoxicities = Cytotoxicity.objects.filter(chemical=chemical)
     liver_stabilities = LiverMicrosomalStability.objects.filter(chemical=chemical)
     cyp_inhibitions = CYPInhibition.objects.filter(chemical=chemical)
-    in_vitro = In_vitro.objects.filter(chemical=chemical)
+
+    in_vitro1 = In_vitro.objects.filter(chemical=chemical,assay='CCK')
+    in_vitro2 = In_vitro.objects.filter(chemical=chemical,assay='WB')
+    in_vitro3 = In_vitro.objects.filter(chemical=chemical,assay='Target')
+    in_vitro4 = In_vitro.objects.filter(chemical=chemical,assay='기타실험')
+
     return render(request, 'chemicals/pharmacokinetic_list.html', {
         'chemical': chemical,
         'pharmacokinetics': pharmacokinetics,
         'cytotoxicities': cytotoxicities,
         'liver_stabilities': liver_stabilities,
         'cyp_inhibitions': cyp_inhibitions,
-        'in_vitro': in_vitro,
+        'in_vitro1': in_vitro1,
+        'in_vitro2': in_vitro2,
+        'in_vitro3': in_vitro3,
+        'in_vitro4': in_vitro4,
     })
 
 @login_required

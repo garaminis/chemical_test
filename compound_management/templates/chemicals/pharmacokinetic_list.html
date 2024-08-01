@@ -227,7 +227,7 @@ table, th, tr, td {
                      <h4 class="card-title">CCK assay</h4>
                   </div>
                   <div class="d-flex justify-content-end">
-                     <a href="{% url 'in_vitro_add' target=chemical.target chem_id=chemical.chem_id %}" class="btn btn-outline-primary btn-sm"><i class="bi bi-plus-square"></i> CCK assay</a>
+                     <a href="{% url 'in_vitro_add' target=chemical.target chem_id=chemical.chem_id %}" class="btn btn-outline-primary btn-sm"><i class="bi bi-plus-square"></i> In vitro assay</a>
                   </div>
               </div>
                     <table  class="table table-hover">
@@ -246,8 +246,7 @@ table, th, tr, td {
                             </tr>
                         </thead>
                         <tbody>
-                            {% for vi in in_vitro %}
-                             {% if vi.assay == "CCK" %}
+                            {% for vi in in_vitro1 %}
                             <tr>
                                 <th scope="row">{{ forloop.counter }}</th>
                                 <td>{{ vi.date|date:"Y-m-d" }}</td>
@@ -255,7 +254,7 @@ table, th, tr, td {
                                 <td>{{ vi.cell }}</td>
                                 <td>{{ vi.IC50 }}</td>
                                 <td>{{ vi.Out }}</td>
-                                <td>{{ vi.commnet }}</td>
+                                <td>{{ vi.comment }}</td>
                                 <td> <img src="{{ image.image.url }}" alt="Image for {{ chemical.name }}"></td>
                                 <td>raw data</td>
                                 <td>
@@ -263,7 +262,6 @@ table, th, tr, td {
                                     <a href="" class ="btn btn-outline-danger btn-sm">삭제</a>
                                 </td>
                             </tr>
-                            {% endif %}
                             {% endfor %}
                         </tbody>
                     </table>
@@ -273,9 +271,9 @@ table, th, tr, td {
                   <div class="text-start">
                      <h4 class="card-title">Western blot</h4>
                   </div>
-                  <div class="d-flex justify-content-end">
-                     <a href="{% url 'in_vitro_add' target=chemical.target chem_id=chemical.chem_id %}" class="btn btn-outline-primary btn-sm"><i class="bi bi-plus-square"></i> CCK assay</a>
-                  </div>
+<!--                  <div class="d-flex justify-content-end">-->
+<!--                     <a href="{% url 'in_vitro_add' target=chemical.target chem_id=chemical.chem_id %}" class="btn btn-outline-primary btn-sm"><i class="bi bi-plus-square"></i> CCK assay</a>-->
+<!--                  </div>-->
               </div>
                     <table  class="table table-hover">
                         <thead>
@@ -291,14 +289,13 @@ table, th, tr, td {
                             </tr>
                         </thead>
                         <tbody>
-                            {% for vi in in_vitro %}
-                            {% if vi.assay == "WB" %}
+                            {% for vi in in_vitro2 %}
                             <tr>
                                 <th scope="row">{{ forloop.counter }}</th>
                                 <td>{{ vi.date|date:"Y-m-d" }}</td>
                                 <td>{{ vi.user }}</td>
                                 <td>{{ vi.cell }}</td>
-                                <td>{{ vi.commnet }}</td>
+                                <td>{{ vi.comment }}</td>
                                 <td>{{ vi.image }}</td>
                                 <td>raw data</td>
                                 <td>
@@ -306,7 +303,6 @@ table, th, tr, td {
                                     <a href="" class ="btn btn-outline-danger btn-sm">삭제</a>
                                 </td>
                             </tr>
-                            {% endif %}
                             {% endfor %}
                         </tbody>
                     </table>
@@ -316,9 +312,9 @@ table, th, tr, td {
                   <div class="text-start">
                      <h4 class="card-title">In vitro Target Inhibition assay</h4>
                   </div>
-                  <div class="d-flex justify-content-end">
-                     <a href="{% url 'in_vitro_add' target=chemical.target chem_id=chemical.chem_id %}" class="btn btn-outline-primary btn-sm"><i class="bi bi-plus-square"></i> CCK assay</a>
-                  </div>
+<!--                  <div class="d-flex justify-content-end">-->
+<!--                     <a href="{% url 'in_vitro_add' target=chemical.target chem_id=chemical.chem_id %}" class="btn btn-outline-primary btn-sm"><i class="bi bi-plus-square"></i> CCK assay</a>-->
+<!--                  </div>-->
               </div>
                     <table  class="table table-hover">
                         <thead>
@@ -335,15 +331,14 @@ table, th, tr, td {
                             </tr>
                         </thead>
                         <tbody>
-                            {% for vi in in_vitro %}
-                            {% if vi.assay == "Target" %}
+                            {% for vi in in_vitro3 %}
                             <tr>
                                 <th scope="row">{{ forloop.counter }}</th>
                                 <td>{{ vi.date|date:"Y-m-d" }}</td>
                                 <td>{{ vi.user }}</td>
                                 <td>{{ vi.vitro_at_10 }}</td>
                                 <td>{{ vi.Taret_IC50 }}</td>
-                                <td>{{ vi.commnet }}</td>
+                                <td>{{ vi.comment }}</td>
                                 <td>{{ vi.image }}</td>
                                 <td>raw data</td>
                                 <td>
@@ -351,7 +346,6 @@ table, th, tr, td {
                                     <a href="" class ="btn btn-outline-danger btn-sm">삭제</a>
                                 </td>
                             </tr>
-                            {% endif %}
                             {% endfor %}
                         </tbody>
                     </table>
@@ -361,16 +355,16 @@ table, th, tr, td {
                   <div class="text-start">
                      <h4 class="card-title">기타실험</h4>
                   </div>
-                  <div class="d-flex justify-content-end">
-                     <a href="{% url 'in_vitro_add' target=chemical.target chem_id=chemical.chem_id %}" class="btn btn-outline-primary btn-sm"><i class="bi bi-plus-square"></i> CCK assay</a>
-                  </div>
+<!--                  <div class="d-flex justify-content-end">-->
+<!--                     <a href="{% url 'in_vitro_add' target=chemical.target chem_id=chemical.chem_id %}" class="btn btn-outline-primary btn-sm"><i class="bi bi-plus-square"></i> CCK assay</a>-->
+<!--                  </div>-->
               </div>
                     <table  class="table table-hover">
                         <thead>
                             <tr>
                                 <th scope="col">#</th>
-                                <th scope="col">실험명</th>
                                 <th scope="col">Date</th>
+                                <th scope="col">실험명</th>
                                 <th scope="col">진행자</th>
                                 <th scope="col">Comment</th>
                                 <th scope="col">Image</th>
@@ -379,14 +373,13 @@ table, th, tr, td {
                             </tr>
                         </thead>
                         <tbody>
-                            {% for vi in in_vitro %}
-                            {% if vi.assay == "기타실험" %}
+                            {% for vi in in_vitro4 %}
                             <tr>
                                 <th scope="row">{{ forloop.counter }}</th>
-                                <td>{{ vi.title }}</td>
                                 <td>{{ vi.date|date:"Y-m-d" }}</td>
+                                <td>{{ vi.title }}</td>
                                 <td>{{ vi.user }}</td>
-                                <td>{{ vi.commnet }}</td>
+                                <td>{{ vi.comment }}</td>
                                 <td>{{ vi.image }}</td>
                                 <td>raw data</td>
                                 <td>
@@ -394,7 +387,6 @@ table, th, tr, td {
                                     <a href="" class ="btn btn-outline-danger btn-sm">삭제</a>
                                 </td>
                             </tr>
-                            {% endif %}
                             {% endfor %}
                         </tbody>
                     </table>
