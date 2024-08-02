@@ -86,7 +86,7 @@
     <ul class="sidebar-nav" id="sidebar-nav">
       <li class="nav-item">
         <a class="nav-link collapsed" data-bs-target="#components-nav" data-bs-toggle="collapse" href="#">
-          <i class="bi bi-menu-button-wide"></i><span>Chemicals</span><i class="bi bi-chevron-down ms-auto"></i>
+          <i class="bi bi-menu-button-wide"></i><span>Targets</span><i class="bi bi-chevron-down ms-auto"></i>
         </a>
         <ul id="components-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
           <li>
@@ -161,18 +161,20 @@
           </li>
         </ul>
       </li>
+    </ul>
   </aside>
+
   <main id="main" class="main">
 
-    <div class="pagetitle"> <!-- 일단 하드코딩함. -->
-      <h1></h1>
-      <nav>
-        <ol class="breadcrumb">
-          <li class="breadcrumb-item"><a href="{% url 'home' %}">Home</a></li>
-<!--          <li class="breadcrumb-item active">Chemicals</li>-->
-          <li class="breadcrumb-item active">{{ target }}</li>
-      </nav>
-    </div>
+<!--    <div class="pagetitle">-->
+<!--      <h1></h1>-->
+<!--      <nav style="&#45;&#45;bs-breadcrumb-divider: '>';">-->
+<!--        <ol class="breadcrumb">-->
+<!--          <li class="breadcrumb-item"><a href="{% url 'home' %}">Home</a></li>-->
+<!--          <li class="breadcrumb-item active">Target</li>-->
+<!--          <li class="breadcrumb-item active">{{ target }}</li>-->
+<!--      </nav>-->
+<!--    </div>-->
 
     <section class="section dashboard">
     {% block content %}{% endblock %}

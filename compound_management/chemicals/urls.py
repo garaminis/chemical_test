@@ -15,8 +15,8 @@ urlpatterns = [
     path('chemicals/<str:target>/edit/<str:chem_id>/', views.chemical_edit_view, name='chemical_edit'),
     path('chemicals/<str:target>/delete/<str:chem_id>/', views.chemical_delete_view, name='chemical_delete'),
     path('chemicals/upload/<str:target>/', views.upload_chemicals, name='upload_chemicals'),
-    path('chemicals/<str:target>/pharmacokinetics/<str:chem_id>/', views.pharmacokinetic_list, name='pharmacokinetic_list'),
-    path('chemicals/<str:target>/pharmacokinetics/<str:chem_id>/add/', views.pharmacokinetic_add, name='pharmacokinetic_add'),
+    path('chemicals/<str:target>/result/<str:chem_id>/', views.pharmacokinetic_list, name='pharmacokinetic_list'),
+    path('chemicals/<str:target>/result/<str:chem_id>/add/', views.pharmacokinetic_add, name='pharmacokinetic_add'),
     # path('chemicals/<str:target>/pharmacokinetics/<str:chem_id>/edit/<int:id>/', views.pharmacokinetic_edit, name='pharmacokinetic_edit'),
     path('chemicals/<str:target>/cytotoxicity/<str:chem_id>/add/', views.cytotoxicity_add, name='cytotoxicity_add'),
     path('chemicals/<str:target>/modeling/<str:chem_id>/', views.schrodinger_model_list, name='schrodinger_model_list'),
@@ -27,7 +27,7 @@ urlpatterns = [
     path('chemicals/<str:target>/delete_selected/', delete_selected_chems, name='delete_selected_chems'),
     path('r/', views.patient_input, name='patient_input'),
     path('sl/', views.SLselected_gene_input, name='SLselected_gene_input'),
-    path('chemicals/<str:target>/In_vitro/<str:chem_id>/add/', views.in_vitro_add, name='in_vitro_add'),
+    path('chemicals/<str:target>/in_vitro/<str:chem_id>/add/',views.cck_add, name='cck_add'),
 ]
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

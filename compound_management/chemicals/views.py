@@ -1,14 +1,15 @@
 from django.contrib import messages
 from django.contrib.auth.hashers import check_password
 from django.core.paginator import Paginator
+from django.forms import modelformset_factory
 from django.shortcuts import render
 
 # Create your views here.
 from django.shortcuts import render, redirect, get_object_or_404
 from .models import Chemical, Pharmacokinetic, Cytotoxicity, SchrödingerModel, LiverMicrosomalStability, CYPInhibition, \
-    User, In_vitro
+    User, CCK_assay, CCK_Image
 from .forms import ChemicalForm, ChemicalUploadForm, PharmacokineticForm, CytotoxicityForm, SchrödingerModelForm, \
-    SchrödingerModelUploadForm, LiverMicrosomalStabilityForm, CYPInhibitionForm, UserForm, invitroForm
+    SchrödingerModelUploadForm, LiverMicrosomalStabilityForm, CYPInhibitionForm, UserForm, cckForm, cckimgForm
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.decorators import login_required
@@ -161,7 +162,6 @@ def chemical_delete_view(request, target, chem_id):
     chemical = get_object_or_404(Chemical, chem_id=chem_id)
     if request.method == 'POST':
 
-
         if os.path.isfile(chemical.image.path) : #경로에 있는 파일이 실제파일인지 아닌지
             os.remove(chemical.image.path) # 주어진 경로의 파일 삭제
         image_folder = os.path.dirname(chemical.image.path) # 같은 경로 반환
@@ -204,29 +204,27 @@ def upload_chemicals(request, target):
     else:
         form = ChemicalUploadForm()
     return render(request, 'chemicals/upload_chemicals.html', {'form': form, 'target': target})
+
 @login_required
 def pharmacokinetic_list(request, target, chem_id):
     chemical = get_object_or_404(Chemical, chem_id=chem_id)
+
     pharmacokinetics = Pharmacokinetic.objects.filter(chemical=chemical)
     cytotoxicities = Cytotoxicity.objects.filter(chemical=chemical)
     liver_stabilities = LiverMicrosomalStability.objects.filter(chemical=chemical)
     cyp_inhibitions = CYPInhibition.objects.filter(chemical=chemical)
 
-    in_vitro1 = In_vitro.objects.filter(chemical=chemical,assay='CCK')
-    in_vitro2 = In_vitro.objects.filter(chemical=chemical,assay='WB')
-    in_vitro3 = In_vitro.objects.filter(chemical=chemical,assay='Target')
-    in_vitro4 = In_vitro.objects.filter(chemical=chemical,assay='기타실험')
+    cck_assay = CCK_assay.objects.filter(chemical=chemical).all()
 
     return render(request, 'chemicals/pharmacokinetic_list.html', {
+        'target': target,
         'chemical': chemical,
         'pharmacokinetics': pharmacokinetics,
         'cytotoxicities': cytotoxicities,
         'liver_stabilities': liver_stabilities,
         'cyp_inhibitions': cyp_inhibitions,
-        'in_vitro1': in_vitro1,
-        'in_vitro2': in_vitro2,
-        'in_vitro3': in_vitro3,
-        'in_vitro4': in_vitro4,
+        'cck_assay' :  cck_assay,
+
     })
 
 @login_required
@@ -241,7 +239,7 @@ def pharmacokinetic_add(request, target, chem_id):
             return redirect('pharmacokinetic_list', target=target, chem_id=chem_id)
     else:
         form = PharmacokineticForm()
-    return render(request, 'chemicals/pharmacokinetic_form.html', {'form': form, 'chemical': chemical})
+    return render(request, 'chemicals/pharmacokinetic_form.html', {'form': form, 'chemical': chemical,  'target': target})
 
 # @login_required
 # def pharmacokinetic_edit(request, target, chem_id, id):
@@ -348,19 +346,33 @@ def cyp_inhibition_add(request, target, chem_id):
         form = CYPInhibitionForm()
     return render(request, 'chemicals/cyp_inhibition_form.html', {'form': form, 'chemical': chemical})
 
+
 @login_required
-def in_vitro_add(request, target, chem_id):
+def cck_add(request, target, chem_id):
     chemical = get_object_or_404(Chemical, chem_id=chem_id)
+
     if request.method == 'POST':
-        form = invitroForm(request.POST)
-        if form.is_valid():
-            in_vitro = form.save(commit=False)
-            in_vitro.chemical = chemical
-            in_vitro.save()
+        form = cckForm(request.POST)
+
+        if form.is_valid() :
+            CCK_assay = form.save(commit=False)
+            CCK_assay.chemical = chemical
+            CCK_assay.save()
+
+            images = request.FILES.getlist('images')
+            for image in images:
+                CCK_Image.objects.create(cck_assay=CCK_assay, image=image) # CCK_Image 모델의 새로운 객체를 생성하고 데이터베이스에 저장
+
             return redirect('pharmacokinetic_list', target=target, chem_id=chem_id)
     else:
-        form = invitroForm()
-    return render(request, 'chemicals/In_vitro_form.html', {'form': form, 'chemical': chemical})
+        form = cckForm()
+    return render(request, 'chemicals/cck_assay_form.html', {
+        'form': form,
+        'chemical': chemical,
+        'target': target,
+    })
+
+
 
 
 def run_r_script_and_get_results(patient_id):

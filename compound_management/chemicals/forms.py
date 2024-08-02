@@ -1,8 +1,10 @@
 import re
 
 from django import forms
+from django.forms import modelformset_factory
+
 from .models import Chemical, Pharmacokinetic, Cytotoxicity, SchrödingerModel, LiverMicrosomalStability, CYPInhibition, \
-    User, In_vitro
+    User, CCK_assay, CCK_Image
 
 
 # from compound_management.chemicals.models import Chemical, Pharmacokinetic, Cytotoxicity, SchrödingerModel, LiverMicrosomalStability, CYPInhibition, User
@@ -59,17 +61,20 @@ class CYPInhibitionForm(forms.ModelForm):
             'date': DateInput(),  # DateInput 위젯 사용
         }
 
-class invitroForm(forms.ModelForm):
+class cckForm(forms.ModelForm):
     class Meta:
-        model = In_vitro
-        fields = ['date', 'user', 'assay', 'cell', 'IC50', 'Taret_IC50' , 'Out', 'image','comment','vitro_at_10']
+        model = CCK_assay
+        fields = ['date', 'user',  'cell', 'IC50' , 'Out', 'comment']
         widgets = {
             'date': DateInput(),  # DateInput 위젯 사용
         }
-# class invitroimgForm(forms.ModelForm):
-#     class Meta:
-#         model = In_vitro_Image
-#         fields = ['image']
+class cckimgForm(forms.ModelForm):
+    class Meta:
+        model = CCK_Image
+        fields = ['image']
+        widgets = {
+            'image': forms.ClearableFileInput(attrs={'multiple': True}),
+        }
 
 class UserForm(forms.ModelForm):
     # 패스워드 필드를 정의하며, 입력 시 비밀번호 입력 필드를 사용합니다.

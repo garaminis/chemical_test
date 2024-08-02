@@ -1,15 +1,78 @@
 {% extends 'base.html' %}
-{% load static %}
 {% block title %} Pharmacokinetics and Cytotoxicity for {{ chemical.chem_id }}{% endblock %}
 {% block content %}
+<link href="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.11.3/css/lightbox.min.css" rel="stylesheet">
+ <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper/swiper-bundle.min.css">
 <style>
 table, th, tr, td {
   text-align: center;
 }
+.modal_overlay {
+        width: 100%;
+        height: 100%;
+        position: absolute;
+        left: 0;
+        top: 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        background: rgba(0, 0, 0, 0.8);
+        backdrop-filter: blur(1.5px);
+        -webkit-backdrop-filter: blur(1.5px);
+        display: none;
+    }
+
+    .modal_window {
+        background: white;
+        backdrop-filter: blur(13.5px);
+        -webkit-backdrop-filter: blur(13.5px);
+        border-radius: 10px;
+        border: 1px solid rgba(255, 255, 255, 0.18);
+        width: 800px;
+        height: 600px;
+        position: relative;
+        padding: 10px;
+    }
+    .modal_title{
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
+      font-weight: bold;
+      font-size: 20px;
+      position: relative;
+      padding: 10px;
+      }
+
+    .modal_title_side{
+      flex: 0 0 40px;
+      text-align: center;
+      }
+    .swiper-container {
+            width: 100%;
+            height: 100%;
+        }
+
+        .swiper-slide img {
+            width: 100%;
+            display: block;
+        }
 </style>
+ <div class="pagetitle">
+      <nav style="--bs-breadcrumb-divider: '>';">
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item"><a href="{% url 'home' %}">Home</a></li>
+          <li class="breadcrumb-item active">Target</li>
+          <li class="breadcrumb-item active">{{ target }}</li>
+          <li class="breadcrumb-item active">Result</li>
+        </ol>
+      </nav>
+</div>
+
+
 <div class="card">
     <div class="card-body"><br>
-          <h3>{{ chemical.chem_id }}</h3>
+          <h3>{{ target }} / Chem_id : {{ chemical.chem_id }}</h3>
           <!-- Default Tabs -->
           <ul class="nav nav-tabs" id="myTab" role="tablist">
             <li class="nav-item" role="presentation">
@@ -226,7 +289,6 @@ table, th, tr, td {
                     </table>
 <!--                <a href="{% url 'home' %}" class="btn btn-outline-primary btn-sm">Home</a>-->
               </div>
-
             </div>
 
             <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab" >
@@ -236,175 +298,129 @@ table, th, tr, td {
                      <h4 class="card-title">CCK assay</h4>
                   </div>
                   <div class="d-flex justify-content-end">
-                     <a href="{% url 'in_vitro_add' target=chemical.target chem_id=chemical.chem_id %}" class="btn btn-outline-primary btn-sm"><i class="bi bi-plus-square"></i> In vitro assay</a>
+                      <a href="{% url 'cck_add' target=chemical.target chem_id=chemical.chem_id %}" class="btn btn-outline-primary btn-sm"><i class="bi bi-plus-square"></i> CCK assay</a>
                   </div>
               </div>
-                    <table  class="table table-hover">
-                        <thead>
-                            <tr>
-                                <th scope="col">#</th>
-                                <th scope="col">Date</th>
-                                <th scope="col">진행자</th>
-                                <th scope="col">세포주</th>
-                                <th scope="col">IC50(μM)</th>
-                                <th scope="col">석출여부</th>
-                                <th scope="col">Comment</th>
-                                <th scope="col">Image</th>
-                                <th scope="col">Raw data</th>
-                                <th scope="col"></th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {% for vi in in_vitro1 %}
-                            <tr>
-                                <th scope="row">{{ forloop.counter }}</th>
-                                <td>{{ vi.date|date:"Y-m-d" }}</td>
-                                <td>{{ vi.user }}</td>
-                                <td>{{ vi.cell }}</td>
-                                <td>{{ vi.IC50 }}</td>
-                                <td>{{ vi.Out }}</td>
-                                <td>{{ vi.comment }}</td>
-                                <td> <img src="{{ image.image.url }}" alt="Image for {{ chemical.name }}"></td>
-                                <td>raw data</td>
-                                <td>
-                                    <a href="" class ="btn btn-outline-secondary btn-sm">수정</a>
-                                    <a href="" class ="btn btn-outline-danger btn-sm">삭제</a>
-                                </td>
-                            </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
+                <table  class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th scope="col">#</th>
+                            <th scope="col">Date</th>
+                            <th scope="col">진행자</th>
+                            <th scope="col">세포주</th>
+                            <th scope="col">IC50(μM)</th>
+                            <th scope="col">석출여부</th>
+                            <th scope="col">Comment</th>
+                            <th scope="col">Image</th>
+                            <th scope="col">Raw data</th>
+                            <th scope="col"></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for assay in cck_assay %}
+                        <tr>
+                            <th scope="row">{{ forloop.counter }}</th>
+                            <td>{{ assay.date|date:"Y-m-d" }}</td>
+                            <td>{{ assay.user }}</td>
+                            <td>{{ assay.cell }}</td>
+                            <td>{{ assay.IC50 }}</td>
+                            <td>{{ assay.Out }}</td>
+                            <td>{{ assay.comment }}</td>
+                            <td>
+                                <div style="width:100%; height:auto;">
+                                     {% if assay.images.exists %}
+                                        <span class="badge badge-secondary py-1 open-modal" data-images="{% for image in assay.images.all %}{{ image.image.url }}{% if not forloop.last %},{% endif %}{% endfor %}">
+                                            ◯
+                                        </span>
+                                    {% else %}
+                                        이미지 없음
+                                    {% endif %}
+<!--                                    {% for image in assay.images.all %}-->
+<!--                                        <div style="float:left; margin-right:10px;">-->
+<!--                                            <a href="{{ image.image.url }}" data-lightbox="image-gallery">-->
+<!--                                                <img src="{{ image.image.url }}" width="100" height="100">-->
+<!--                                            </a>-->
+<!--                                        </div>-->
+<!--                                    {% empty %}-->
+<!--                                        <p>No images available.</p>-->
+<!--                                    {% endfor %}-->
+                                </div>
+                            </td>
+                            <td>raw data</td>
+                            <td>
+                                <a href="" class ="btn btn-outline-secondary btn-sm">수정</a>
+                                <a href="" class ="btn btn-outline-danger btn-sm">삭제</a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
               </div>
-              <div class="card-body">
-                <div class="d-flex justify-content-between align-items-center">
-                  <div class="text-start">
-                     <h4 class="card-title">Western blot</h4>
-                  </div>
-<!--                  <div class="d-flex justify-content-end">-->
-<!--                     <a href="{% url 'in_vitro_add' target=chemical.target chem_id=chemical.chem_id %}" class="btn btn-outline-primary btn-sm"><i class="bi bi-plus-square"></i> CCK assay</a>-->
-<!--                  </div>-->
-              </div>
-                    <table  class="table table-hover">
-                        <thead>
-                            <tr>
-                                <th scope="col">#</th>
-                                <th scope="col">Date</th>
-                                <th scope="col">진행자</th>
-                                <th scope="col">세포주</th>
-                                <th scope="col">Comment</th>
-                                <th scope="col">Image</th>
-                                <th scope="col">Raw data</th>
-                                <th scope="col"></th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {% for vi in in_vitro2 %}
-                            <tr>
-                                <th scope="row">{{ forloop.counter }}</th>
-                                <td>{{ vi.date|date:"Y-m-d" }}</td>
-                                <td>{{ vi.user }}</td>
-                                <td>{{ vi.cell }}</td>
-                                <td>{{ vi.comment }}</td>
-                                <td>{{ vi.image }}</td>
-                                <td>raw data</td>
-                                <td>
-                                    <a href="" class ="btn btn-outline-secondary btn-sm">수정</a>
-                                    <a href="" class ="btn btn-outline-danger btn-sm">삭제</a>
-                                </td>
-                            </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
-              </div>
-              <div class="card-body">
-                <div class="d-flex justify-content-between align-items-center">
-                  <div class="text-start">
-                     <h4 class="card-title">In vitro Target Inhibition assay</h4>
-                  </div>
-<!--                  <div class="d-flex justify-content-end">-->
-<!--                     <a href="{% url 'in_vitro_add' target=chemical.target chem_id=chemical.chem_id %}" class="btn btn-outline-primary btn-sm"><i class="bi bi-plus-square"></i> CCK assay</a>-->
-<!--                  </div>-->
-              </div>
-                    <table  class="table table-hover">
-                        <thead>
-                            <tr>
-                                <th scope="col">#</th>
-                                <th scope="col">Date</th>
-                                <th scope="col">진행자</th>
-                                <th scope="col">In vitro inhibition at 10 μM(%)</th>
-                                <th scope="col">Target inhibition IC50(μM)</th>
-                                <th scope="col">Comment</th>
-                                <th scope="col">Image</th>
-                                <th scope="col">Raw data</th>
-                                <th scope="col"></th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {% for vi in in_vitro3 %}
-                            <tr>
-                                <th scope="row">{{ forloop.counter }}</th>
-                                <td>{{ vi.date|date:"Y-m-d" }}</td>
-                                <td>{{ vi.user }}</td>
-                                <td>{{ vi.vitro_at_10 }}</td>
-                                <td>{{ vi.Taret_IC50 }}</td>
-                                <td>{{ vi.comment }}</td>
-                                <td>{{ vi.image }}</td>
-                                <td>raw data</td>
-                                <td>
-                                    <a href="" class ="btn btn-outline-secondary btn-sm">수정</a>
-                                    <a href="" class ="btn btn-outline-danger btn-sm">삭제</a>
-                                </td>
-                            </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
-              </div>
-              <div class="card-body">
-                <div class="d-flex justify-content-between align-items-center">
-                  <div class="text-start">
-                     <h4 class="card-title">기타실험</h4>
-                  </div>
-<!--                  <div class="d-flex justify-content-end">-->
-<!--                     <a href="{% url 'in_vitro_add' target=chemical.target chem_id=chemical.chem_id %}" class="btn btn-outline-primary btn-sm"><i class="bi bi-plus-square"></i> CCK assay</a>-->
-<!--                  </div>-->
-              </div>
-                    <table  class="table table-hover">
-                        <thead>
-                            <tr>
-                                <th scope="col">#</th>
-                                <th scope="col">Date</th>
-                                <th scope="col">실험명</th>
-                                <th scope="col">진행자</th>
-                                <th scope="col">Comment</th>
-                                <th scope="col">Image</th>
-                                <th scope="col">Raw data</th>
-                                <th scope="col"></th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {% for vi in in_vitro4 %}
-                            <tr>
-                                <th scope="row">{{ forloop.counter }}</th>
-                                <td>{{ vi.date|date:"Y-m-d" }}</td>
-                                <td>{{ vi.title }}</td>
-                                <td>{{ vi.user }}</td>
-                                <td>{{ vi.comment }}</td>
-                                <td>{{ vi.image }}</td>
-                                <td>raw data</td>
-                                <td>
-                                    <a href="" class ="btn btn-outline-secondary btn-sm">수정</a>
-                                    <a href="" class ="btn btn-outline-danger btn-sm">삭제</a>
-                                </td>
-                            </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
-              </div>
-            </div>
-
-            <div class="tab-pane fade" id="contact" role="tabpanel" aria-labelledby="contact-tab">
-              추가예정2
-            </div>
-    </div><!-- End Default Tabs -->
+    </div>
+          </div>
+    </div>
 </div>
+
+
+ <div id="modal_add_feed" class="modal_overlay">
+      <div class="modal_window">
+          <div class="modal_title">
+              <span id="close_modal" class="material-icons-outlined">X</span>
+          </div>
+          <div class="swiper-container">
+            <div class="swiper-wrapper">
+            </div>
+            <div class="swiper-pagination"></div><div class="swiper-button-next"></div><div class="swiper-button-prev"></div>
+         </div>
+      </div>
+</div>
+
+
+<span id="add_feed" class="material-icons-outlined">add_box</span>
+{% endblock %}
+{% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/swiper/swiper-bundle.min.js"></script>
+<script>
+  $(document)
+  .ready(function() {
+    var $modal = $("#modal_add_feed");
+    var $modalWrapper = $(".swiper-wrapper");
+
+    function openModal(images) {
+        $modalWrapper.empty();
+
+        images.forEach(function(image) {
+            var $slide = $('<div class="swiper-slide"><img src="' + image + '" alt="Image"></div>');
+            $modalWrapper.append($slide);
+        });
+
+        new Swiper('.swiper-container', {
+            loop: true,
+            pagination: {
+                el: '.swiper-pagination',
+            },
+            navigation: {
+                nextEl: '.swiper-button-next',
+                prevEl: '.swiper-button-prev',
+            },
+        });
+
+        $modal.css({
+            top: $(window).scrollTop() + 'px',
+            display: 'flex'
+        });
+        $('body').css('overflow-y', 'hidden');
+    }
+
+    $(".open-modal").on("click", function() {
+        var images = $(this).data("images").split(',');
+        openModal(images);
+    });
+
+    $("#close_modal").on("click", function() {
+        $modal.css('display', 'none');
+        $('body').css('overflow-y', 'visible');
+    });
+});
+</script>
 {% endblock %}

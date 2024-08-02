@@ -40,8 +40,8 @@ class Chemical(models.Model):
                              self.H_acceptors <= 10)
             # 분자 이미지 생성
             image_data = generate_image(self.smiles)
-            if image_data:
-                self.image.save(f'{self.chem_id}.png', ContentFile(image_data), save=False)
+            # if image_data:
+            #     self.image.save(f'{self.chem_id}.png', ContentFile(image_data), save=False)
         super().save(*args, **kwargs)
 # 이미지 생성 함수
 from rdkit.Chem import Draw
@@ -136,29 +136,52 @@ class CYPInhibition(models.Model):
     def __str__(self):
         return f'{self.chemical.chem_id} - {self.date} CYP Inhibition'
 
-class In_vitro(models.Model):
+class CCK_assay(models.Model):
     chemical = models.ForeignKey(Chemical, on_delete=models.CASCADE)
     date = models.DateField()
     user = models.CharField(max_length=200, null=True)
-    assay = models.CharField(max_length=200, null=True)
     cell = models.TextField(null=True)
     IC50 = models.FloatField(null=True, blank=True)
-    vitro_at_10 = models.FloatField(null=True, blank=True)
-    Taret_IC50 = models.FloatField(null=True, blank=True)
     Out = models.CharField(max_length=200,null=True)
-    image = models.ImageField(upload_to='in_vitro/', blank=True, null=True)
     comment = models.TextField(null=True)
-    title = models.CharField(max_length=200,default="NA")
+
+    def __str__(self):
+        return f'{self.chemical.chem_id} - {self.date} CCK_assay'
+
+class CCK_Image(models.Model):
+    cck_assay = models.ForeignKey(CCK_assay, related_name='images', on_delete=models.CASCADE)
+    image = models.ImageField(upload_to='cck/')
+
+
+class Western_blot(models.Model):
+    chemical = models.ForeignKey(Chemical, on_delete=models.CASCADE)
+    date = models.DateField()
+    user = models.CharField(max_length=200, null=True)
+    comment = models.TextField(null=True)
 
     def __str__(self):
         return f'{self.chemical.chem_id} - {self.date} In_vitro'
 
-# class In_vitro_Image(models.Model):
-#     in_vitro_id = models.ForeignKey(In_vitro, related_name='images', on_delete=models.CASCADE)
-#     image = models.ImageField(upload_to='in_vitro/')
-#
-#     def __str__(self):
-#         return f"Image for {self.chemical.name}"
+class Target_Inhibition(models.Model):
+    chemical = models.ForeignKey(Chemical, on_delete=models.CASCADE)
+    date = models.DateField()
+    user = models.CharField(max_length=200, null=True)
+    vitro_at_10 = models.FloatField(null=True, blank=True)
+    Taret_IC50 = models.FloatField(null=True, blank=True)
+    comment = models.TextField(null=True)
+
+    def __str__(self):
+        return f'{self.chemical.chem_id} - {self.date} In_vitro'
+
+class other(models.Model):
+    chemical = models.ForeignKey(Chemical, on_delete=models.CASCADE)
+    date = models.DateField()
+    user = models.CharField(max_length=200, null=True)
+    title = models.CharField(max_length=200, default="NA")
+    comment = models.TextField(null=True)
+
+    def __str__(self):
+        return f'{self.chemical.chem_id} - {self.date} In_vitro'
 
 class UserManager(BaseUserManager):
     def create_user(self, email, userID, password=None, **extra_fields):
