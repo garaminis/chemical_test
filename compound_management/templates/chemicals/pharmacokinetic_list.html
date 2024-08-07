@@ -8,291 +8,289 @@ table, th, tr, td {
   text-align: center;
 }
 .modal_overlay {
-        width: 100%;
-        height: 100%;
-        position: absolute;
-        left: 0;
-        top: 0;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        background: rgba(0, 0, 0, 0.8);
-        backdrop-filter: blur(1.5px);
-        -webkit-backdrop-filter: blur(1.5px);
-        display: none;
-    }
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    left: 0;
+    top: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0, 0, 0, 0.8);
+    backdrop-filter: blur(1.5px);
+    -webkit-backdrop-filter: blur(1.5px);
+    display: none;
+}
 
-    .modal_window {
-        background: white;
-        backdrop-filter: blur(13.5px);
-        -webkit-backdrop-filter: blur(13.5px);
-        border-radius: 10px;
-        border: 1px solid rgba(255, 255, 255, 0.18);
-        width: 800px;
-        height: 600px;
-        position: relative;
-        padding: 10px;
-    }
-    .modal_title{
-      display: flex;
-      flex-direction: row;
-      justify-content: space-between;
-      font-weight: bold;
-      font-size: 20px;
-      position: relative;
-      padding: 10px;
-      }
+.modal_window {
+    background: white;
+    backdrop-filter: blur(13.5px);
+    -webkit-backdrop-filter: blur(13.5px);
+    border-radius: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    width: 800px;
+    height: 600px;
+    position: relative;
+    padding: 10px;
+}
+.modal_title{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    font-weight: bold;
+    font-size: 20px;
+    position: relative;
+    padding: 10px;
+}
 
-    .modal_title_side{
-      flex: 0 0 40px;
-      text-align: center;
-      }
-    .swiper-container {
-            width: 100%;
-            height: 100%;
-        }
+.modal_title_side{
+    flex: 0 0 40px;
+    text-align: center;
+}
+.swiper-container {
+    width: 100%;
+    height: 100%;
+}
 
-        .swiper-slide img {
-            width: 100%;
-            display: block;
-        }
+.swiper-slide img {
+    width: 100%;
+    display: block;
+}
 </style>
- <div class="pagetitle">
-      <nav style="--bs-breadcrumb-divider: '>';">
+<div class="pagetitle">
+    <nav style="--bs-breadcrumb-divider: '>';">
         <ol class="breadcrumb">
-          <li class="breadcrumb-item"><a href="{% url 'home' %}">Home</a></li>
-          <li class="breadcrumb-item active">Target</li>
-          <li class="breadcrumb-item active">{{ target }}</li>
-          <li class="breadcrumb-item active">Result</li>
+            <li class="breadcrumb-item"><a href="{% url 'home' %}">Home</a></li>
+            <li class="breadcrumb-item active">Target</li>
+            <li class="breadcrumb-item active">{{ target }}</li>
+            <li class="breadcrumb-item active">Result</li>
         </ol>
-      </nav>
+    </nav>
 </div>
 
 
 <div class="card">
     <div class="card-body"><br>
-          <h3>{{ target }} / Chem_id : {{ chemical.chem_id }}</h3>
-          <!-- Default Tabs -->
-          <ul class="nav nav-tabs" id="myTab" role="tablist">
+        <h3>{{ target }} / Chem_id : {{ chemical.chem_id }}</h3>
+
+      <!-- Default Tabs -->
+        <ul class="nav nav-tabs" id="myTab" role="tablist">
             <li class="nav-item" role="presentation">
-              <button class="nav-link active" id="home-tab" data-bs-toggle="tab" data-bs-target="#home" type="button" role="tab" aria-controls="home" aria-selected="true">Chemical Property</button>
+                <button class="nav-link active" id="home-tab" data-bs-toggle="tab" data-bs-target="#home" type="button" role="tab" aria-controls="home" aria-selected="true">Chemical Property</button>
             </li>
             <li class="nav-item" role="presentation">
-              <button class="nav-link" id="profile-tab" data-bs-toggle="tab" data-bs-target="#profile" type="button" role="tab" aria-controls="profile" aria-selected="false">In vitro assay</button>
+                <button class="nav-link" id="profile-tab" data-bs-toggle="tab" data-bs-target="#profile" type="button" role="tab" aria-controls="profile" aria-selected="false">In vitro assay</button>
             </li>
             <li class="nav-item" role="presentation">
-              <button class="nav-link" id="contact-tab" data-bs-toggle="tab" data-bs-target="#contact" type="button" role="tab" aria-controls="contact" aria-selected="false">In vivo assay</button>
+                <button class="nav-link" id="contact-tab" data-bs-toggle="tab" data-bs-target="#contact" type="button" role="tab" aria-controls="contact" aria-selected="false">In vivo assay</button>
             </li>
-          </ul>
+        </ul>
 
-          <div class="tab-content pt-2" id="myTabContent">
-            <a href="{% url 'target_view' target=chemical.target %}"  class="btn btn-outline-primary btn-sm">Back to {{ chemical.target }}</a>
-            <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
-
-              <div class="card-body">
-                <div class="d-flex justify-content-between align-items-center">
-                  <div class="text-start">
-                    <h4 class="card-title"> Pharmacokinetics </h4>
-                  </div>
-                  <div class="d-flex justify-content-end">
-                  <form method="post" action="{% url 'pharmacokinetic_add' target=chemical.target chem_id=chemical.chem_id %}" >
-                    {% csrf_token %}
-                    {{ form.as_p }}
-                    <button type="submit" class="btn btn-outline-primary btn-sm"><i class="bi bi-plus-square"></i> Pharmacokinetic</button>
-                  </form>
-                  </div>
-               </div>
-                 <table class="table table-hover"  id="data-table" >
-                    <thead>
-                        <tr>
-                            <th scope="col">#</th>
-                            <th scope="col">Date</th>
-                            <th scope="col">Route</th>
-                            <th scope="col">Tmax(h)</th>
-                            <th scope="col">Cmax(μg/mL)</th>
-                            <th scope="col">t1/2(h)</th>
-                            <th scope="col">AUCt(μg·h/mL)</th>
-                            <th scope="col">CL(L/h/kg)</th>
-                            <th scope="col">Vss(L/kg)</th>
-                            <th scope="col">F(%)</th>
-                            <th scope="col">Raw data</th>
-                            <th scope="col"></th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for pk in pharmacokinetics %}
-                        <tr>
-                            <th scope="row">{{ forloop.counter }}</th>
-                            <td>{{ pk.date|date:"Y-m-d" }}</td>
-                            <td>{{ pk.Route }} </td>
-                            <td>{{ pk.tmax }}</td>
-                            <td>{{ pk.cmax }}</td>
-                            <td>{{ pk.t_half }}</td>
-                            <td>{{ pk.AUC }}</td>
-                            <td>{{ pk.CL }}</td>
-                            <td>{{ pk.Vss }}</td>
-                            <td>{{ pk.F }}</td>
-                            <td>raw data</td>
-                            <td>
-                                 <a href="" class ="btn btn-outline-secondary btn-sm">수정</a>
-<!--                                <form method="post" action="">-->
-<!--                                    {% csrf_token %}-->
-<!--                                    {{ form.as_p }}-->
-<!--                                    <button type="submit" class="btn btn-outline-secondary btn-sm">저장</button>-->
-<!--                                </form>-->
-                                <a href="" class ="btn btn-outline-danger btn-sm">삭제</a>
-                            </td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-               </div>
-
-              <div class="card-body">
-              <div class="d-flex justify-content-between align-items-center">
-                  <div class="text-start">
-                    <h4 class="card-title" >Cytotoxicity</h4>
-                  </div>
-                  <div class="d-flex justify-content-end">
-                  <form method="post" action="{% url 'cytotoxicity_add' target=chemical.target chem_id=chemical.chem_id %}">
-                    {% csrf_token %}
-                    {{ form.as_p }}
-                    <button type="submit" class="btn btn-outline-primary btn-sm"><i class="bi bi-plus-square"></i> Cytotoxicity</button>
-                  </form>
-                  </div>
+<!--    Tab      -->
+    <div class="tab-content pt-2" id="myTabContent">
+        <a href="{% url 'target_view' target=chemical.target %}"  class="btn btn-outline-primary btn-sm">Back to {{ chemical.target }}</a>
+<!--    Chemical property    -->
+        <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
+          <div class="card-body">
+            <div class="d-flex justify-content-between align-items-center">
+              <div class="text-start">
+                <h4 class="card-title"> Pharmacokinetics </h4>
               </div>
+              <div class="d-flex justify-content-end">
+              <form method="post" action="{% url 'pharmacokinetic_add' target=chemical.target chem_id=chemical.chem_id %}" >
+                {% csrf_token %}
+                {{ form.as_p }}
+                <button type="submit" class="btn btn-outline-primary btn-sm"><i class="bi bi-plus-square"></i> Pharmacokinetic</button>
+              </form>
+              </div>
+           </div>
+             <table class="table table-hover"  id="data-table" >
+                <thead>
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Date</th>
+                        <th scope="col">Route</th>
+                        <th scope="col">Tmax(h)</th>
+                        <th scope="col">Cmax(μg/mL)</th>
+                        <th scope="col">t1/2(h)</th>
+                        <th scope="col">AUCt(μg·h/mL)</th>
+                        <th scope="col">CL(L/h/kg)</th>
+                        <th scope="col">Vss(L/kg)</th>
+                        <th scope="col">F(%)</th>
+                        <th scope="col">Raw data</th>
+                        <th scope="col"></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for pk in pharmacokinetics %}
+                    <tr>
+                        <th scope="row">{{ forloop.counter }}</th>
+                        <td>{{ pk.date|date:"Y-m-d" }}</td>
+                        <td>{{ pk.Route }} </td>
+                        <td>{{ pk.tmax }}</td>
+                        <td>{{ pk.cmax }}</td>
+                        <td>{{ pk.t_half }}</td>
+                        <td>{{ pk.AUC }}</td>
+                        <td>{{ pk.CL }}</td>
+                        <td>{{ pk.Vss }}</td>
+                        <td>{{ pk.F }}</td>
+                        <td>raw data</td>
+                        <td>
+                            <a href="" class ="btn btn-outline-secondary btn-sm">수정</a>
+                            <button class ="btn btn-outline-danger btn-sm delete-btn"
+                                        data-url="{% url 'pharmacokinetic_delete' target=chemical.target chem_id=chemical.chem_id id=pk.id %}">삭제</button>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+           </div>
+          <div class="card-body">
+          <div class="d-flex justify-content-between align-items-center">
+              <div class="text-start">
+                <h4 class="card-title" >Cytotoxicity</h4>
+              </div>
+              <div class="d-flex justify-content-end">
+              <form method="post" action="{% url 'cytotoxicity_add' target=chemical.target chem_id=chemical.chem_id %}">
+                {% csrf_token %}
+                {{ form.as_p }}
+                <button type="submit" class="btn btn-outline-primary btn-sm"><i class="bi bi-plus-square"></i> Cytotoxicity</button>
+              </form>
+              </div>
+          </div>
+            <table  class="table table-hover">
+                <thead>
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Date</th>
+                        <th scope="col">VERO</th>
+                        <th scope="col">HFL-1</th>
+                        <th scope="col">L929</th>
+                        <th scope="col">NIH 3T3</th>
+                        <th scope="col">CHO-K1</th>
+                        <th scope="col">Raw data</th>
+                        <th scope="col"></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for ct in cytotoxicities %}
+                    <tr>
+                        <th scope="row">{{ forloop.counter }}</th>
+                        <td>{{ ct.date|date:"Y-m-d"  }}</td>
+                        <td>{{ ct.VERO }}</td>
+                        <td>{{ ct.HFL_1 }}</td>
+                        <td>{{ ct.L929 }}</td>
+                        <td>{{ ct.NIH_3T3 }}</td>
+                        <td>{{ ct.CHO_K1 }}</td>
+                        <td>raw data</td>
+                        <td>
+                            <a href="" class ="btn btn-outline-secondary btn-sm">수정</a>
+                            <button class ="btn btn-outline-danger btn-sm delete-btn"
+                                        data-url="{% url 'cytotoxicity_delete' target=chemical.target chem_id=chemical.chem_id id=ct.id %}">삭제</button>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+          </div>
+          <div class="card-body">
+             <div class="d-flex justify-content-between align-items-center">
+                  <div class="text-start">
+                 <h4 class="card-title">Liver Microsomal Stability</h4>
+              </div>
+              <div class="d-flex justify-content-end">
+                <form method="post" action="{% url 'liver_stability_add' target=chemical.target chem_id=chemical.chem_id %}">
+                    {% csrf_token %}
+                    {{ form.as_p }}
+                    <button type="submit" class="btn btn-outline-primary btn-sm"><i class="bi bi-plus-square"></i> Liver Microsomal Stability</button>
+                </form>
+              </div>
+             </div>
+            <table  class="table table-hover">
+                <thead>
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Date</th>
+                        <th scope="col">Mouse(%)</th>
+                        <th scope="col">Rat(%)</th>
+                        <th scope="col">Human(%)</th>
+                        <th scope="col">Raw data</th>
+                        <th scope="col"></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for ls in liver_stabilities %}
+                    <tr>
+                        <th scope="row">{{ forloop.counter }}</th>
+                        <td>{{ ls.date|date:"Y-m-d"  }}</td>
+                        <td>{{ ls.mouse }}</td>
+                        <td>{{ ls.rat }}</td>
+                        <td>{{ ls.human }}</td>
+                        <td>raw data </td>
+                        <td>
+                            <a href="" class ="btn btn-outline-secondary btn-sm">수정</a>
+                             <button class ="btn btn-outline-danger btn-sm delete-btn"
+                                        data-url="{% url 'liver_stability_delete' target=chemical.target chem_id=chemical.chem_id id=ls.id %}">삭제</button>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+          </div>
+          <div class="card-body">
+            <div class="d-flex justify-content-between align-items-center">
+              <div class="text-start">
+                 <h4 class="card-title">CYP Inhibition Data</h4>
+              </div>
+              <div class="d-flex justify-content-end">
+              <form method="post" action="{% url 'cyp_inhibition_add' target=chemical.target chem_id=chemical.chem_id %}">
+                {% csrf_token %}
+                {{ form.as_p }}
+                <button type="submit" class="btn btn-outline-primary btn-sm"><i class="bi bi-plus-square"></i> CYP inhibition</button>
+             </form>
+              </div>
+          </div>
                 <table  class="table table-hover">
                     <thead>
                         <tr>
                             <th scope="col">#</th>
                             <th scope="col">Date</th>
-                            <th scope="col">VERO</th>
-                            <th scope="col">HFL-1</th>
-                            <th scope="col">L929</th>
-                            <th scope="col">NIH 3T3</th>
-                            <th scope="col">CHO-K1</th>
+                            <th scope="col">CYP1A2</th>
+                            <th scope="col">CYP2C9</th>
+                            <th scope="col">CYP2C19</th>
+                            <th scope="col">CYP2D6</th>
+                            <th scope="col">CYP3A4</th>
                             <th scope="col">Raw data</th>
                             <th scope="col"></th>
                         </tr>
                     </thead>
                     <tbody>
-                        {% for ct in cytotoxicities %}
+                        {% for cyp in cyp_inhibitions %}
                         <tr>
                             <th scope="row">{{ forloop.counter }}</th>
-                            <td>{{ ct.date|date:"Y-m-d"  }}</td>
-                            <td>{{ ct.VERO }}</td>
-                            <td>{{ ct.HFL_1 }}</td>
-                            <td>{{ ct.L929 }}</td>
-                            <td>{{ ct.NIH_3T3 }}</td>
-                            <td>{{ ct.CHO_K1 }}</td>
+                            <td>{{ cyp.date|date:"Y-m-d" }}</td>
+                            <td>{{ cyp.cyp_1a2 }}</td>
+                            <td>{{ cyp.cyp_2c9 }}</td>
+                            <td>{{ cyp.cyp_2c19 }}</td>
+                            <td>{{ cyp.cyp_2d6 }}</td>
+                            <td>{{ cyp.cyp_3a4 }}</td>
                             <td>raw data</td>
                             <td>
                                 <a href="" class ="btn btn-outline-secondary btn-sm">수정</a>
-                                <a href="" class ="btn btn-outline-danger btn-sm">삭제</a>
+                               <button class ="btn btn-outline-danger btn-sm delete-btn"
+                                        data-url="{% url 'cyp_inhibition_delete' target=chemical.target chem_id=chemical.chem_id id=cyp.id %}">삭제</button>
                             </td>
                         </tr>
                         {% endfor %}
                     </tbody>
                 </table>
-              </div>
-
-              <div class="card-body">
-                 <div class="d-flex justify-content-between align-items-center">
-                      <div class="text-start">
-                     <h4 class="card-title">Liver Microsomal Stability</h4>
-                  </div>
-                  <div class="d-flex justify-content-end">
-                    <form method="post" action="{% url 'liver_stability_add' target=chemical.target chem_id=chemical.chem_id %}">
-                        {% csrf_token %}
-                        {{ form.as_p }}
-                        <button type="submit" class="btn btn-outline-primary btn-sm"><i class="bi bi-plus-square"></i> Liver Microsomal Stability</button>
-                    </form>
-                  </div>
-                 </div>
-                <table  class="table table-hover">
-                    <thead>
-                        <tr>
-                            <th scope="col">#</th>
-                            <th scope="col">Date</th>
-                            <th scope="col">Mouse(%)</th>
-                            <th scope="col">Rat(%)</th>
-                            <th scope="col">Human(%)</th>
-                            <th scope="col">Raw data</th>
-                            <th scope="col"></th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for ls in liver_stabilities %}
-                        <tr>
-                            <th scope="row">{{ forloop.counter }}</th>
-                            <td>{{ ls.date|date:"Y-m-d"  }}</td>
-                            <td>{{ ls.mouse }}</td>
-                            <td>{{ ls.rat }}</td>
-                            <td>{{ ls.human }}</td>
-                            <td>raw data </td>
-                            <td>
-                                <a href="" class ="btn btn-outline-secondary btn-sm">수정</a>
-                                <a href="" class ="btn btn-outline-danger btn-sm">삭제</a>
-                            </td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-              </div>
-
-              <div class="card-body">
-                <div class="d-flex justify-content-between align-items-center">
-                  <div class="text-start">
-                     <h4 class="card-title">CYP Inhibition Data</h4>
-                  </div>
-                  <div class="d-flex justify-content-end">
-                  <form method="post" action="{% url 'cyp_inhibition_add' target=chemical.target chem_id=chemical.chem_id %}">
-                    {% csrf_token %}
-                    {{ form.as_p }}
-                    <button type="submit" class="btn btn-outline-primary btn-sm"><i class="bi bi-plus-square"></i> CYP inhibition</button>
-                 </form>
-                  </div>
-              </div>
-                    <table  class="table table-hover">
-                        <thead>
-                            <tr>
-                                <th scope="col">#</th>
-                                <th scope="col">Date</th>
-                                <th scope="col">CYP1A2</th>
-                                <th scope="col">CYP2C9</th>
-                                <th scope="col">CYP2C19</th>
-                                <th scope="col">CYP2D6</th>
-                                <th scope="col">CYP3A4</th>
-                                <th scope="col">Raw data</th>
-                                <th scope="col"></th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {% for cyp in cyp_inhibitions %}
-                            <tr>
-                                <th scope="row">{{ forloop.counter }}</th>
-                                <td>{{ cyp.date|date:"Y-m-d" }}</td>
-                                <td>{{ cyp.cyp_1a2 }}</td>
-                                <td>{{ cyp.cyp_2c9 }}</td>
-                                <td>{{ cyp.cyp_2c19 }}</td>
-                                <td>{{ cyp.cyp_2d6 }}</td>
-                                <td>{{ cyp.cyp_3a4 }}</td>
-                                <td>raw data</td>
-                                <td>
-                                    <a href="" class ="btn btn-outline-secondary btn-sm">수정</a>
-                                    <a href="" class ="btn btn-outline-danger btn-sm">삭제</a>
-                                </td>
-                            </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
 <!--                <a href="{% url 'home' %}" class="btn btn-outline-primary btn-sm">Home</a>-->
-              </div>
-            </div>
-
-            <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab" >
-              <div class="card-body">
+          </div>
+        </div>
+<!--    In vitro     -->
+        <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab" >
+           <div class="card-body">
                 <div class="d-flex justify-content-between align-items-center">
                   <div class="text-start">
                      <h4 class="card-title">CCK assay</h4>
@@ -349,34 +347,197 @@ table, th, tr, td {
                             <td>raw data</td>
                             <td>
                                 <a href="" class ="btn btn-outline-secondary btn-sm">수정</a>
-                                <a href="" class ="btn btn-outline-danger btn-sm">삭제</a>
+                                <button class ="btn btn-outline-danger btn-sm delete-btn"
+                                        data-url="{% url 'cck_delete' target=chemical.target chem_id=chemical.chem_id id=assay.id %}">삭제</button>
                             </td>
                         </tr>
                         {% endfor %}
                     </tbody>
                 </table>
-              </div>
-    </div>
-          </div>
-    </div>
-</div>
 
-
- <div id="modal_add_feed" class="modal_overlay">
-      <div class="modal_window">
-          <div class="modal_title">
-              <span id="close_modal" class="material-icons-outlined">X</span>
           </div>
-          <div class="swiper-container">
-            <div class="swiper-wrapper">
+           <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center">
+                  <div class="text-start">
+                     <h4 class="card-title">Western blot</h4>
+                  </div>
+                  <div class="d-flex justify-content-end">
+                     <a href="{% url 'wb_add' target=chemical.target chem_id=chemical.chem_id %}" class="btn btn-outline-primary btn-sm"><i class="bi bi-plus-square"></i> Western blot</a>
+                  </div>
+               </div>
+                <table  class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th scope="col">#</th>
+                            <th scope="col">Date</th>
+                            <th scope="col">진행자</th>
+                            <th scope="col">Comment</th>
+                            <th scope="col">Image</th>
+                            <th scope="col">Raw data</th>
+                            <th scope="col"></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for wb in Western_blot %}
+                        <tr>
+                            <th scope="row">{{ forloop.counter }}</th>
+                            <td>{{ wb.date|date:"Y-m-d" }}</td>
+                            <td>{{ wb.user }}</td>
+                            <td>{{ wb.comment }}</td>
+                            <td>
+                                <div style="width:100%; height:auto;">
+                                     {% if wb.images.exists %}
+                                        <span class="badge badge-secondary py-1 open-modal" data-images="{% for image in wb.images.all %}{{ image.image.url }}{% if not forloop.last %},{% endif %}{% endfor %}">
+                                            ◯
+                                        </span>
+                                    {% else %}
+                                        이미지 없음
+                                    {% endif %}
+                                </div>
+                            </td>
+                            <td>raw data</td>
+                            <td>
+                                <a href="" class ="btn btn-outline-secondary btn-sm">수정</a>
+                                <button class ="btn btn-outline-danger btn-sm delete-btn"
+                                        data-url="{% url 'wb_delete' target=chemical.target chem_id=chemical.chem_id id=wb.id %}">삭제</button>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
             </div>
-            <div class="swiper-pagination"></div><div class="swiper-button-next"></div><div class="swiper-button-prev"></div>
-         </div>
-      </div>
+           <div class="card-body">
+             <div class="d-flex justify-content-between align-items-center">
+               <div class="text-start">
+                 <h4 class="card-title">In vitro Target Inhibition assay</h4>
+               </div>
+                  <div class="d-flex justify-content-end">
+                     <a href="{% url 'in_target_add' target=chemical.target chem_id=chemical.chem_id %}" class="btn btn-outline-primary btn-sm"><i class="bi bi-plus-square"></i> In vitro Target Inhibition assay</a>
+                  </div>
+             </div>
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th scope="col">#</th>
+                            <th scope="col">Date</th>
+                            <th scope="col">진행자</th>
+                            <th scope="col">In vitro inhibition at 10 μM(%)</th>
+                            <th scope="col">Target inhibition IC50(μM)</th>
+                            <th scope="col">Comment</th>
+                            <th scope="col">Image</th>
+                            <th scope="col">Raw data</th>
+                            <th scope="col"></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for ta in Target_Inhibition %}
+                        <tr>
+                            <th scope="row">{{ forloop.counter }}</th>
+                            <td>{{ ta.date|date:"Y-m-d" }}</td>
+                            <td>{{ ta.user }}</td>
+                            <td>{{ ta.vitro_at_10 }}</td>
+                            <td>{{ ta.Taret_IC50 }}</td>
+                            <td>{{ ta.comment }}</td>
+                            <td>
+                                <div style="width:100%; height:auto;">
+                                     {% if ta.images.exists %}
+                                        <span class="badge badge-secondary py-1 open-modal" data-images="{% for image in ta.images.all %}{{ image.image.url }}{% if not forloop.last %},{% endif %}{% endfor %}">
+                                            ◯
+                                        </span>
+                                    {% else %}
+                                        이미지 없음
+                                    {% endif %}
+                                </div>
+                            </td>
+                            <td>raw data</td>
+                            <td>
+                                <a href="" class ="btn btn-outline-secondary btn-sm">수정</a>
+                                <button class ="btn btn-outline-danger btn-sm delete-btn"
+                                        data-url="{% url 'in_target_delete' target=chemical.target chem_id=chemical.chem_id id=ta.id %}">삭제</button>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+          </div>
+           <div class="card-body">
+            <div class="d-flex justify-content-between align-items-center">
+              <div class="text-start">
+                 <h4 class="card-title">기타실험</h4>
+              </div>
+              <div class="d-flex justify-content-end">
+                 <a href="{% url 'other_add' target=chemical.target chem_id=chemical.chem_id %}" class="btn btn-outline-primary btn-sm"><i class="bi bi-plus-square"></i> 기타실험</a>
+              </div>
+            </div>
+            <table  class="table table-hover">
+                <thead>
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Date</th>
+                        <th scope="col">실험명</th>
+                        <th scope="col">진행자</th>
+                        <th scope="col">Comment</th>
+                        <th scope="col">Image</th>
+                        <th scope="col">Raw data</th>
+                        <th scope="col"></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for ot in other %}
+                    <tr>
+                        <th scope="row">{{ forloop.counter }}</th>
+                        <td>{{ ot.date|date:"Y-m-d" }}</td>
+                        <td>{{ ot.title }}</td>
+                        <td>{{ ot.user }}</td>
+                        <td>{{ ot.comment }}</td>
+                        <td>
+                             <div style="width:100%; height:auto;">
+                                {% if ot.images.exists %}
+                                    <span class="badge badge-secondary py-1 open-modal" data-images="{% for image in ot.images.all %}{{ image.image.url }}{% if not forloop.last %},{% endif %}{% endfor %}">
+                                        ◯
+                                    </span>
+                                {% else %}
+                                    이미지 없음
+                                {% endif %}
+                            </div>
+                        </td>
+                        <td>raw data</td>
+                        <td>
+                            <a href="" class ="btn btn-outline-secondary btn-sm">수정</a>
+                             <button class ="btn btn-outline-danger btn-sm delete-btn"
+                                        data-url="{% url 'other_delete' target=chemical.target chem_id=chemical.chem_id id=ot.id %}">삭제</button>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+          </div>
+        </div>
+<!--    In vivo     -->
+        <div class="tab-pane fade" id="contact" role="tabpanel" aria-labelledby="contact-tab">
+          추가예정2
+        </div>
+   </div>
+
+    </div>
 </div>
 
 
-<span id="add_feed" class="material-icons-outlined">add_box</span>
+<!--모달창 -->
+<div id="modal_add_feed" class="modal_overlay">
+   <div class="modal_window">
+      <div class="modal_title">
+          <span id="close_modal" class="material-icons-outlined">X</span>
+      </div>
+      <div class="swiper-container">
+        <div class="swiper-wrapper">
+        </div>
+        <div class="swiper-pagination"></div><div class="swiper-button-next"></div><div class="swiper-button-prev"></div>
+     </div>
+   </div>
+</div>
+
+
 {% endblock %}
 {% block extra_js %}
 <script src="https://cdn.jsdelivr.net/npm/swiper/swiper-bundle.min.js"></script>
@@ -422,5 +583,32 @@ table, th, tr, td {
         $('body').css('overflow-y', 'visible');
     });
 });
+
+$('.delete-btn').click(function() {
+    var url = $(this).data('url');
+    console.log(url);
+    var csrfToken = '{{ csrf_token }}';
+    var row = $(this).closest('tr');
+    console.log(row);
+    $.ajax({
+        url: url,
+        type: 'POST',
+        data: {
+            'csrfmiddlewaretoken': csrfToken
+        },
+        success: function(response) {
+            if (response.success) {
+                 row.remove();
+            } else {
+                console.log('error');
+                alert('Error: ' + response.error);
+            }
+        },
+        error: function(xhr, status, error) {
+            console.error("AJAX 요청 실패:", status, error);
+        }
+    })
+});
+
 </script>
 {% endblock %}

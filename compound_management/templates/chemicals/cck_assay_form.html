@@ -1,5 +1,5 @@
 {% extends 'base.html' %}
-{% block title %}Add In vitro assay Data{% endblock %}
+{% block title %}Add CCK assay Data{% endblock %}
 {% block extra_head %}
 {% endblock %}
 {% block content %}
@@ -41,14 +41,14 @@
                   </div>
                 </div>
 
-              <div class="row mb-3">
+                <div class="row mb-3">
                   <label for="IC50" class="col-sm-2 col-form-label">IC50(μM)</label>
                   <div class="col-sm-10">
                       <input type="number" step="any" class="form-control" id="IC50" name="IC50" value="{{ form.IC50.value|default_if_none:'' }}">
                   </div>
-              </div>
+                </div>
 
-              <fieldset class="row mb-3">
+                <fieldset class="row mb-3">
                   <legend class="col-form-label col-sm-2 pt-0">석출여부</legend>
                   <div class="col-sm-10">
                     <div class="form-check">
@@ -60,41 +60,41 @@
                       <label class="form-check-label" for="Out_F"> No </label>
                     </div>
                   </div>
-              </fieldset>
+                </fieldset>
 
-              <div class="row mb-3">
+                <div class="row mb-3">
                   <label for="comment" class="col-sm-2 col-form-label">Comment</label>
                   <div class="col-sm-10">
                     <textarea  class="form-control" id="comment" name="comment" >{{ form.comment.value|default_if_none:'' }}</textarea>
                   </div>
-              </div>
+                </div>
 
-              <div class="row mb-3">
+                <div class="row mb-3">
                   <label for="image" class="col-sm-2 col-form-label">Image</label>
                   <div class="col-sm-10" >
                     <input type="file" id="image" name="images" class="form-control" accept="image/*" multiple>
                   </div>
-              </div>
+                </div>
 
-              <div class="row mb-3">
-                 <ul class="lst_thumb"> </ul>
-              </div>
+                <div class="row mb-3">
+                  <ul class="lst_thumb"> </ul>
+                </div>
 
-            <div class="row mb-3 " style="display:none">
-              <label for="id_userid" class="col-sm-2 col-form-label" > User</label>
-              <div class="col-sm-10">
-                 <input class="form-control" type="text" id="id_userid" name="user" value="{{ user.name }}" readonly>
-              </div>
-            </div>
+              <div class="row mb-3 " style="display:none">
+               <label for="id_userid" class="col-sm-2 col-form-label" > User</label>
+               <div class="col-sm-10">
+                  <input class="form-control" type="text" id="id_userid" name="user" value="{{ user.name }}" readonly>
+               </div>
+             </div>
 
-            <div class="row mb-3">
-              <label class="col-sm-2 col-form-label"></label>
-              <div class="col-sm-10">
-                <button type="submit" class="btn btn-primary">Submit Form</button>
-                <button class="btn btn-primary">cancel</button>
-              </div>
-            </div>
-          </form>
+             <div class="row mb-3">
+               <label class="col-sm-2 col-form-label"></label>
+               <div class="col-sm-10">
+                 <button type="submit" class="btn btn-primary">Submit Form</button>
+                 <button class="btn btn-primary">cancel</button>
+               </div>
+             </div>
+           </form>
 
         </div>
        </div>
@@ -159,6 +159,5 @@ function loadImg(input) {
         }
     }
 }
-
 </script>
 {% endblock %}

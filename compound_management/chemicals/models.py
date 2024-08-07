@@ -148,11 +148,6 @@ class CCK_assay(models.Model):
     def __str__(self):
         return f'{self.chemical.chem_id} - {self.date} CCK_assay'
 
-class CCK_Image(models.Model):
-    cck_assay = models.ForeignKey(CCK_assay, related_name='images', on_delete=models.CASCADE)
-    image = models.ImageField(upload_to='cck/')
-
-
 class Western_blot(models.Model):
     chemical = models.ForeignKey(Chemical, on_delete=models.CASCADE)
     date = models.DateField()
@@ -160,7 +155,7 @@ class Western_blot(models.Model):
     comment = models.TextField(null=True)
 
     def __str__(self):
-        return f'{self.chemical.chem_id} - {self.date} In_vitro'
+        return f'{self.chemical.chem_id} - {self.date} Western_blot'
 
 class Target_Inhibition(models.Model):
     chemical = models.ForeignKey(Chemical, on_delete=models.CASCADE)
@@ -171,9 +166,9 @@ class Target_Inhibition(models.Model):
     comment = models.TextField(null=True)
 
     def __str__(self):
-        return f'{self.chemical.chem_id} - {self.date} In_vitro'
+        return f'{self.chemical.chem_id} - {self.date} Target_Inhibition'
 
-class other(models.Model):
+class other_asssay(models.Model):
     chemical = models.ForeignKey(Chemical, on_delete=models.CASCADE)
     date = models.DateField()
     user = models.CharField(max_length=200, null=True)
@@ -181,7 +176,16 @@ class other(models.Model):
     comment = models.TextField(null=True)
 
     def __str__(self):
-        return f'{self.chemical.chem_id} - {self.date} In_vitro'
+        return f'{self.chemical.chem_id} - {self.date} other_asssay'
+
+
+class invtro_Image(models.Model):
+    cck_assay = models.ForeignKey(CCK_assay, related_name='images', on_delete=models.CASCADE,null=True)
+    image = models.ImageField(upload_to='in_vitro/')
+    wb = models.ForeignKey(Western_blot, related_name='images', on_delete=models.CASCADE,null=True)
+    in_target = models.ForeignKey(Target_Inhibition,related_name='images',on_delete=models.CASCADE,null=True)
+    others = models.ForeignKey(other_asssay,related_name='images',on_delete=models.CASCADE,null=True)
+
 
 class UserManager(BaseUserManager):
     def create_user(self, email, userID, password=None, **extra_fields):

@@ -4,7 +4,7 @@ from django import forms
 from django.forms import modelformset_factory
 
 from .models import Chemical, Pharmacokinetic, Cytotoxicity, SchrödingerModel, LiverMicrosomalStability, CYPInhibition, \
-    User, CCK_assay, CCK_Image
+    User, CCK_assay, invtro_Image, Western_blot, Target_Inhibition, other_asssay
 
 
 # from compound_management.chemicals.models import Chemical, Pharmacokinetic, Cytotoxicity, SchrödingerModel, LiverMicrosomalStability, CYPInhibition, User
@@ -16,7 +16,7 @@ class DateInput(forms.DateInput):
 class ChemicalForm(forms.ModelForm):
     class Meta:
         model = Chemical
-        fields = ['chem_id', 'smiles', 'image', 'MW', 'cLogP', 'TPSA','H_donors', 'H_acceptors', 'lipinski','user']
+        fields = ['chem_id', 'smiles', 'image', 'MW', 'cLogP', 'TPSA' , 'H_donors', 'H_acceptors', 'lipinski','user']
 
 class ChemicalUploadForm(forms.Form):
     file = forms.FileField()
@@ -32,7 +32,7 @@ class PharmacokineticForm(forms.ModelForm):
 class CytotoxicityForm(forms.ModelForm):
     class Meta:
         model = Cytotoxicity
-        fields = ['date', 'VERO', 'HFL_1', 'L929', 'NIH_3T3', 'CHO_K1','user']
+        fields = ['date', 'VERO', 'HFL_1', 'L929', 'NIH_3T3', 'CHO_K1' , 'user']
         widgets = {
             'date': DateInput(),  # DateInput 위젯 사용
         }
@@ -48,7 +48,7 @@ class SchrödingerModelUploadForm(forms.Form):
 class LiverMicrosomalStabilityForm(forms.ModelForm):
     class Meta:
         model = LiverMicrosomalStability
-        fields = ['date', 'mouse', 'rat', 'human','user']
+        fields = ['date', 'mouse', 'rat', 'human' , 'user']
         widgets = {
             'date': DateInput(),  # DateInput 위젯 사용
         }
@@ -56,7 +56,7 @@ class LiverMicrosomalStabilityForm(forms.ModelForm):
 class CYPInhibitionForm(forms.ModelForm):
     class Meta:
         model = CYPInhibition
-        fields = ['date', 'cyp_1a2', 'cyp_2c9', 'cyp_2c19', 'cyp_2d6', 'cyp_3a4','user']
+        fields = ['date', 'cyp_1a2', 'cyp_2c9', 'cyp_2c19', 'cyp_2d6', 'cyp_3a4' , 'user']
         widgets = {
             'date': DateInput(),  # DateInput 위젯 사용
         }
@@ -64,13 +64,38 @@ class CYPInhibitionForm(forms.ModelForm):
 class cckForm(forms.ModelForm):
     class Meta:
         model = CCK_assay
-        fields = ['date', 'user',  'cell', 'IC50' , 'Out', 'comment']
+        fields = ['date', 'user',  'cell', 'IC50' , 'Out' , 'comment']
         widgets = {
             'date': DateInput(),  # DateInput 위젯 사용
         }
-class cckimgForm(forms.ModelForm):
+class wbForm(forms.ModelForm):
     class Meta:
-        model = CCK_Image
+        model = Western_blot
+        fields = ['date', 'user' , 'comment']
+        widgets = {
+            'date': DateInput(),  # DateInput 위젯 사용
+        }
+
+class intargetForm(forms.ModelForm):
+    class Meta:
+        model = Target_Inhibition
+        fields = ['date', 'user', 'vitro_at_10' , 'Taret_IC50' , 'comment']
+        widgets = {
+            'date': DateInput(),  # DateInput 위젯 사용
+        }
+
+class otherForm(forms.ModelForm):
+    class Meta:
+        model = other_asssay
+        fields = ['date', 'user', 'title' , 'comment']
+        widgets = {
+            'date': DateInput(),  # DateInput 위젯 사용
+        }
+
+
+class invtroimgForm(forms.ModelForm):
+    class Meta:
+        model = invtro_Image
         fields = ['image']
         widgets = {
             'image': forms.ClearableFileInput(attrs={'multiple': True}),
