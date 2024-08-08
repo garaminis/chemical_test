@@ -9,38 +9,42 @@
 </style>
 {% endblock %}
 {% block content %}
-<!--<h2>Pharmacokinetic Data for {{ chemical.chem_id }}</h2>-->
-<!--<form method="post">-->
-<!--    {% csrf_token %}-->
-<!--    {{ form.as_p }}-->
-<!--    <button type="submit">Save</button>-->
-<!--</form>-->
-<!--<a href="{% url 'pharmacokinetic_list' target=chemical.target chem_id=chemical.chem_id %}">Cancel</a>-->
-
-
+<h2>{{ target }} / Chem id : {{ chem_id }}</h2>
+<div class="pagetitle">
+    <nav style="--bs-breadcrumb-divider: '>';">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{% url 'home' %}">Home</a></li>
+            <li class="breadcrumb-item active">Targets</li>
+            <li class="breadcrumb-item active"><a href="{% url 'target_view' target=target %}">{{ target }}</a> </li>
+            <li class="breadcrumb-item active"><a href="{% url 'pharmacokinetic_list' target=target chem_id=chem_id%}">Result</a></li>
+<!--            <li class="breadcrumb-item active">Chemical Property</li>-->
+            <li class="breadcrumb-item active">Cytotoxicity</li>
+        </ol>
+    </nav>
+</div>
 <div class="col-lg-6">
   <div class="card">
     <div class="card-body">
-      <h4 class="card-title">Pharmacokinetic Data for {{ chemical.chem_id }}</h4>
-
+      <h4 class="card-title">Pharmacokinetic Data for {{ chem_id }}</h4>
+        <button class="btn btn-outline-primary btn-sm" onclick="history.back()">Back</button>
         <form method="post" >
          {% csrf_token %}
             <div class="row mb-3">
               <label for="date" class="col-sm-2 col-form-label">Date</label>
               <div class="col-sm-10">
                 <input type="date" class="form-control" id="date" name="date"
-                 value="{{ form.date.value|default_if_none:'' }}">  <!-- 필드의 초기값을 폼에서 가져와서 입력 필드에 설정 -->
+                 value="{{ form.date.value|date:'Y-m-d' }}">  <!-- 필드의 초기값을 폼에서 가져와서 입력 필드에 설정 -->
               </div>
             </div>
 
             <div class="row mb-3">
               <label for="Route" class="col-sm-2 col-form-label">Route</label>
               <div class="col-sm-10">
-                 <select class="form-select" aria-label="Default select example" id="Route" name="Route" value="{{ form.Route.value|default_if_none:'' }}" required>
-                      <option value="" selected disabled hidden>Administration route*</option>
-                      <option value="PO">PO</option>
-                      <option value="IV">IV</option>
-                  </select>
+                 <select class="form-select" aria-label="Default select example" id="Route" name="Route">
+                    <option value="" disabled hidden {% if not form.Route.value %}selected{% endif %}>Administration route*</option>
+                    <option value="PO" {% if form.Route.value == 'PO' %}selected{% endif %}>PO</option>
+                    <option value="IV" {% if form.Route.value == 'IV' %}selected{% endif %}>IV</option>
+                 </select>
     <!--               <input type="text" class="form-control" id="Route" name="Route" value="{{ form.Route.value|default_if_none:'' }}">-->
               </div>
             </div>

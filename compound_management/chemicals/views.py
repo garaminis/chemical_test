@@ -6,9 +6,6 @@ from django.shortcuts import render
 
 # Create your views here.
 from django.shortcuts import render, redirect, get_object_or_404
-from django.utils.decorators import method_decorator
-from django.views.decorators.csrf import csrf_protect
-from django.views.decorators.http import require_POST
 
 from .models import Chemical, Pharmacokinetic, Cytotoxicity, SchrödingerModel, LiverMicrosomalStability, CYPInhibition, \
     User, CCK_assay, invtro_Image, Western_blot, Target_Inhibition, other_asssay
@@ -16,7 +13,6 @@ from .forms import ChemicalForm, ChemicalUploadForm, PharmacokineticForm, Cytoto
     SchrödingerModelUploadForm, LiverMicrosomalStabilityForm, CYPInhibitionForm, UserForm, cckForm, wbForm, \
     intargetForm, otherForm
 from django.contrib.auth import authenticate, login, logout
-from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.decorators import login_required
 # R2Py
 import subprocess
@@ -248,19 +244,33 @@ def pharmacokinetic_add(request, target, chem_id):
         if form.is_valid():
             pharmacokinetic = form.save(commit=False)
             pharmacokinetic.chemical = chemical
+            # Pharmacokinetic 모델이 Chemical 모델과 외래 키(ForeignKey)로 연결되어 있고, 해당 필드가 null을 허용하지 않는다면, 이 설정이 필수적임
             pharmacokinetic.save()
             return redirect('pharmacokinetic_list', target=target, chem_id=chem_id)
     else:
         form = PharmacokineticForm()
-    return render(request, 'chemicals/pharmacokinetic_form.html', {'form': form, 'chemical': chemical,  'target': target})
-
+    return render(request, 'chemicals/pharmacokinetic_form.html', {'form': form, 'target': target,'chem_id': chem_id})
 @login_required
 def pharmacokinetic_delete (request, target, chem_id ,id):
     Pharm = get_object_or_404(Pharmacokinetic, id=id)
+    chemical = get_object_or_404(Chemical, chem_id=chem_id)
     if request.method == 'POST':
         Pharm.delete()
         return JsonResponse({'success': True, 'id': id})
     return JsonResponse({'success': False, 'error': 'Invalid request'}, status=400)
+@login_required
+def pharmacokinetic_update(request, target, chem_id ,id):
+    Pharm = get_object_or_404(Pharmacokinetic, id=id)
+    if request.method == 'POST':
+        form = PharmacokineticForm(request.POST, instance=Pharm)
+        if form.is_valid():
+            Pharm = form.save(commit=False)
+            Pharm.save()
+            return redirect('pharmacokinetic_list', target=target, chem_id=chem_id)
+    else:
+        form = PharmacokineticForm(instance=Pharm)
+    return render(request, 'chemicals/pharmacokinetic_form.html', {'form': form, 'target': target, 'id':id,'chem_id': chem_id})
+ # fomr으로 인자전잘 꼭 해줘야함.
 
 @login_required
 def cytotoxicity_add(request, target, chem_id):
@@ -274,7 +284,7 @@ def cytotoxicity_add(request, target, chem_id):
             return redirect('pharmacokinetic_list', target=target, chem_id=chem_id)
     else:
         form = CytotoxicityForm()
-    return render(request, 'chemicals/cytotoxicity_form.html', {'form': form, 'chemical': chemical})
+    return render(request, 'chemicals/cytotoxicity_form.html', {'form': form, 'target': target,'chem_id': chem_id})
 
 @login_required
 def cytotoxicity_delete(request, target, chem_id ,id):
@@ -283,6 +293,20 @@ def cytotoxicity_delete(request, target, chem_id ,id):
         Cyto.delete()
         return JsonResponse({'success': True, 'id': id})
     return JsonResponse({'success': False, 'error': 'Invalid request'}, status=400)
+
+@login_required
+def cytotoxicity_update(request, target, chem_id ,id):
+    Cyto = get_object_or_404(Cytotoxicity, id=id)
+    if request.method == 'POST':
+        form = CytotoxicityForm(request.POST, instance=Cyto)
+        if form.is_valid():
+            Cyto = form.save(commit=False)
+            Cyto.save()
+            logger.debug(f'Chemical updated: {Cyto}')
+            return redirect('pharmacokinetic_list', target=target, chem_id=chem_id)
+    else:
+        form = CytotoxicityForm(instance=Cyto)
+    return render(request, 'chemicals/Cytotoxicity_form.html', {'form': form, 'target': target, 'id':id,'chem_id': chem_id})
 
 @login_required
 def schrodinger_model_list(request, target, chem_id):
@@ -344,7 +368,7 @@ def liver_stability_add(request, target, chem_id):
             return redirect('pharmacokinetic_list', target=target, chem_id=chem_id)
     else:
         form = LiverMicrosomalStabilityForm()
-    return render(request, 'chemicals/liver_stability_form.html', {'form': form, 'chemical': chemical})
+    return render(request, 'chemicals/liver_stability_form.html', {'form': form, 'target': target,'chem_id': chem_id})
 
 @login_required
 def liver_stability_delete(request, target, chem_id ,id):
@@ -353,6 +377,20 @@ def liver_stability_delete(request, target, chem_id ,id):
         liver.delete()
         return JsonResponse({'success': True, 'id': id})
     return JsonResponse({'success': False, 'error': 'Invalid request'}, status=400)
+
+@login_required
+def liver_stability_update(request, target, chem_id ,id):
+    liver = get_object_or_404(LiverMicrosomalStability, id=id)
+    if request.method == 'POST':
+        form = LiverMicrosomalStabilityForm(request.POST, instance=liver)
+        if form.is_valid():
+            liver = form.save(commit=False)
+            liver.save()
+            logger.debug(f'Chemical updated: {liver}')
+            return redirect('pharmacokinetic_list', target=target, chem_id=chem_id)
+    else:
+        form = LiverMicrosomalStabilityForm(instance=liver)
+    return render(request, 'chemicals/liver_stability_form.html', {'form': form, 'target': target, 'id':id, 'chem_id': chem_id })
 
 @login_required
 def cyp_inhibition_add(request, target, chem_id):
@@ -366,7 +404,7 @@ def cyp_inhibition_add(request, target, chem_id):
             return redirect('pharmacokinetic_list', target=target, chem_id=chem_id)
     else:
         form = CYPInhibitionForm()
-    return render(request, 'chemicals/cyp_inhibition_form.html', {'form': form, 'chemical': chemical})
+    return render(request, 'chemicals/cyp_inhibition_form.html', {'form': form, 'target': target,'chem_id': chem_id})
 
 @login_required
 def cyp_inhibition_delete(request, target, chem_id ,id):
@@ -375,6 +413,20 @@ def cyp_inhibition_delete(request, target, chem_id ,id):
         cyp.delete()
         return JsonResponse({'success': True, 'id': id})
     return JsonResponse({'success': False, 'error': 'Invalid request'}, status=400)
+
+@login_required
+def cyp_inhibition_update(request, target, chem_id ,id):
+    CYP = get_object_or_404(CYPInhibition, id=id)
+    if request.method == 'POST':
+        form = CYPInhibitionForm(request.POST, instance=CYP)
+        if form.is_valid():
+            CYP = form.save(commit=False)
+            CYP.save()
+            logger.debug(f'Chemical updated: {CYP}')
+            return redirect('pharmacokinetic_list', target=target, chem_id=chem_id)
+    else:
+        form = CYPInhibitionForm(instance=CYP)
+    return render(request, 'chemicals/cyp_inhibition_form.html', {'form': form, 'target': target, 'id':id, 'chem_id': chem_id})
 @login_required
 def cck_add(request, target, chem_id):
     chemical = get_object_or_404(Chemical, chem_id=chem_id)
@@ -396,7 +448,7 @@ def cck_add(request, target, chem_id):
         form = cckForm()
     return render(request, 'chemicals/cck_assay_form.html', {
         'form': form,
-        'chemical': chemical,
+        'chem_id': chem_id,
         'target': target,
     })
 
@@ -413,6 +465,22 @@ def cck_delete (request, target, chem_id ,id):
         return JsonResponse({'success': True, 'id': id})
     return JsonResponse({'success': False, 'error': 'Invalid request'}, status=400)
 
+@login_required
+def cck_update(request, target, chem_id ,id):
+    cck = get_object_or_404(CCK_assay, id=id)
+    # cck_images = invtro_Image.objects.filter(cck_assay=id)
+    if request.method == 'POST':
+        form = cckForm(request.POST, instance=cck)
+        #formset = invtro_Image(request.POST, request.FILES, instance=cck)
+        if form.is_valid() :
+            cck = form.save(commit=False)
+            cck.save()
+            #formset.save()
+            logger.debug(f'Chemical updated: {cck}')
+            return redirect('pharmacokinetic_list', target=target, chem_id=chem_id)
+    else:
+        form = cckForm(instance=cck)
+    return render(request, 'chemicals/cck_assay_form.html', {'form': form, 'target': target, 'id':id, 'chem_id': chem_id})
 
 @login_required
 def wb_add(request, target, chem_id):
@@ -431,7 +499,7 @@ def wb_add(request, target, chem_id):
         form = wbForm()
     return render(request, 'chemicals/wb_form.html', {
         'form': form,
-        'chemical': chemical,
+        'chem_id': chem_id,
         'target': target,
     })
 
@@ -464,7 +532,7 @@ def in_target_add(request, target, chem_id):
         form = intargetForm()
     return render(request, 'chemicals/in_target_form.html', {
         'form': form,
-        'chemical': chemical,
+        'chem_id': chem_id,
         'target': target,
     })
 @login_required
@@ -496,7 +564,7 @@ def other_add(request, target, chem_id):
         form = intargetForm()
     return render(request, 'chemicals/other_form.html', {
         'form': form,
-        'chemical': chemical,
+        'chem_id': chem_id,
         'target': target,
     })
 

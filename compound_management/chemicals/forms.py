@@ -26,13 +26,13 @@ class PharmacokineticForm(forms.ModelForm):
         model = Pharmacokinetic
         fields = ['date', 'cmax', 'tmax', 'AUC', 't_half', 'Vss', 'F', 'CL', 'Route','user']
         widgets = {
-            'date': DateInput(),  # DateInput 위젯 사용
+            'date': DateInput(attrs={'type': 'date'}),  # DateInput 위젯 사용
         }
 
 class CytotoxicityForm(forms.ModelForm):
     class Meta:
         model = Cytotoxicity
-        fields = ['date', 'VERO', 'HFL_1', 'L929', 'NIH_3T3', 'CHO_K1' , 'user']
+        fields = ['date', 'VERO', 'HFL_1', 'L929', 'NIH_3T3', 'CHO_K1', 'user']
         widgets = {
             'date': DateInput(),  # DateInput 위젯 사용
         }
@@ -94,12 +94,11 @@ class otherForm(forms.ModelForm):
 
 
 class invtroimgForm(forms.ModelForm):
+    images = forms.FileField(widget=forms.ClearableFileInput(attrs={'multiple': True}))
     class Meta:
         model = invtro_Image
         fields = ['image']
-        widgets = {
-            'image': forms.ClearableFileInput(attrs={'multiple': True}),
-        }
+
 
 class UserForm(forms.ModelForm):
     # 패스워드 필드를 정의하며, 입력 시 비밀번호 입력 필드를 사용합니다.

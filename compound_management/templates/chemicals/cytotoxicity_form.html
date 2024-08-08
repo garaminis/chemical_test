@@ -1,28 +1,34 @@
 {% extends 'base.html' %}
 {% block title %}
-    Add Cytotoxicity Data for {{ chemical.chem_id }}
+    Add Cytotoxicity Data for {{ chem_id }}
 {% endblock %}
 {% block content %}
-    <h2>Add Cytotoxicity Data for {{ chemical.chem_id }}</h2>
-<!--    <form method="post">-->
-<!--        {% csrf_token %}-->
-<!--        {{ form.as_p }}-->
-<!--        <button type="submit">Save</button>-->
-<!--    </form>-->
-<!--    <a href="{% url 'pharmacokinetic_list' target=chemical.target chem_id=chemical.chem_id %}">Cancel</a>-->
+<h2>{{ target }} / Chem id : {{ chem_id }}</h2>
+<div class="pagetitle">
+    <nav style="--bs-breadcrumb-divider: '>';">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{% url 'home' %}">Home</a></li>
+            <li class="breadcrumb-item active">Targets</li>
+            <li class="breadcrumb-item active"><a href="{% url 'target_view' target=target %}">{{ target }}</a> </li>
+            <li class="breadcrumb-item active"><a href="{% url 'pharmacokinetic_list' target=target chem_id=chem_id%}">Result</a> </li>
+<!--            <li class="breadcrumb-item active">Chemical Property</li>-->
+            <li class="breadcrumb-item active">Cytotoxicity</li>
+        </ol>
+    </nav>
+</div>
 
 <div class="col-lg-6">
   <div class="card">
     <div class="card-body">
-      <h4 class="card-title">Pharmacokinetic Data for {{ chemical.chem_id }}</h4>
-
+      <h4 class="card-title">Cytotoxicity Data for {{ chem_id }}</h4>
+       <button class="btn btn-outline-primary btn-sm" onclick="history.back()">Back</button>
         <form method="post" >
          {% csrf_token %}
             <div class="row mb-3">
               <label for="date" class="col-sm-2 col-form-label">Date</label>
               <div class="col-sm-10">
                 <input type="date" class="form-control" id="date" name="date"
-                 value="{{ form.date.value|default_if_none:'' }}">  <!-- 필드의 초기값을 폼에서 가져와서 입력 필드에 설정 -->
+                 value="{{ form.date.value|date:'Y-m-d' }}">  <!-- 필드의 초기값을 폼에서 가져와서 입력 필드에 설정 -->
               </div>
             </div>
 
@@ -57,7 +63,7 @@
           <div class="row mb-3">
               <label for="CHO-K1" class="col-sm-2 col-form-label">CHO-K1</label>
               <div class="col-sm-10">
-                <input type="number" step="any" class="form-control" id="CHO-K1" name="CHO-K1" value="{{ form.CHO_K1.value|default_if_none:'' }}">
+                <input type="number" step="any" class="form-control" id="CHO-K1" name="CHO_K1" value="{{ form.CHO_K1.value|default_if_none:'' }}">
               </div>
           </div>
 

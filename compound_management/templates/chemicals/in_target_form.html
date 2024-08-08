@@ -16,14 +16,24 @@
 <!--    <button type="submit">Save</button>-->
 <!--</form>-->
 <!--<a href="{% url 'pharmacokinetic_list' target=chemical.target chem_id=chemical.chem_id %}">Cancel</a>-->
-
+<div class="pagetitle">
+    <nav style="--bs-breadcrumb-divider: '>';">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{% url 'home' %}">Home</a></li>
+            <li class="breadcrumb-item active">Targets</li>
+            <li class="breadcrumb-item active"><a href="{% url 'target_view' target=chemical.target %}">{{ target }}</a> </li>
+            <li class="breadcrumb-item active"><a href="{% url 'pharmacokinetic_list' target=chemical.target chem_id=chemical.chem_id%}">Result</a> </li>
+            <li class="breadcrumb-item active">In vitro Inhibition assay</li>
+        </ol>
+    </nav>
+</div>
 <div class="col-lg-6">
   <div class="card">
-    <div class="card-body"><br>
+    <div class="card-body">
        <div class="tab-content pt-2" id="myTabContent">
           <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
           <h4 class="card-title">In vitro Data : In vitro Inhibition assay </h4>
-
+            <a href="{% url 'pharmacokinetic_list' target=chemical.target chem_id=chemical.chem_id%}"  class="btn btn-outline-primary btn-sm">Back</a>
           <form method="post" enctype="multipart/form-data">
              {% csrf_token %}
              <div class="row mb-3">
