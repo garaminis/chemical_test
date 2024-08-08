@@ -1,7 +1,7 @@
 import re
 
 from django import forms
-from django.forms import modelformset_factory
+from django.forms import modelformset_factory, ClearableFileInput
 
 from .models import Chemical, Pharmacokinetic, Cytotoxicity, SchrödingerModel, LiverMicrosomalStability, CYPInhibition, \
     User, CCK_assay, invtro_Image, Western_blot, Target_Inhibition, other_asssay
@@ -97,8 +97,22 @@ class otherForm(forms.ModelForm):
 #     class Meta:
 #         model = invtro_Image
 #         fields = ['image']
+
+class CustomClearableFileInput(ClearableFileInput):
+    allow_multiple_selected = True
+
+    def __init__(self, attrs=None):
+        super().__init__(attrs)
+        if attrs is None:
+            attrs = {}
+        attrs.update({'multiple': True})
+
+    def value_from_datadict(self, data, files, name):
+        if self.allow_multiple_selected:
+            return files.getlist(name)
+        return files.get(name)
 class InvtroimgForm(forms.ModelForm):
-    images = forms.ImageField(widget=forms.FileInput(attrs={'multiple': True}))
+    images = forms.ImageField(widget=CustomClearableFileInput)
     class Meta:
         model = invtro_Image # 여기에 해당 모델 이름을 입력하세요
         fields = ['images']
