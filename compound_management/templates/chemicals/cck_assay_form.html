@@ -106,61 +106,61 @@
 {% endblock %}
 {% block extra_js %}
 <script>
-let onnode = document.querySelector('.lst_thumb');
-const imageTag = document.getElementById("image");
+<!--let onnode = document.querySelector('.lst_thumb');-->
+<!--const imageTag = document.getElementById("image");-->
 
-imageTag.addEventListener('change', function () {
-    loadImg(this);
-});
+<!--imageTag.addEventListener('change', function () {-->
+<!--    loadImg(this);-->
+<!--});-->
 
-function loadImg(input) {
-    console.log("in");
+<!--function loadImg(input) {-->
+<!--    console.log("in");-->
 
-    let files = Array.from(input.files);
+<!--    let files = Array.from(input.files);-->
 
-    for (let i = 0; i < input.files.length; i++) {
-        console.log("in");
-        if (input.files && input.files[i]) {
+<!--    for (let i = 0; i < input.files.length; i++) {-->
+<!--        console.log("in");-->
+<!--        if (input.files && input.files[i]) {-->
 
-            let reader = new FileReader();
+<!--            let reader = new FileReader();-->
 
-            let fullname = input.files[i].name;
-            let ext = fullname.split('.').pop();
-            console.log("확장자: " + ext);
+<!--            let fullname = input.files[i].name;-->
+<!--            let ext = fullname.split('.').pop();-->
+<!--            console.log("확장자: " + ext);-->
 
-            let node = document.createElement('li');
-            let tmp = `
-                <img src="" class="uploadimage">
-                ${fullname}
-                <input type="button" class="rmbtn" value="삭제">
-            `;
-            node.innerHTML = tmp;
+<!--            let node = document.createElement('li');-->
+<!--            let tmp = `-->
+<!--                <img src="" class="uploadimage">-->
+<!--                ${fullname}-->
+<!--                <input type="button" class="rmbtn" value="삭제">-->
+<!--            `;-->
+<!--            node.innerHTML = tmp;-->
 
-            node.querySelector('.rmbtn').addEventListener('click', function () {
-                node.remove();
-                // 파일 삭제 처리
-                const dataTransfer = new DataTransfer();
-                let fileArray = Array.from(input.files);
-                fileArray.splice(i, 1); // 현재 파일을 배열에서 제거
-                fileArray.forEach(file => {
-                    dataTransfer.items.add(file);
-                });
-                input.files = dataTransfer.files; // 수정된 파일 목록으로 업데이트
-            });
+<!--            node.querySelector('.rmbtn').addEventListener('click', function () {-->
+<!--                node.remove();-->
+<!--                // 파일 삭제 처리-->
+<!--                const dataTransfer = new DataTransfer();-->
+<!--                let fileArray = Array.from(input.files);-->
+<!--                fileArray.splice(i, 1); // 현재 파일을 배열에서 제거-->
+<!--                fileArray.forEach(file => {-->
+<!--                    dataTransfer.items.add(file);-->
+<!--                });-->
+<!--                input.files = dataTransfer.files; // 수정된 파일 목록으로 업데이트-->
+<!--            });-->
 
-            if (ext === "txt") {
-                onnode.appendChild(node);
-                node.querySelector("img").setAttribute('src', "/assets/img/textfile.jpg");
-            } else {
-                reader.onload = function (e) {
-                    onnode.appendChild(node);
-                    node.querySelector("img").setAttribute('src', e.target.result);
-                }
-                reader.readAsDataURL(input.files[i]);
-            }
-        }
-    }
-}
+<!--            if (ext === "txt") {-->
+<!--                onnode.appendChild(node);-->
+<!--                node.querySelector("img").setAttribute('src', "/assets/img/textfile.jpg");-->
+<!--            } else {-->
+<!--                reader.onload = function (e) {-->
+<!--                    onnode.appendChild(node);-->
+<!--                    node.querySelector("img").setAttribute('src', e.target.result);-->
+<!--                }-->
+<!--                reader.readAsDataURL(input.files[i]);-->
+<!--            }-->
+<!--        }-->
+<!--    }-->
+<!--}-->
 
 </script>
 {% endblock %}
