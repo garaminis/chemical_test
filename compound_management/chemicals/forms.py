@@ -92,13 +92,16 @@ class otherForm(forms.ModelForm):
             'date': DateInput(),  # DateInput 위젯 사용
         }
 
-
-class invtroimgForm(forms.ModelForm):
-    images = forms.FileField(widget=forms.ClearableFileInput(attrs={'multiple': True}))
+# class invtroimgForm(forms.ModelForm):
+#     images = forms.FileField(widget=forms.ClearableFileInput(attrs={'multiple': True}))
+#     class Meta:
+#         model = invtro_Image
+#         fields = ['image']
+class InvtroimgForm(forms.ModelForm):
+    images = forms.ImageField(widget=forms.FileInput(attrs={'multiple': True}))
     class Meta:
-        model = invtro_Image
-        fields = ['image']
-
+        model = invtro_Image # 여기에 해당 모델 이름을 입력하세요
+        fields = ['images']
 
 class UserForm(forms.ModelForm):
     # 패스워드 필드를 정의하며, 입력 시 비밀번호 입력 필드를 사용합니다.
