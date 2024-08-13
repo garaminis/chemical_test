@@ -1,62 +1,114 @@
 {% extends 'base.html' %}
 {% block title %} Pharmacokinetics and Cytotoxicity for {{ chemical.chem_id }}{% endblock %}
 {% block content %}
-<link href="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.11.3/css/lightbox.min.css" rel="stylesheet">
- <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper/swiper-bundle.min.css">
 <style>
 table, th, tr, td {
   text-align: center;
 }
-.modal_overlay {
+.modal-dialog {
+    height: 70%;
+    max-width: 90%; /* 모달의 최대 너비를 80%로 설정 */
+    margin: 10rem auto;
+}
+.modal-body {
+    padding: 0; /* 모달 본문의 패딩 제거 */
+    height: auto;
+    max-height: 80vh; /* 모달의 최대 높이 설정 */
+    overflow: hidden; /* 모달의 내용이 넘칠 때 스크롤 숨기기 */
+}
+
+.bk-slider {
+    position: relative;
+    height: auto;
+    padding: 50px 0 100px;
+    
+}
+.swiper {
     width: 100%;
-    height: 100%;
-    position: absolute;
-    left: 0;
-    top: 0;
+    height: 400px;
+    overflow: visible;
+}
+.swiper-slide {
     display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: all .3s ease;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
-    background: rgba(0, 0, 0, 0.8);
-    backdrop-filter: blur(1.5px);
-    -webkit-backdrop-filter: blur(1.5px);
-    display: none;
-}
-
-.modal_window {
-    background: white;
-    backdrop-filter: blur(13.5px);
-    -webkit-backdrop-filter: blur(13.5px);
-    border-radius: 10px;
-    border: 1px solid rgba(255, 255, 255, 0.18);
-    width: 800px;
-    height: 600px;
+    overflow: hidden;
     position: relative;
-    padding: 10px;
-}
-.modal_title{
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    font-weight: bold;
-    font-size: 20px;
-    position: relative;
-    padding: 10px;
-}
+    padding: 0 5px;
 
-.modal_title_side{
-    flex: 0 0 40px;
+  &.swiper-slide-active {
+    transform: scale(1.4);
+    z-index: 2
+  }
+}
+.slide-image {
+    width: 80%;
+    height: auto;
+    object-fit: cover;
+    object-position: center;
+    max-height: 100%;
+}
+.slide-info {
+    text-align: center;
+    margin-top: 5px;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: rgba(0, 0, 0, 0.5); /* 배경을 반투명 검정색으로 설정 */
+    color: #fff; /* 텍스트 색상을 흰색으로 설정 */
+    padding: 10px;
     text-align: center;
 }
-.swiper-container {
-    width: 100%;
-    height: 100%;
+.slide-info p {
+    margin: 5px 0 0;
+    font-size: 14px;
 }
 
-.swiper-slide img {
-    width: 100%;
-    display: block;
+/* ARROWS */
+.swiper-button-prev,
+.swiper-button-next {
+    color: #2f7aeb;
+    width: 44px; /* 버튼 크기 조정 */
+    height: 44px; /* 버튼 크기 조정 */
+    background-color: rgba(255, 255, 255, 0.8); /* 배경색 조정 */
+    border-radius: 50%; /* 둥글게 */
 }
+
+.swiper-button-prev {
+    left: 10px; /* 왼쪽 버튼 위치 조정 */
+}
+
+.swiper-button-next {
+    right: 10px; /* 오른쪽 버튼 위치 조정 */
+}
+
+/* PAGINATION */
+.swiper-pagination {
+    bottom: 10px; /* 하단 여백 조정 */
+}
+
+.swiper-pagination-bullet {
+    width: 20px;
+    height: 20px;
+    text-align: center;
+    line-height: 20px;
+    font-size: 12px;
+    opacity: 1;
+    background: #8bafe6;
+}
+
+.swiper-pagination-bullet-active {
+    color: #fff;
+    background: linear-gradient(45deg, rgb(54, 83, 248), rgb(105, 153, 241));
+}
+.swiper-slide + .swiper-slide {
+    margin-left: 15px; /* 슬라이드 사이의 간격 설정 */
+}
+
 </style>
 <div class="pagetitle">
     <nav style="--bs-breadcrumb-divider: '>';">
@@ -88,7 +140,7 @@ table, th, tr, td {
         </ul>
 
 <!--    Tab      -->
-    <div class="tab-content pt-2" id="myTabContent">
+       <div class="tab-content pt-2" id="myTabContent">
         <a href="{% url 'target_view' target=chemical.target %}"  class="btn btn-outline-primary btn-sm">Back to {{ chemical.target }}</a>
 <!--    Chemical property     -->
         <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
@@ -138,10 +190,7 @@ table, th, tr, td {
                         <td>raw data</td>
                         <td>
                         <a href="{% url 'pharmacokinetic_update' target=chemical.target chem_id=chemical.chem_id id=pk.id %}" class ="btn btn-outline-secondary btn-sm">수정</a>
-            <!--                            <button class ="btn btn-outline-secondary btn-sm update-btn"-->
-            <!--                                        data-url="">수정</button>-->
-                            <button class ="btn btn-outline-danger btn-sm delete-btn"
-                                        data-url="{% url 'pharmacokinetic_delete' target=chemical.target chem_id=chemical.chem_id id=pk.id %}">삭제</button>
+                        <button class ="btn btn-outline-danger btn-sm delete-btn" data-url="{% url 'pharmacokinetic_delete' target=chemical.target chem_id=chemical.chem_id id=pk.id %}">삭제</button>
                         </td>
                     </tr>
                     {% endfor %}
@@ -298,7 +347,8 @@ table, th, tr, td {
                  <h4 class="card-title">CCK assay</h4>
               </div>
               <div class="d-flex justify-content-end">
-                  <a href="{% url 'cck_add' target=chemical.target chem_id=chemical.chem_id %}" class="btn btn-outline-primary btn-sm"><i class="bi bi-plus-square"></i> CCK assay</a>
+              <a href="{% url 'cck_add' target=chemical.target chem_id=chemical.chem_id %}" class="btn btn-outline-primary btn-sm"><i class="bi bi-plus-square"></i> CCK assay</a>
+              <a href="{% url 'cck_add' target=chemical.target chem_id=chemical.chem_id %}" class="btn btn-outline-primary btn-sm"><i class="bi bi-plus-square"></i> Image</a>
               </div>
             </div>
             <table  class="table table-hover">
@@ -329,21 +379,11 @@ table, th, tr, td {
                         <td>
                             <div style="width:100%; height:auto;">
                                  {% if assay.images.exists %}
-                                    <span class="badge badge-secondary py-1 open-modal" data-images="{% for image in assay.images.all %}{{ image.image.url }}{% if not forloop.last %},{% endif %}{% endfor %}">
+                                    <span class="badge badge-secondary py-1 open-modal"
+                                          data-images="{% for image in assay.images.all %}{{ image.image.url }}{% if not forloop.last %},{% endif %}{% endfor %}">
                                         ◯
                                     </span>
-                                {% else %}
-                                    이미지 없음
-                                {% endif %}
-<!--                                    {% for image in assay.images.all %}-->
-<!--                                        <div style="float:left; margin-right:10px;">-->
-<!--                                            <a href="{{ image.image.url }}" data-lightbox="image-gallery">-->
-<!--                                                <img src="{{ image.image.url }}" width="100" height="100">-->
-<!--                                            </a>-->
-<!--                                        </div>-->
-<!--                                    {% empty %}-->
-<!--                                        <p>No images available.</p>-->
-<!--                                    {% endfor %}-->
+                                 {% endif %}
                             </div>
                         </td>
                         <td>raw data</td>
@@ -391,8 +431,6 @@ table, th, tr, td {
                                     <span class="badge badge-secondary py-1 open-modal" data-images="{% for image in wb.images.all %}{{ image.image.url }}{% if not forloop.last %},{% endif %}{% endfor %}">
                                         ◯
                                     </span>
-                                {% else %}
-                                    이미지 없음
                                 {% endif %}
                             </div>
                         </td>
@@ -445,9 +483,7 @@ table, th, tr, td {
                                     <span class="badge badge-secondary py-1 open-modal" data-images="{% for image in ta.images.all %}{{ image.image.url }}{% if not forloop.last %},{% endif %}{% endfor %}">
                                         ◯
                                     </span>
-                                {% else %}
-                                    이미지 없음
-                                {% endif %}
+                                 {% endif %}
                             </div>
                         </td>
                         <td>raw data</td>
@@ -497,8 +533,6 @@ table, th, tr, td {
                                 <span class="badge badge-secondary py-1 open-modal" data-images="{% for image in ot.images.all %}{{ image.image.url }}{% if not forloop.last %},{% endif %}{% endfor %}">
                                     ◯
                                 </span>
-                            {% else %}
-                                이미지 없음
                             {% endif %}
                         </div>
                     </td>
@@ -518,24 +552,34 @@ table, th, tr, td {
         <div class="tab-pane fade" id="contact" role="tabpanel" aria-labelledby="contact-tab">
           추가예정2
         </div>
-   </div>
-
+        </div>
     </div>
 </div>
 
-
-<!--모달창 -->
-<div id="modal_add_feed" class="modal_overlay">
-   <div class="modal_window">
-      <div class="modal_title">
-          <span id="close_modal" class="material-icons-outlined">X</span>
-      </div>
-      <div class="swiper-container">
-        <div class="swiper-wrapper">
+<!-- 모달창 -->
+<div class="modal fade" id="swiperModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+<!--                <h5 class="modal-title" id="exampleModalLabel">이미지 보기</h5>-->
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="bk-slider">
+                    <div class="swiper">
+                        <div class="swiper-wrapper">
+<!--                            <div class="swiper-slide">Slide 1</div>-->
+<!--                            <div class="swiper-slide">Slide 2</div>-->
+<!--                            <div class="swiper-slide">Slide 3</div>-->
+                        </div>
+                        <div class="swiper-button-next"></div>
+                        <div class="swiper-button-prev"></div>
+                    </div>
+                    <div class="swiper-pagination"></div>
+                </div>
+            </div>
         </div>
-        <div class="swiper-pagination"></div><div class="swiper-button-next"></div><div class="swiper-button-prev"></div>
-     </div>
-   </div>
+    </div>
 </div>
 
 
@@ -543,48 +587,107 @@ table, th, tr, td {
 {% block extra_js %}
 <script src="https://cdn.jsdelivr.net/npm/swiper/swiper-bundle.min.js"></script>
 <script>
-  $(document)
-  .ready(function() {
-    var $modal = $("#modal_add_feed");
-    var $modalWrapper = $(".swiper-wrapper");
+$(document).ready(function() {
+    var $modal = $("#swiperModal");
+    var $modalWrapper = $modal.find(".swiper-wrapper");
+    var swiper = null; // Swiper 인스턴스를 저장할 변수
 
-    function openModal(images) {
+    function openModal(images, date, comment) {
         $modalWrapper.empty();
 
         images.forEach(function(image) {
-            var $slide = $('<div class="swiper-slide"><img src="' + image + '" alt="Image"></div>');
+            var $slide = $(
+                '<div class="swiper-slide">' +
+                    '<img src="' + image + '" alt="Image" >' +
+                    '<div class="slide-info">' +
+                        '<p>' + date + '</p>' +
+                        '<p>' + comment + '</p>' +
+                    '</div>' +
+                '</div>'
+            );
             $modalWrapper.append($slide);
         });
 
-        new Swiper('.swiper-container', {
-            loop: true,
-            pagination: {
-                el: '.swiper-pagination',
+         if (swiper) {
+            swiper.destroy(); // 이전 Swiper 인스턴스 제거
+        }
+         swiper = new Swiper('.swiper', {
+          slidesPerView: 3,
+          centeredSlides: true,
+          loop: true,
+          spaceBetween: 15,
+          pagination: {
+            el: '.swiper-pagination',
+            clickable: true,
+            renderBullet: function (index, className) {
+              return '<span class="' + className + '">' + (index + 1) + '</span>';
             },
-            navigation: {
-                nextEl: '.swiper-button-next',
-                prevEl: '.swiper-button-prev',
-            },
+          },
+          navigation: {
+            nextEl: '.swiper-button-next',
+            prevEl: '.swiper-button-prev',
+          },
+           scrollbar: {
+            el: '.swiper-scrollbar',
+            hide: false,
+          },
         });
+        $modal.modal('show');
+      }
 
-        $modal.css({
-            top: $(window).scrollTop() + 'px',
-            display: 'flex'
-        });
-        $('body').css('overflow-y', 'hidden');
+
+    var interval; // 자동 넘김을 위한 인터벌 변수
+
+    function startAutoSlide(direction) {
+        interval = setInterval(function() {
+            if (direction === 'next') {
+                swiper.slideNext();
+            } else if (direction === 'prev') {
+                swiper.slidePrev();
+            }
+        }, 200); // 200ms마다 슬라이드 전환
     }
+
+    function stopAutoSlide() {
+        clearInterval(interval);
+    }
+
+    $('.swiper-button-next').on('mousedown touchstart', function() {
+    startAutoSlide('next');
+    }).on('mouseup mouseleave touchend', function() {
+        stopAutoSlide();
+    });
+
+    // 이전 버튼
+    $('.swiper-button-prev').on('mousedown touchstart', function() {
+        startAutoSlide('prev');
+    }).on('mouseup mouseleave touchend', function() {
+        stopAutoSlide();
+    });
+
 
     $(".open-modal").on("click", function() {
         var images = $(this).data("images").split(',');
-        openModal(images);
+        var $row = $(this).closest("tr");
+        var date = $row.find("td:nth-child(2)").text();
+        var comment = $row.find("td:nth-child(7)").text();
+
+        openModal(images, date, comment);
     });
 
-    $("#close_modal").on("click", function() {
-        $modal.css('display', 'none');
-        $('body').css('overflow-y', 'visible');
+    // 모달 닫기
+    $(".btn-close").on("click", function() {
+        if (swiper) {
+            swiper.destroy();
+            swiper = null;
+        }
+        $modal.modal('hide');
     });
+
 });
 
+
+// 삭제 버튼
 $('.delete-btn').click(function() {
     var url = $(this).data('url');
     var csrfToken = '{{ csrf_token }}';

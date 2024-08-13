@@ -38,42 +38,42 @@
         <div class="row mb-3">
           <label for="id_image" class="col-sm-2 col-form-label">Image</label>
           <div class="col-sm-10">
-             <input class="form-control" type="file" id="id_image" name="image" accept="image/*">
+             <input class="form-control" type="file" id="id_image" name="image" accept="image/*" readonly>
           </div>
         </div>
 
       <div class="row mb-3">
           <label for="id_MW" class="col-sm-2 col-form-label">MW</label>
           <div class="col-sm-10">
-            <input type="number" class="form-control" id="id_MW" name="MW" value="{{ form.MW.value|default_if_none:'' }}">
+            <input type="number" class="form-control" id="id_MW" name="MW" value="{{ form.MW.value|default_if_none:'' }}" readonly>
           </div>
       </div>
 
       <div class="row mb-3">
           <label for="id_cLogP" class="col-sm-2 col-form-label">CLogP</label>
           <div class="col-sm-10">
-            <input type="text" class="form-control" id="id_cLogP" name="cLogP"  step="any" value="{{ form.cLogP.value|default_if_none:'' }}">
+            <input type="text" class="form-control" id="id_cLogP" name="cLogP"  step="any" value="{{ form.cLogP.value|default_if_none:'' }}" readonly>
           </div>
       </div>
 
       <div class="row mb-3">
           <label for="id_TPSA" class="col-sm-2 col-form-label">TPSA</label>
           <div class="col-sm-10">
-            <input type="number" class="form-control" id="id_TPSA" name="TPSA" step="any"  value="{{ form.TPSA.value|default_if_none:'' }}">
+            <input type="number" class="form-control" id="id_TPSA" name="TPSA" step="any"  value="{{ form.TPSA.value|default_if_none:'' }}" readonly>
           </div>
       </div>
 
       <div class="row mb-3">
           <label for="id_H_donors" class="col-sm-2 col-form-label">H_donors</label>
           <div class="col-sm-10">
-            <input type="number" class="form-control" id="id_H_donors" name="H_donors" value="{{ form.H_donors.value|default_if_none:'' }}">
+            <input type="number" class="form-control" id="id_H_donors" name="H_donors" value="{{ form.H_donors.value|default_if_none:'' }}" readonly>
           </div>
       </div>
 
        <div class="row mb-3">
           <label for="id_H_acceptors" class="col-sm-2 col-form-label">H_acceptors</label>
           <div class="col-sm-10">
-            <input type="number" class="form-control" id="id_H_acceptors" name="H_acceptors" value="{{ form.H_acceptors.value|default_if_none:'' }}">
+            <input type="number" class="form-control" id="id_H_acceptors" name="H_acceptors" value="{{ form.H_acceptors.value|default_if_none:'' }}" readonly>
           </div>
        </div>
 
@@ -81,12 +81,10 @@
             <legend class="col-form-label col-sm-2 pt-0">lipinski</legend>
             <div class="col-sm-10">
                 <div class="form-check">
-                    <input class="form-check-input" type="checkbox" id="id_lipinski" name="lipinski"  >
-                    <label class="form-check-label" for="id_lipinski"> </label>
+                    <input class="form-check-input" type="checkbox" id="id_lipinski" name="lipinski"  onClick="return false" {% if form.lipinski.value == True %}checked{% endif %}>
                 </div>
             </div>
         </div>
-
 
         <div class="row mb-3">
           <label class="col-sm-2 col-form-label"></label>

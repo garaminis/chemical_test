@@ -1,6 +1,10 @@
+import re
+
 from django.contrib import messages
 from django.contrib.auth.hashers import check_password
 from django.core.paginator import Paginator
+from django.db.models import Case, When, IntegerField, CharField, Value
+from django.db.models.functions import Cast, Substr, Length
 from django.forms import modelformset_factory
 from django.shortcuts import render
 
@@ -69,26 +73,53 @@ def target_view(request, target):
     sort_by = request.GET.get('sort_by', 'chem_id')
     sort_order = request.GET.get('sort_order', 'asc')
 
+    def sort_key(value):
+        str_value = str(value)
+        match = re.match(r'([a-zA-Z]*)([\d.]+)', str_value) # 문자와 숫자를 분리
+        if match:
+            alpha_part = match.group(1)  # 문자 부분
+            numeric_part = match.group(2)  # 숫자 부분
+            # 숫자 부분을 float으로 변환
+            try:
+                numeric_part = float(numeric_part)
+            except ValueError:
+                numeric_part = 0
+            return alpha_part, numeric_part
+        return str_value, 0
+
     if sort_order == 'asc':
-        chemicals = Chemical.objects.filter(target=target).order_by(sort_by)
+        chemicals = sorted(
+            Chemical.objects.filter(target=target),
+            key=lambda obj: sort_key(getattr(obj, sort_by))
+        )
     else:
-        chemicals = Chemical.objects.filter(target=target).order_by('-' + sort_by)
+        chemicals = sorted(
+            Chemical.objects.filter(target=target),
+            key=lambda obj: sort_key(getattr(obj, sort_by)),
+            reverse=True
+        )
 
-    paginator = Paginator(chemicals, 10)  # 갯수 정해서 보여줌
-    page_number = request.GET.get('page') #get요청된 페이지 번호
-    page_obj = paginator.get_page(page_number) # 해당 번호에 맞는 페이지 가져옴
+    # if sort_order == 'asc':
+    #     chemicals = Chemical.objects.filter(target=target).order_by(sort_by)
+    # else:
+    #     chemicals = Chemical.objects.filter(target=target).order_by('-' + sort_by)
 
-    start_index = (page_obj.number - 1) // 10 * 10 + 1
-    end_index = min(page_obj.number + 9, paginator.num_pages)
-    page_range = range(start_index, end_index + 1)
+    # paginator = Paginator(chemicals, 10)  # 갯수 정해서 보여줌
+    # page_number = request.GET.get('page') #get요청된 페이지 번호
+    # page_obj = paginator.get_page(page_number) # 해당 번호에 맞는 페이지 가져옴
+    #
+    # start_index = (page_obj.number - 1) // 10 * 10 + 1
+    # end_index = min(page_obj.number + 9, paginator.num_pages)
+    # page_range = range(start_index, end_index + 1)
 
     return render(request, 'chemicals/target.html', {
-        'chemicals': page_obj,
+        # 'chemicals': page_obj,
         # 'chemicals': chemicals,
+        'chemicals': chemicals,
         'target': target,
         'sort_by': sort_by,
         'sort_order': sort_order,
-        'page_range': page_range,
+        # 'page_range': page_range,
     })
     # chemicals = Chemical.objects.filter(target__iexact=target)
     # if not chemicals.exists():
@@ -147,9 +178,17 @@ def chemical_edit_view(request, target, chem_id):
         if form.is_valid():
             chemical = form.save(commit=False)
             chemical.cLogP = calculate_cLogP(chemical.smiles)
-            image_data = generate_image(chemical.smiles)
-            if image_data:
-               chemical.image.save(f'{chemical.chem_id}.png', ContentFile(image_data), save=False)
+
+            new_value = form.cleaned_data['smiles']
+            chemical_instance = Chemical.objects.get(chem_id=chem_id)
+            smiles = chemical_instance.smiles
+            if smiles != new_value :
+                if os.path.exists(chemical.image.path):
+                    os.remove(chemical.image.path)
+                image_data = generate_image(chemical.smiles)
+                if image_data:
+                   chemical.image.save(f'{chemical.chem_id}.png', ContentFile(image_data), save=False)
+
             chemical.save()
             logger.debug(f'Chemical updated: {chemical}')
             return redirect('target_view', target=target)
