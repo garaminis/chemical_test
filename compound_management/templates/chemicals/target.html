@@ -197,7 +197,7 @@ img {
                 <button id="view_selected" class="btn btn-primary btn-sm">View</button>
             </div>
             <div class="btn-group" role="group">
-                 <a href="" class="btn btn-outline-primary btn-sm"><i class="bi bi-plus-square"></i> result </a>
+                 <a href="{% url 'result_add' target=target %}" class="btn btn-outline-primary btn-sm"><i class="bi bi-plus-square"></i> result </a>
                 <a href="{% url 'chemical_new' target=target %}" class="btn btn-outline-primary btn-sm"><i class="bi bi-plus-square"></i> New </a>
                 <a href="{% url 'upload_chemicals' target=target %}" class="btn btn-outline-primary btn-sm"><i class="bi bi-files"></i> Upload </a>
             </div>

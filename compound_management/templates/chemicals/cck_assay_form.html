@@ -24,8 +24,9 @@
     <div class="card-body">
        <div class="tab-content pt-2" id="myTabContent">
           <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
+              <a href="{% url 'pharmacokinetic_list' target=target chem_id=chem_id%}"  class="btn btn-outline-primary btn-sm">Back</a>
           <h4 class="card-title"> In vitro Data : CCK assay </h4>
-             <a href="{% url 'pharmacokinetic_list' target=target chem_id=chem_id%}"  class="btn btn-outline-primary btn-sm">Back</a>
+
           <form method="post" enctype="multipart/form-data">
              {% csrf_token %}
                 <div class="row mb-3">

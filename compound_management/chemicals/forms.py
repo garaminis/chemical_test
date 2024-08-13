@@ -4,7 +4,7 @@ from django import forms
 from django.forms import modelformset_factory, ClearableFileInput
 
 from .models import Chemical, Pharmacokinetic, Cytotoxicity, SchrödingerModel, LiverMicrosomalStability, CYPInhibition, \
-    User, CCK_assay, invtro_Image, Western_blot, Target_Inhibition, other_asssay
+    User, CCK_assay, invtro_Image, Western_blot, Target_Inhibition, other_asssay, in_vivo
 
 
 # from compound_management.chemicals.models import Chemical, Pharmacokinetic, Cytotoxicity, SchrödingerModel, LiverMicrosomalStability, CYPInhibition, User
@@ -98,6 +98,13 @@ class otherForm(forms.ModelForm):
 #         model = invtro_Image
 #         fields = ['image']
 
+class in_vivoForm(forms.ModelForm):
+    class Meta:
+        model = in_vivo
+        fields = ['user', 'start_date', 'end_date', 'cell', 'does', 'solvent', 'inject_date', 'group', 'comment', 'category']
+        widgets = {
+            'date': DateInput(),  # DateInput 위젯 사용
+        }
 class CustomClearableFileInput(ClearableFileInput):
     allow_multiple_selected = True
 

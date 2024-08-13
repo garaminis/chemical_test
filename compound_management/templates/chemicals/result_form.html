@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+{% block title %}Add result Data{% endblock %}
+{% block extra_head %}
+{% endblock %}
+{% block content %}
+<div class="col-lg-5">
+  <div class="card">
+    <div class="card-body">
+      <h5 class="card-title">{{ target }}</h5>
+        <table class="table table-hover">
+        <thead>
+        <tr>
+            <th></th>
+            <th>chem_ID</th>
+            <th>MW</th>
+            <th>cLogP</th>
+            <th>TPSA</th>
+<!--            <th>H_donors</th>-->
+<!--            <th>H_acceptors</th>-->
+<!--            <th>lipinski</th>-->
+        </tr>
+    </thead>
+        <tbody>
+        {% for chem in chemicals %}
+        <tr>
+            <td><input type="checkbox" name="selected_chems" value="{{ chem.pk }}" id="select_check"></td>
+            <td>{{ chem.chem_id }}</td>
+            <td>{{ chem.MW }}</td>
+            <td>{{ chem.cLogP }}</td>
+            <td>{{ chem.TPSA }}</td>
+<!--            <td>{{ chem.H_donors }}</td>-->
+<!--            <td>{{ chem.H_acceptors }}</td>-->
+<!--            <td>{{ chem.lipinski }}</td>-->
+        </tr>
+        {% endfor %}
+    </tbody>
+        </table>
+    </div>
+  </div>
+</div>
+
+
+{% endblock %}
+{% block extra_js %}
+{% endblock %}

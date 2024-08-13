@@ -19,10 +19,12 @@ urlpatterns = [
     path('chemicals/<str:target>/delete_selected/', delete_selected_chems, name='delete_selected_chems'),
 # result add,list
     path('chemicals/<str:target>/result/<str:chem_id>/', views.pharmacokinetic_list, name='pharmacokinetic_list'),
+    path('chemicals/<str:target>/result/', views.result_add, name='result_add'),
     path('chemicals/<str:target>/result/<str:chem_id>/add/', views.pharmacokinetic_add, name='pharmacokinetic_add'),
     path('chemicals/<str:target>/cytotoxicity/<str:chem_id>/add/', views.cytotoxicity_add, name='cytotoxicity_add'),
     path('chemicals/<str:target>/liver_stability/<str:chem_id>/add/', views.liver_stability_add, name='liver_stability_add'),
     path('chemicals/<str:target>/cyp_inhibition/<str:chem_id>/add/', views.cyp_inhibition_add, name='cyp_inhibition_add'),
+    path('chemicals/<str:target>/invivo/<str:chem_id>/add/<int:category>', views.invivo_add, name='invivo_add'),
 # result delete
     path('chemicals/<str:target>/pharmacokinetic/<str:chem_id>/del/<int:id>', views.pharmacokinetic_delete, name='pharmacokinetic_delete'),
     path('chemicals/<str:target>/cytotoxicity/<str:chem_id>/del/<int:id>', views.cytotoxicity_delete, name='cytotoxicity_delete'),

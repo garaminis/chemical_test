@@ -20,6 +20,7 @@ class Chemical(models.Model):
     H_acceptors = models.IntegerField(blank=True, null=True)
     lipinski = models.BooleanField(default=False)
     user = models.CharField(max_length=200, null=True)
+    datetime = models.DateTimeField(default=timezone.now, blank=False)
 
 
     def __str__(self):
@@ -186,7 +187,21 @@ class invtro_Image(models.Model):
     in_target = models.ForeignKey(Target_Inhibition,related_name='images',on_delete=models.CASCADE,null=True)
     others = models.ForeignKey(other_asssay,related_name='images',on_delete=models.CASCADE,null=True)
 
+class in_vivo(models.Model):
+    chemical = models.ForeignKey(Chemical, on_delete=models.CASCADE)
+    start_date = models.DateField()
+    end_date = models.DateField()
+    user = models.CharField(max_length=200, null=True)
+    cell = models.TextField(null=True)
+    does = models.FloatField(null=True, blank=True)
+    solvent =  models.TextField(null=True)
+    inject_date= models.IntegerField(null=True)
+    group = models.TextField(null=True)
+    comment = models.TextField(null=True)
+    category = models.CharField(max_length=200, null=True)
 
+    def __str__(self):
+        return f'{self.chemical.chem_id} - in_vivo'
 class UserManager(BaseUserManager):
     def create_user(self, email, userID, password=None, **extra_fields):
 

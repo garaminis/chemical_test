@@ -12,10 +12,10 @@ from django.shortcuts import render
 from django.shortcuts import render, redirect, get_object_or_404
 
 from .models import Chemical, Pharmacokinetic, Cytotoxicity, SchrödingerModel, LiverMicrosomalStability, CYPInhibition, \
-    User, CCK_assay, invtro_Image, Western_blot, Target_Inhibition, other_asssay
+    User, CCK_assay, invtro_Image, Western_blot, Target_Inhibition, other_asssay, in_vivo
 from .forms import ChemicalForm, ChemicalUploadForm, PharmacokineticForm, CytotoxicityForm, SchrödingerModelForm, \
     SchrödingerModelUploadForm, LiverMicrosomalStabilityForm, CYPInhibitionForm, UserForm, cckForm, wbForm, \
-    intargetForm, otherForm
+    intargetForm, otherForm, in_vivoForm
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 # R2Py
@@ -66,6 +66,14 @@ def logout_view(request):
 @login_required
 def home_view(request):
     return render(request, 'chemicals/home.html')
+
+@login_required
+def result_add(request, target):
+    chemicals = Chemical.objects.filter(target=target).order_by('-datetime')
+    return render(request, 'chemicals/result_form.html', {
+        'target': target,
+        'chemicals': chemicals,
+    })
 
 @login_required
 def target_view(request, target):
@@ -134,6 +142,7 @@ def delete_selected_chems(request, target):
         Chemical.objects.filter(pk__in=selected_chems).delete()
         return JsonResponse({'status': 'success'})
     return JsonResponse({'status': 'error'}, status=400)
+
 @login_required
 def chemical_new_view(request, target):
     if request.method == 'POST':
@@ -262,6 +271,8 @@ def pharmacokinetic_list(request, target, chem_id, other=None):
     in_target = Target_Inhibition.objects.filter(chemical=chemical).all()
     others = other_asssay.objects.filter(chemical=chemical).all()
 
+    invivo = in_vivo.objects.filter(chemical=chemical).all()
+
     return render(request, 'chemicals/pharmacokinetic_list.html', {
         'target': target,
         'chemical': chemical,
@@ -272,7 +283,8 @@ def pharmacokinetic_list(request, target, chem_id, other=None):
         'cck_assay':  cck_assay,
         'Western_blot': wb,
         'Target_Inhibition': in_target,
-        'other': others
+        'other': others,
+        'invivo' : invivo,
     })
 
 @login_required
@@ -348,6 +360,25 @@ def cytotoxicity_update(request, target, chem_id ,id):
     return render(request, 'chemicals/Cytotoxicity_form.html', {'form': form, 'target': target, 'id':id,'chem_id': chem_id})
 
 @login_required
+def invivo_add(request, target, chem_id, category):
+    chemical = get_object_or_404(Chemical, chem_id=chem_id)
+    if request.method == 'POST':
+        form = in_vivoForm(request.POST)
+        if form.is_valid():
+            in_vivo = form.save(commit=False)
+            in_vivo.chemical = chemical
+            in_vivo.save()
+            return redirect('pharmacokinetic_list', target=target, chem_id=chem_id)
+    else:
+        form = CytotoxicityForm()
+    return render(request, 'chemicals/in_vivo_form.html', {
+        'form': form,
+        'target': target,
+        'chem_id': chem_id,
+        'category': category,
+    })
+
+@login_required
 def schrodinger_model_list(request, target, chem_id):
     chemical = get_object_or_404(Chemical, chem_id=chem_id)
     models = SchrödingerModel.objects.filter(chemical=chemical)
@@ -366,6 +397,7 @@ def schrodinger_model_add(request, target, chem_id):
     else:
         form = SchrödingerModelForm()
     return render(request, 'chemicals/schrodinger_model_form.html', {'form': form, 'chemical': chemical})
+
 
 @login_required
 def schrodinger_model_upload(request, target, chem_id):

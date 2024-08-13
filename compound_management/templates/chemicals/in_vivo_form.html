@@ -1,0 +1,123 @@
+{% extends 'base.html' %}
+{% block title %}Add in_vivo Data{% endblock %}
+{% block extra_head %}
+{% endblock %}
+{% block content %}
+<h2>{{ target }} / Chem id : {{ chem_id }}</h2>
+<div class="pagetitle">
+    <nav style="--bs-breadcrumb-divider: '>';">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{% url 'home' %}">Home</a></li>
+            <li class="breadcrumb-item active">Targets</li>
+            <li class="breadcrumb-item active"><a href="{% url 'target_view' target=target %}">{{ target }}</a> </li>
+            <li class="breadcrumb-item active"><a href="{% url 'pharmacokinetic_list' target=target chem_id=chem_id%}">Result</a> </li>
+            <li class="breadcrumb-item active">In vivo</li>
+        </ol>
+    </nav>
+</div>
+<div class="col-lg-8">
+  <div class="card">
+    <div class="card-body">
+       <div class="tab-content pt-2" id="myTabContent">
+              <a href="{% url 'pharmacokinetic_list' target=target chem_id=chem_id%}"  class="btn btn-outline-primary btn-sm">Back</a>
+          <h4 class="card-title"> In vivo Data : Toxicity Test </h4>
+
+          <form method="post" enctype="multipart/form-data">
+             {% csrf_token %}
+                <div class="row mb-3">
+                  <label for="start_date" class="col-sm-2 col-form-label">시작일</label>
+                  <div class="col-sm-10">
+                    <input type="date" class="form-control" id="start_date" name="start_date"
+                     value="{{ form.date.value|date:'Y-m-d' }}">
+                  </div>
+                </div>
+                <div class="row mb-3">
+                  <label for="end_date" class="col-sm-2 col-form-label">종료일</label>
+                  <div class="col-sm-10">
+                    <input type="date" class="form-control" id="end_date" name="end_date"
+                     value="{{ form.date.value|date:'Y-m-d' }}">
+                  </div>
+                </div>
+
+                <div class="row mb-3">
+                  <label for="cell" class="col-sm-2 col-form-label">세포주</label>
+                  <div class="col-sm-10">
+                      <textarea class="form-control" id="cell" name="cell"  >{{ form.cell.value|default_if_none:'' }}</textarea>
+                  </div>
+                </div>
+
+                <div class="row mb-3">
+                  <label for="does" class="col-sm-2 col-form-label">투여용량</label>
+                  <div class="col-sm-10">
+                      <input type="number" step="any" class="form-control" id="does" name="does" value="{{ form.IC50.value|default_if_none:'' }}">
+                  </div>
+                </div>
+
+              <div class="row mb-3">
+                  <label for="solvent" class="col-sm-2 col-form-label">용매조성</label>
+                  <div class="col-sm-10">
+                      <textarea class="form-control" id="solvent" name="solvent"  >{{ form.solvent.value|default_if_none:'' }}</textarea>
+                  </div>
+                </div>
+
+              <div class="row mb-3">
+                  <label for="inject_date" class="col-sm-2 col-form-label">투여일정(days)</label>
+                  <div class="col-sm-10">
+                      <input type="number" class="form-control" id="inject_date" name="inject_date" value="{{ form.inject_date.value|default_if_none:'' }}">
+                  </div>
+                </div>
+
+              <div class="row mb-3">
+                  <label for="group" class="col-sm-2 col-form-label">그룹정보</label>
+                  <div class="col-sm-10">
+                       <textarea class="form-control" id="group" name="group"  >{{ form.group.value|default_if_none:'' }}</textarea>
+                  </div>
+                </div>
+
+                <div class="row mb-3">
+                  <label for="comment" class="col-sm-2 col-form-label">Comment</label>
+                  <div class="col-sm-10">
+                    <textarea  class="form-control" id="comment" name="comment" >{{ form.comment.value|default_if_none:'' }}</textarea>
+                  </div>
+                </div>
+
+<!--                <div class="row mb-3">-->
+<!--                  <label for="image" class="col-sm-2 col-form-label">Image</label>-->
+<!--                  <div class="col-sm-10" >-->
+<!--                    <input type="file" id="image" name="images" class="form-control" accept="image/*" multiple>-->
+<!--                  </div>-->
+<!--                </div>-->
+
+                <div class="row mb-3">
+                  <ul class="lst_thumb"> </ul>
+                </div>
+
+              <div class="row mb-3 " style="display:none">
+               <label for="id_userid" class="col-sm-2 col-form-label" > User</label>
+               <div class="col-sm-10">
+                  <input class="form-control" type="text" id="id_userid" name="user" value="{{ user.name }}" readonly>
+               </div>
+             </div>
+              <div class="row mb-3 ">
+               <label for="category" class="col-sm-2 col-form-label" >category</label>
+               <div class="col-sm-10">
+                  <input class="form-control" type="text" id="category" name="category" value="{% if category == 1 %}Toxicity{% elif category == 2 %}Xenograft{% else %}기타{% endif %}" readonly>
+               </div>
+             </div>
+
+             <div class="row mb-3">
+               <label class="col-sm-2 col-form-label"></label>
+               <div class="col-sm-10">
+                 <button type="submit" class="btn btn-primary">Submit Form</button>
+                 <button class="btn btn-primary">cancel</button>
+               </div>
+             </div>
+           </form>
+
+        </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+{% block extra_js %}
+{% endblock %}

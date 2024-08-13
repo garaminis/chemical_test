@@ -2,9 +2,9 @@
 {% block title %} Pharmacokinetics and Cytotoxicity for {{ chemical.chem_id }}{% endblock %}
 {% block content %}
 <style>
-table, th, tr, td {
-  text-align: center;
-}
+<!--table, tr, td {-->
+<!--  text-align: center;-->
+<!--}-->
 .modal-dialog {
     height: 70%;
     max-width: 90%; /* 모달의 최대 너비를 80%로 설정 */
@@ -347,8 +347,8 @@ table, th, tr, td {
                  <h4 class="card-title">CCK assay</h4>
               </div>
               <div class="d-flex justify-content-end">
-              <a href="{% url 'cck_add' target=chemical.target chem_id=chemical.chem_id %}" class="btn btn-outline-primary btn-sm"><i class="bi bi-plus-square"></i> CCK assay</a>
-              <a href="{% url 'cck_add' target=chemical.target chem_id=chemical.chem_id %}" class="btn btn-outline-primary btn-sm"><i class="bi bi-plus-square"></i> Image</a>
+              <a href="{% url 'cck_add' target=chemical.target chem_id=chemical.chem_id %}" class="btn btn-outline-primary btn-sm"><i class="bi bi-plus-square"></i> add</a>
+              <a href="{% url 'cck_add' target=chemical.target chem_id=chemical.chem_id %}" class="btn btn-outline-primary btn-sm"><i class="bi bi-plus-square"></i> Img</a>
               </div>
             </div>
             <table  class="table table-hover">
@@ -390,6 +390,7 @@ table, th, tr, td {
                         <td>
                             <a href="{% url 'cck_update' target=chemical.target chem_id=chemical.chem_id id=assay.id %}" class ="btn btn-outline-secondary btn-sm">수정</a>
                             <button class ="btn btn-outline-danger btn-sm delete-btn" data-url="{% url 'cck_delete' target=chemical.target chem_id=chemical.chem_id id=assay.id %}">삭제</button>
+                            <button class ="btn btn-outline-danger btn-sm delete-btn" data-url=""><i class="bi bi-dash-square"></i>Img</button>
                         </td>
                     </tr>
                     {% endfor %}
@@ -550,7 +551,195 @@ table, th, tr, td {
         </div>
 <!--    In vivo     -->
         <div class="tab-pane fade" id="contact" role="tabpanel" aria-labelledby="contact-tab">
-          추가예정2
+            <div class="card-body">
+            <div class="d-flex justify-content-between align-items-center">
+              <div class="text-start">
+                 <h4 class="card-title">Toxicity Test</h4>
+              </div>
+              <div class="d-flex justify-content-end">
+              <a href="{% url 'invivo_add' target=chemical.target chem_id=chemical.chem_id category=1 %}" class="btn btn-outline-primary btn-sm"><i class="bi bi-plus-square"></i> add</a>
+              <a href="" class="btn btn-outline-primary btn-sm"><i class="bi bi-plus-square"></i> Img</a>
+              </div>
+            </div>
+            <table  class="table table-hover">
+                <thead>
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">시작일</th>
+                        <th scope="col">종료일</th>
+                        <th scope="col">세포주</th>
+                        <th scope="col">투여용량</th>
+                        <th scope="col">용매조성</th>
+                        <th scope="col">투여일정</th>
+                        <th scope="col">그룹정보</th>
+                        <th scope="col">comment</th>
+                        <th scope="col">Image</th>
+                        <th scope="col">Raw data</th>
+                        <th scope="col"></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for toxi in invivo %}
+                    {% if toxi.category == 'Toxicity'  %}
+                    <tr>
+                        <th scope="row">{{ forloop.counter0 }}</th>
+                        <td>{{ toxi.start_date|date:"Y-m-d" }}</td>
+                        <td>{{ toxi.end_date|date:"Y-m-d" }}</td>
+                        <td>{{ toxi.cell }}</td>
+                        <td>{{ toxi.does }}</td>
+                        <td>{{ toxi.solvent }}</td>
+                        <td>{{ toxi.inject_date }}</td>
+                        <td>{{ toxi.group }}</td>
+                        <td>{{ toxi.comment }}</td>
+                        <td>
+<!--                            <div style="width:100%; height:auto;">-->
+<!--                                 {% if assay.images.exists %}-->
+<!--                                    <span class="badge badge-secondary py-1 open-modal"-->
+<!--                                          data-images="{% for image in assay.images.all %}{{ image.image.url }}{% if not forloop.last %},{% endif %}{% endfor %}">-->
+<!--                                        ◯-->
+<!--                                    </span>-->
+<!--                                 {% endif %}-->
+<!--                            </div>-->
+                        </td>
+                        <td>raw data</td>
+                        <td>
+                            <a href="" class ="btn btn-outline-secondary btn-sm">수정</a>
+                            <button class ="btn btn-outline-danger btn-sm delete-btn" data-url="">삭제</button>
+                            <button class ="btn btn-outline-danger btn-sm delete-btn" data-url=""><i class="bi bi-dash-square"></i>Img</button>
+                        </td>
+                    </tr>
+                    {% endif %}
+                    {% endfor %}
+                </tbody>
+            </table>
+
+            </div>
+            <div class="card-body">
+            <div class="d-flex justify-content-between align-items-center">
+              <div class="text-start">
+                 <h4 class="card-title">Xenograft</h4>
+              </div>
+              <div class="d-flex justify-content-end">
+              <a href="{% url 'invivo_add' target=chemical.target chem_id=chemical.chem_id category=2 %}" class="btn btn-outline-primary btn-sm"><i class="bi bi-plus-square"></i> add</a>
+              <a href="{% url 'cck_add' target=chemical.target chem_id=chemical.chem_id %}" class="btn btn-outline-primary btn-sm"><i class="bi bi-plus-square"></i> Img</a>
+              </div>
+            </div>
+            <table  class="table table-hover">
+                <thead>
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">시작일</th>
+                        <th scope="col">종료일</th>
+                        <th scope="col">세포주</th>
+                        <th scope="col">투여용량</th>
+                        <th scope="col">용매조성</th>
+                        <th scope="col">투여일정</th>
+                        <th scope="col">그룹정보</th>
+                        <th scope="col">comment</th>
+                        <th scope="col">Image</th>
+                        <th scope="col">Raw data</th>
+                        <th scope="col"></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for toxi in invivo %}
+                     {% if toxi.category == 'Xenograft'  %}
+                    <tr>
+                        <th scope="row">{{ forloop.counter0 }}</th>
+                        <td>{{ toxi.start_date|date:"Y-m-d" }}</td>
+                        <td>{{ toxi.end_date|date:"Y-m-d" }}</td>
+                        <td>{{ toxi.cell }}</td>
+                        <td>{{ toxi.does }}</td>
+                        <td>{{ toxi.solvent }}</td>
+                        <td>{{ toxi.inject_date }}</td>
+                        <td>{{ toxi.group }}</td>
+                        <td>{{ toxi.comment }}</td>
+                        <td>
+<!--                            <div style="width:100%; height:auto;">-->
+<!--                                 {% if assay.images.exists %}-->
+<!--                                    <span class="badge badge-secondary py-1 open-modal"-->
+<!--                                          data-images="{% for image in assay.images.all %}{{ image.image.url }}{% if not forloop.last %},{% endif %}{% endfor %}">-->
+<!--                                        ◯-->
+<!--                                    </span>-->
+<!--                                 {% endif %}-->
+<!--                            </div>-->
+                        </td>
+                        <td>raw data</td>
+                        <td>
+                            <a href="" class ="btn btn-outline-secondary btn-sm">수정</a>
+                            <button class ="btn btn-outline-danger btn-sm delete-btn" data-url="">삭제</button>
+                            <button class ="btn btn-outline-danger btn-sm delete-btn" data-url=""><i class="bi bi-dash-square"></i>Img</button>
+                        </td>
+                    </tr>
+                    {% endif %}
+                    {% endfor %}
+                </tbody>
+            </table>
+
+            </div>
+            <div class="card-body">
+            <div class="d-flex justify-content-between align-items-center">
+              <div class="text-start">
+                 <h4 class="card-title">기타</h4>
+              </div>
+              <div class="d-flex justify-content-end">
+              <a href="{% url 'invivo_add' target=chemical.target chem_id=chemical.chem_id category=3 %}" class="btn btn-outline-primary btn-sm"><i class="bi bi-plus-square"></i> add</a>
+              <a href="{% url 'cck_add' target=chemical.target chem_id=chemical.chem_id %}" class="btn btn-outline-primary btn-sm"><i class="bi bi-plus-square"></i> Img</a>
+              </div>
+            </div>
+            <table  class="table table-hover">
+                <thead>
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">시작일</th>
+                        <th scope="col">종료일</th>
+                        <th scope="col">세포주</th>
+                        <th scope="col">투여용량</th>
+                        <th scope="col">용매조성</th>
+                        <th scope="col">투여일정</th>
+                        <th scope="col">그룹정보</th>
+                        <th scope="col">comment</th>
+                        <th scope="col">Image</th>
+                        <th scope="col">Raw data</th>
+                        <th scope="col"></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for toxi in invivo %}
+                     {% if toxi.category == '기타'  %}
+                    <tr>
+                        <th scope="row">{{ forloop.counter0 }}</th>
+                        <td>{{ toxi.start_date|date:"Y-m-d" }}</td>
+                        <td>{{ toxi.end_date|date:"Y-m-d" }}</td>
+                        <td>{{ toxi.cell }}</td>
+                        <td>{{ toxi.does }}</td>
+                        <td>{{ toxi.solvent }}</td>
+                        <td>{{ toxi.inject_date }}</td>
+                        <td>{{ toxi.group }}</td>
+                        <td>{{ toxi.comment }}</td>
+                        <td>
+<!--                            <div style="width:100%; height:auto;">-->
+<!--                                 {% if assay.images.exists %}-->
+<!--                                    <span class="badge badge-secondary py-1 open-modal"-->
+<!--                                          data-images="{% for image in assay.images.all %}{{ image.image.url }}{% if not forloop.last %},{% endif %}{% endfor %}">-->
+<!--                                        ◯-->
+<!--                                    </span>-->
+<!--                                 {% endif %}-->
+<!--                            </div>-->
+                        </td>
+                        <td>raw data</td>
+                        <td>
+                            <a href="" class ="btn btn-outline-secondary btn-sm">수정</a>
+                            <button class ="btn btn-outline-danger btn-sm delete-btn" data-url="">삭제</button>
+                            <button class ="btn btn-outline-danger btn-sm delete-btn" data-url=""><i class="bi bi-dash-square"></i>Img</button>
+                        </td>
+                    </tr>
+                     {% endif %}
+                    {% endfor %}
+                </tbody>
+            </table>
+
+            </div>
         </div>
         </div>
     </div>
@@ -692,6 +881,7 @@ $('.delete-btn').click(function() {
     var url = $(this).data('url');
     var csrfToken = '{{ csrf_token }}';
     var row = $(this).closest('tr');
+   if (confirm('삭제하시겠습니까? (삭제 후 복구가 불가능합니다.)')) {
     $.ajax({
         url: url,
         type: 'POST',
@@ -709,7 +899,8 @@ $('.delete-btn').click(function() {
         error: function(xhr, status, error) {
             console.error("AJAX 요청 실패:", status, error);
         }
-    })
+      })
+    }
 });
 document.addEventListener("DOMContentLoaded", function() {
     // 페이지가 로드될 때, 저장된 탭 상태를 복원
