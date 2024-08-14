@@ -370,12 +370,12 @@
                     {% for assay in cck_assay %}
                     <tr>
                         <th scope="row">{{ forloop.counter }}</th>
-                        <td>{{ assay.date|date:"Y-m-d" }}</td>
-                        <td>{{ assay.user }}</td>
-                        <td>{{ assay.cell }}</td>
-                        <td>{{ assay.IC50 }}</td>
-                        <td>{{ assay.Out }}</td>
-                        <td>{{ assay.comment }}</td>
+                        <td data-date={{assay.date|date:"Y-m-d"}} >{{ assay.date|date:"Y-m-d" }}</td>
+                        <td >{{ assay.user }}</td>
+                        <td >{{ assay.cell }}</td>
+                        <td >{{ assay.IC50 }}</td>
+                        <td >{{ assay.Out }}</td>
+                        <td data-comment={{assay.comment}} >{{ assay.comment }}</td>
                         <td>
                             <div style="width:100%; height:auto;">
                                  {% if assay.images.exists %}
@@ -423,9 +423,9 @@
                     {% for wb in Western_blot %}
                     <tr>
                         <th scope="row">{{ forloop.counter }}</th>
-                        <td>{{ wb.date|date:"Y-m-d" }}</td>
+                        <td data-date= {{wb.date|date:"Y-m-d"}}>{{ wb.date|date:"Y-m-d" }}</td>
                         <td>{{ wb.user }}</td>
-                        <td>{{ wb.comment }}</td>
+                        <td data-comment={{wb.comment}}>{{ wb.comment }}</td>
                         <td>
                             <div style="width:100%; height:auto;">
                                  {% if wb.images.exists %}
@@ -473,11 +473,11 @@
                     {% for ta in Target_Inhibition %}
                     <tr>
                         <th scope="row">{{ forloop.counter }}</th>
-                        <td>{{ ta.date|date:"Y-m-d" }}</td>
+                        <td data-date= {{ta.date|date:"Y-m-d"}}>{{ ta.date|date:"Y-m-d" }}</td>
                         <td>{{ ta.user }}</td>
                         <td>{{ ta.vitro_at_10 }}</td>
                         <td>{{ ta.Taret_IC50 }}</td>
-                        <td>{{ ta.comment }}</td>
+                        <td data-commnet={{ta.comment}} >{{ ta.comment }}</td>
                         <td>
                             <div style="width:100%; height:auto;">
                                  {% if ta.images.exists %}
@@ -524,10 +524,10 @@
                 {% for ot in other %}
                 <tr>
                     <th scope="row">{{ forloop.counter }}</th>
-                    <td>{{ ot.date|date:"Y-m-d" }}</td>
+                    <td data-date={{ot.date|date:"Y-m-d"}} >{{ ot.date|date:"Y-m-d" }}</td>
                     <td>{{ ot.title }}</td>
                     <td>{{ ot.user }}</td>
-                    <td>{{ ot.comment }}</td>
+                    <td data-commnet={{ot.comment}}>{{ ot.comment }}</td>
                     <td>
                          <div style="width:100%; height:auto;">
                             {% if ot.images.exists %}
@@ -590,7 +590,7 @@
                         <td>{{ toxi.solvent }}</td>
                         <td>{{ toxi.inject_date }}</td>
                         <td>{{ toxi.group }}</td>
-                        <td>{{ toxi.comment }}</td>
+                        <td data-commnet={{toxi.comment}}>{{ toxi.comment }}</td>
                         <td>
 <!--                            <div style="width:100%; height:auto;">-->
 <!--                                 {% if assay.images.exists %}-->
@@ -653,7 +653,7 @@
                         <td>{{ toxi.solvent }}</td>
                         <td>{{ toxi.inject_date }}</td>
                         <td>{{ toxi.group }}</td>
-                        <td>{{ toxi.comment }}</td>
+                        <td data-commnet={{toxi.comment}}>{{ toxi.comment }}</td>
                         <td>
 <!--                            <div style="width:100%; height:auto;">-->
 <!--                                 {% if assay.images.exists %}-->
@@ -716,7 +716,7 @@
                         <td>{{ toxi.solvent }}</td>
                         <td>{{ toxi.inject_date }}</td>
                         <td>{{ toxi.group }}</td>
-                        <td>{{ toxi.comment }}</td>
+                        <td data-commnet={{toxi.comment}}>{{ toxi.comment }}</td>
                         <td>
 <!--                            <div style="width:100%; height:auto;">-->
 <!--                                 {% if assay.images.exists %}-->
@@ -857,9 +857,13 @@ $(document).ready(function() {
 
     $(".open-modal").on("click", function() {
         var images = $(this).data("images").split(',');
-        var $row = $(this).closest("tr");
-        var date = $row.find("td:nth-child(2)").text();
-        var comment = $row.find("td:nth-child(7)").text();
+        var $row = $(this).closest("tr")
+        var date = $row.find("td[data-date]").data("date");
+        var comment =  $row.find("td[data-comment]").data("comment");
+
+<!--        var $row = $(this).closest("tr");-->
+<!--        var date = $row.find("td:nth-child(2)").text();-->
+<!--        var comment = $row.find("td:nth-child(7)").text();-->
 
         openModal(images, date, comment);
     });
