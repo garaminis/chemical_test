@@ -5,14 +5,14 @@
 {% endblock %}
 {% block content %}
 <h3>Schrödinger Modeling for {{ chemical.chem_id }}</h3>
-<div class="container my-3">
+<!--<div class="container my-3">-->
   <div class="row">
     <div class="card">
-         <form method="post" action="{% url 'schrodinger_model_upload' target=chemical.target chem_id=chemical.chem_id %}" enctype="multipart/form-data">
-            {% csrf_token %}
-            <br>
-            <button type="submit"   class="btn btn-primary btn-sm" ><i class="bi bi-upload"></i> Upload</button>
-        </form>
+     <form method="post" action="{% url 'schrodinger_model_upload' target=chemical.target chem_id=chemical.chem_id %}" enctype="multipart/form-data">
+        {% csrf_token %}
+        <br>
+        <button type="submit"   class="btn btn-primary btn-sm" ><i class="bi bi-upload"></i> Upload</button>
+     </form>
       <div class="card-body"> <br>
         <table class="table table-hover">
             <thead>
@@ -52,7 +52,7 @@
       </div>
     </div>
   </div>
-</div>
+<!--</div>-->
     <a href="{% url 'target_view' target=chemical.target %}" class="btn btn-outline-primary btn-sm">Back to {{ chemical.target }}</a>
 <!--    <a href="{% url 'home' %}" class="btn btn-outline-primary btn-sm">Home</a>-->
 {% endblock %}

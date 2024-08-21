@@ -34,19 +34,19 @@
                   <div class="pt-4 pb-2">
                     <h5 class="card-title text-center pb-0 fs-4">Login to Your Account</h5>
                   </div>
-                  <form  method="post"   class="row g-3 needs-validation" novalidate>
+                  <form  method="post"   class="row g-3 needs-validation" >
                   {% csrf_token %}
                     <div class="col-12">
-                      <label for="username" class="form-label">User ID</label>
+                      <label for="userID" class="form-label">User ID</label>
                       <div class="input-group has-validation">
-                        <input type="text" name="username" class="form-control" id="username" required>
+                        <input type="text" name="userID" class="form-control" id="userID" required>
                       </div>
                     </div>
                     <div class="col-12">
                       <label for="password" class="form-label">Password</label>
                       <input type="password" name="password" class="form-control" id="password" required>
                     </div>
-                   {% if messages %}
+                    {% if messages %}
                     {% for message in messages %}
                     <div class="text-danger" style="text-align:center;">{{ message }}</div>
                     {% endfor %}

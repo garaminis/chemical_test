@@ -1,0 +1,146 @@
+{% extends 'base.html' %}
+{% block title %}Add Western blot Data{% endblock %}
+{% block extra_head %}
+{% endblock %}
+{% block content %}
+
+<style>
+
+</style>
+
+<h2>{{ target }} / Chem id : {{ chem_id }}</h2>
+<!--<form method="post" enctype="multipart/form-data">-->
+<!--    {% csrf_token %}-->
+<!--    {{ form.as_p }}-->
+<!--    {{ image_form.as_p }}-->
+<!--    <button type="submit">Save</button>-->
+<!--</form>-->
+<!--<a href="{% url 'pharmacokinetic_list' target=target chem_id=chem_id %}">Cancel</a>-->
+<div class="pagetitle">
+    <nav style="--bs-breadcrumb-divider: '>';">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{% url 'home' %}">Home</a></li>
+            <li class="breadcrumb-item active">Targets</li>
+            <li class="breadcrumb-item active"><a href="{% url 'target_view' target=target %}">{{ target }}</a> </li>
+            <li class="breadcrumb-item active"><a href="{% url 'pharmacokinetic_list' target=target chem_id=chem_id%}">Result</a> </li>
+            <li class="breadcrumb-item active">Western blot</li>
+        </ol>
+    </nav>
+</div>
+<div class="col-lg-6">
+  <div class="card">
+    <div class="card-body">
+       <div class="tab-content pt-2" id="myTabContent">
+          <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
+          <h4 class="card-title">In vitro Data : Western blot </h4>
+             <a href="{% url 'pharmacokinetic_list' target=target chem_id=chem_id%}"  class="btn btn-outline-primary btn-sm">Back</a>
+          <form method="post" enctype="multipart/form-data">
+             {% csrf_token %}
+              <div class="row mb-3">
+                <label for="date" class="col-sm-2 col-form-label">Date</label>
+                <div class="col-sm-10">
+                  <input type="date" class="form-control" id="date" name="date"
+                   value="{{ form.date.value|default_if_none:'' }}">  <!-- 필드의 초기값을 폼에서 가져와서 입력 필드에 설정 -->
+                </div>
+              </div>
+
+              <div class="row mb-3">
+                  <label for="comment" class="col-sm-2 col-form-label">Comment</label>
+                  <div class="col-sm-10">
+                    <textarea  class="form-control" id="comment" name="comment" >{{ form.comment.value|default_if_none:'' }}</textarea>
+                  </div>
+              </div>
+
+              <div class="row mb-3">
+                  <label for="image" class="col-sm-2 col-form-label">Image</label>
+                  <div class="col-sm-10" >
+                    <input type="file" id="image" name="images" class="form-control" accept="image/*" multiple>
+                  </div>
+              </div>
+
+              <div class="row mb-3">
+                 <ul class="lst_thumb"> </ul>
+              </div>
+
+            <div class="row mb-3 " style="display:none">
+              <label for="id_userid" class="col-sm-2 col-form-label" > User</label>
+              <div class="col-sm-10">
+                 <input class="form-control" type="text" id="id_userid" name="user" value="{{ user.name }}" readonly>
+              </div>
+            </div>
+
+            <div class="row mb-3">
+              <label class="col-sm-2 col-form-label"></label>
+              <div class="col-sm-10">
+                <button type="submit" class="btn btn-primary">Submit Form</button>
+                <button class="btn btn-primary">cancel</button>
+              </div>
+            </div>
+          </form>
+
+        </div>
+       </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+{% block extra_js %}
+<script>
+<!--let onnode = document.querySelector('.lst_thumb');-->
+<!--const imageTag = document.getElementById("image");-->
+
+<!--imageTag.addEventListener('change', function () {-->
+<!--    loadImg(this);-->
+<!--});-->
+
+<!--function loadImg(input) {-->
+<!--    console.log("in");-->
+
+<!--    let files = Array.from(input.files);-->
+
+<!--    for (let i = 0; i < input.files.length; i++) {-->
+<!--        console.log("in");-->
+<!--        if (input.files && input.files[i]) {-->
+
+<!--            let reader = new FileReader();-->
+
+<!--            let fullname = input.files[i].name;-->
+<!--            let ext = fullname.split('.').pop();-->
+<!--            console.log("확장자: " + ext);-->
+
+<!--            let node = document.createElement('li');-->
+<!--            let tmp = `-->
+<!--                <img src="" class="uploadimage">-->
+<!--                ${fullname}-->
+<!--                <input type="button" class="rmbtn" value="삭제">-->
+<!--            `;-->
+<!--            node.innerHTML = tmp;-->
+
+<!--            node.querySelector('.rmbtn').addEventListener('click', function () {-->
+<!--                node.remove();-->
+<!--                // 파일 삭제 처리-->
+<!--                const dataTransfer = new DataTransfer();-->
+<!--                let fileArray = Array.from(input.files);-->
+<!--                fileArray.splice(i, 1); // 현재 파일을 배열에서 제거-->
+<!--                fileArray.forEach(file => {-->
+<!--                    dataTransfer.items.add(file);-->
+<!--                });-->
+<!--                input.files = dataTransfer.files; // 수정된 파일 목록으로 업데이트-->
+<!--            });-->
+
+<!--            if (ext === "txt") {-->
+<!--                onnode.appendChild(node);-->
+<!--                node.querySelector("img").setAttribute('src', "/assets/img/textfile.jpg");-->
+<!--            } else {-->
+<!--                reader.onload = function (e) {-->
+<!--                    onnode.appendChild(node);-->
+<!--                    node.querySelector("img").setAttribute('src', e.target.result);-->
+<!--                }-->
+<!--                reader.readAsDataURL(input.files[i]);-->
+<!--            }-->
+<!--        }-->
+<!--    }-->
+<!--}-->
+
+</script>
+{% endblock %}

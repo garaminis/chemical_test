@@ -1,11 +1,12 @@
-from django.contrib.auth.models import BaseUserManager, AbstractBaseUser
+from django import forms
+from django.contrib.auth.hashers import make_password
+from django.contrib.auth.models import BaseUserManager, AbstractBaseUser, PermissionsMixin
 from django.db import models
 from django.utils import timezone
 from rdkit import Chem
 from rdkit.Chem import Descriptors, Crippen
 
-# Create your models here.
-# User 모델을 확장하거나 기본 User 모델을 사용할 수 있습니다.
+
 class Chemical(models.Model):
     target = models.CharField(max_length=50)
     chem_id = models.CharField(max_length=50, primary_key=True)
@@ -18,8 +19,8 @@ class Chemical(models.Model):
     H_donors = models.IntegerField(blank=True, null=True)
     H_acceptors = models.IntegerField(blank=True, null=True)
     lipinski = models.BooleanField(default=False)
-    # user = models.ForeignKey('chemicals.User',on_delete=models.PROTECT)
-
+    user = models.CharField(max_length=200, null=True)
+    datetime = models.DateTimeField(default=timezone.now, blank=False)
 
     def __str__(self):
         return f"{self.chem_id} - {self.smiles} - {self.target}"
@@ -39,9 +40,10 @@ class Chemical(models.Model):
                              self.H_acceptors <= 10)
             # 분자 이미지 생성
             image_data = generate_image(self.smiles)
-            if image_data:
-                self.image.save(f'{self.chem_id}.png', ContentFile(image_data), save=False)
+            # if image_data:
+            #     self.image.save(f'{self.chem_id}.png', ContentFile(image_data), save=False)
         super().save(*args, **kwargs)
+
 # 이미지 생성 함수
 from rdkit.Chem import Draw
 from io import BytesIO
@@ -61,21 +63,22 @@ class Result(models.Model):
     value = models.FloatField()
     timestamp = models.DateTimeField(auto_now_add=True)
 
-
-
     def __str__(self):
         return f"{self.chemical} - {self.description}"
 
 class Pharmacokinetic(models.Model):
     chemical = models.ForeignKey(Chemical, on_delete=models.CASCADE)
     date = models.DateField()
-    cmax = models.FloatField()
-    tmax = models.FloatField()
-    AUC = models.FloatField()
-    t_half = models.FloatField()  # t1/2
-    Vss = models.FloatField()
-    Vd = models.FloatField()
-    BA = models.FloatField()  # Bioavailability
+    max_concentration = models.FloatField(null=True, blank=True)
+    tmax = models.FloatField(null=True, blank=True)
+    AUC = models.FloatField(null=True, blank=True)
+    t_half = models.FloatField(null=True, blank=True)  # t1/2
+    Vss = models.FloatField(null=True, blank=True)
+    F = models.FloatField(null=True, blank=True)
+    # BA = models.FloatField()  # Bioavailability
+    CL = models.FloatField(null=True, blank=True)
+    Route = models.CharField(max_length=200, null=True)
+    user = models.CharField(max_length=200, null=True)
 
     def __str__(self):
         return f'{self.chemical.chem_id} - {self.date}'
@@ -88,6 +91,7 @@ class Cytotoxicity(models.Model):
     L929 = models.FloatField()
     NIH_3T3 = models.FloatField()
     CHO_K1 = models.FloatField()
+    user = models.CharField(max_length=200, null=True)
 
     def __str__(self):
         return f'{self.chemical.chem_id} - {self.date}'
@@ -115,6 +119,7 @@ class LiverMicrosomalStability(models.Model):
     mouse = models.FloatField()
     rat = models.FloatField()
     human = models.FloatField()
+    user = models.CharField(max_length=200, null=True)
 
     def __str__(self):
         return f'{self.chemical.chem_id} - {self.date} Liver Microsomal Stability'
@@ -127,58 +132,94 @@ class CYPInhibition(models.Model):
     cyp_2c19 = models.FloatField()
     cyp_2d6 = models.FloatField()
     cyp_3a4 = models.FloatField()
+    user = models.CharField(max_length=200, null=True)
 
     def __str__(self):
         return f'{self.chemical.chem_id} - {self.date} CYP Inhibition'
 
-class UserManager(BaseUserManager):
-    # 일반 user 생성
-    def create_user(self, email, name, password=None):
-        if not email:
-            raise ValueError('must have user email')
-        if not name:
-            raise ValueError('must have user name')
-
-        user = self.model(
-            email=self.normalize_email(email),
-            name=name
-        )
-        user.set_password(password)
-        user.save(using=self._db)
-        return user
-
-    # 관리자 user 생성
-    def create_superuser(self, email, name, password=None):
-        user = self.create_user(
-            email,
-            password=password,
-            name=name,
-        )
-        user.is_admin = True
-        user.is_staff = True
-        user.save(using=self._db)
-        return user
-
-class User(AbstractBaseUser):
-    id = models.AutoField(primary_key=True)
-    userID = models.CharField(default='', max_length=100, null=False, blank=False, unique=True)
-    email = models.EmailField(default='', max_length=100, null=False, blank=False, unique=True)
-    name = models.CharField(default='', max_length=100, null=False, blank=False)
-    roll = models.CharField(default='', max_length=100, blank=False)
-    group = models.CharField(default='', max_length=100, blank=False)
-    date_joined = models.DateTimeField(default=timezone.now, blank=False)
-    is_staff = models.BooleanField(default=False)
-
-    # User 모델의 필수 field
-    is_active = models.BooleanField(default=True)
-    is_admin = models.BooleanField(default=False)
-
-    # 헬퍼 클래스 사용
-    objects = UserManager()
-    # 인증에 사용되는 기본 필드
-    USERNAME_FIELD = 'userID'
-    # 필수로 작성해야하는 field(모델 생성할때 추가로 필요한 필드)
-    REQUIRED_FIELDS = ['email', 'name', 'password', 'roll', 'group']
+class CCK_assay(models.Model):
+    chemical = models.ForeignKey(Chemical, on_delete=models.CASCADE)
+    date = models.DateField()
+    user = models.CharField(max_length=200, null=True)
+    cell = models.TextField(null=True)
+    IC50 = models.FloatField(null=True, blank=True)
+    Out = models.CharField(max_length=200,null=True)
+    comment = models.TextField(null=True)
 
     def __str__(self):
-        return self.userID
+        return f'{self.chemical.chem_id} - {self.date} CCK_assay'
+
+class Western_blot(models.Model):
+    chemical = models.ForeignKey(Chemical, on_delete=models.CASCADE)
+    date = models.DateField()
+    user = models.CharField(max_length=200, null=True)
+    comment = models.TextField(null=True)
+
+    def __str__(self):
+        return f'{self.chemical.chem_id} - {self.date} Western_blot'
+
+class Target_Inhibition(models.Model):
+    chemical = models.ForeignKey(Chemical, on_delete=models.CASCADE)
+    date = models.DateField()
+    user = models.CharField(max_length=200, null=True)
+    vitro_at_10 = models.FloatField(null=True, blank=True)
+    Taret_IC50 = models.FloatField(null=True, blank=True)
+    comment = models.TextField(null=True)
+
+    def __str__(self):
+        return f'{self.chemical.chem_id} - {self.date} Target_Inhibition'
+
+class other_asssay(models.Model):
+    chemical = models.ForeignKey(Chemical, on_delete=models.CASCADE)
+    date = models.DateField()
+    user = models.CharField(max_length=200, null=True)
+    title = models.CharField(max_length=200, default="NA")
+    comment = models.TextField(null=True)
+
+    def __str__(self):
+        return f'{self.chemical.chem_id} - {self.date} other_asssay'
+
+class invtro_Image(models.Model):
+    cck_assay = models.ForeignKey(CCK_assay, related_name='images', on_delete=models.CASCADE,null=True)
+    image = models.ImageField(upload_to='in_vitro/')
+    wb = models.ForeignKey(Western_blot, related_name='images', on_delete=models.CASCADE,null=True)
+    in_target = models.ForeignKey(Target_Inhibition,related_name='images',on_delete=models.CASCADE,null=True)
+    others = models.ForeignKey(other_asssay,related_name='images',on_delete=models.CASCADE,null=True)
+
+class in_vivo(models.Model):
+    chemical = models.ForeignKey(Chemical, on_delete=models.CASCADE)
+    start_date = models.DateField()
+    end_date = models.DateField()
+    user = models.CharField(max_length=200, null=True)
+    cell = models.TextField(null=True)
+    does = models.FloatField(null=True, blank=True)
+    solvent =  models.TextField(null=True)
+    inject_date= models.IntegerField(null=True)
+    group = models.TextField(null=True)
+    comment = models.TextField(null=True)
+    category = models.CharField(max_length=200, null=True)
+
+    def __str__(self):
+        return f'{self.chemical.chem_id} - in_vivo'
+
+
+class Test0(models.Model):
+    name = models.CharField(max_length=255)
+    class Meta:
+        db_table = 'test0'
+        app_label = 'chemicals'
+
+
+
+class Test1(models.Model):
+    name = models.CharField(max_length=255)
+    class Meta:
+        db_table = 'test1'
+        app_label = 'chemicals'
+
+
+class Test2(models.Model):
+    name = models.CharField(max_length=255)
+    class Meta:
+        db_table = 'test2'
+        app_label = 'chemicals'

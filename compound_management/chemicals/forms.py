@@ -1,19 +1,18 @@
-import re
-
 from django import forms
+from django.forms import ClearableFileInput, formset_factory
 from .models import Chemical, Pharmacokinetic, Cytotoxicity, SchrödingerModel, LiverMicrosomalStability, CYPInhibition, \
-    User
-# from compound_management.chemicals.models import Chemical, Pharmacokinetic, Cytotoxicity, SchrödingerModel, LiverMicrosomalStability, CYPInhibition, User
+     CCK_assay, invtro_Image, Western_blot, Target_Inhibition, other_asssay, in_vivo
 
+
+# from compound_management.chemicals.models import Chemical, Pharmacokinetic, Cytotoxicity, SchrödingerModel, LiverMicrosomalStability, CYPInhibition, User
 
 class DateInput(forms.DateInput):
     input_type = 'date'
 
-
 class ChemicalForm(forms.ModelForm):
     class Meta:
         model = Chemical
-        fields = ['chem_id', 'smiles', 'image', 'MW', 'cLogP', 'TPSA','H_donors', 'H_acceptors', 'lipinski' ]
+        fields = ['chem_id', 'smiles', 'image', 'MW', 'cLogP', 'TPSA' , 'H_donors', 'H_acceptors', 'lipinski','user']
 
 class ChemicalUploadForm(forms.Form):
     file = forms.FileField()
@@ -21,15 +20,15 @@ class ChemicalUploadForm(forms.Form):
 class PharmacokineticForm(forms.ModelForm):
     class Meta:
         model = Pharmacokinetic
-        fields = ['date', 'cmax', 'tmax', 'AUC', 't_half', 'Vss', 'Vd', 'BA']
+        fields = ['date', 'max_concentration', 'tmax', 'AUC', 't_half', 'Vss', 'F', 'CL', 'Route','user']
         widgets = {
-            'date': DateInput(),  # DateInput 위젯 사용
+            'date': DateInput(attrs={'type': 'date'}),  # DateInput 위젯 사용
         }
 
 class CytotoxicityForm(forms.ModelForm):
     class Meta:
         model = Cytotoxicity
-        fields = ['date', 'VERO', 'HFL_1', 'L929', 'NIH_3T3', 'CHO_K1']
+        fields = ['date', 'VERO', 'HFL_1', 'L929', 'NIH_3T3', 'CHO_K1', 'user']
         widgets = {
             'date': DateInput(),  # DateInput 위젯 사용
         }
@@ -45,7 +44,7 @@ class SchrödingerModelUploadForm(forms.Form):
 class LiverMicrosomalStabilityForm(forms.ModelForm):
     class Meta:
         model = LiverMicrosomalStability
-        fields = ['date', 'mouse', 'rat', 'human']
+        fields = ['date', 'mouse', 'rat', 'human' , 'user']
         widgets = {
             'date': DateInput(),  # DateInput 위젯 사용
         }
@@ -53,44 +52,82 @@ class LiverMicrosomalStabilityForm(forms.ModelForm):
 class CYPInhibitionForm(forms.ModelForm):
     class Meta:
         model = CYPInhibition
-        fields = ['date', 'cyp_1a2', 'cyp_2c9', 'cyp_2c19', 'cyp_2d6', 'cyp_3a4']
+        fields = ['date', 'cyp_1a2', 'cyp_2c9', 'cyp_2c19', 'cyp_2d6', 'cyp_3a4' , 'user']
         widgets = {
             'date': DateInput(),  # DateInput 위젯 사용
         }
 
-class UserForm(forms.ModelForm):
-    # 패스워드 필드를 정의하며, 입력 시 비밀번호 입력 필드를 사용합니다.
-    password = forms.CharField(widget=forms.PasswordInput)
-
+class cckForm(forms.ModelForm):
     class Meta:
-        model = User
-        fields = ['userID', 'email', 'name', 'password','roll', 'group']
+        model = CCK_assay
+        fields = ['date', 'user',  'cell', 'IC50' , 'Out' , 'comment']
+        widgets = {
+            'date': DateInput(),  # DateInput 위젯 사용
+        }
+class wbForm(forms.ModelForm):
+    class Meta:
+        model = Western_blot
+        fields = ['date', 'user' , 'comment']
+        widgets = {
+            'date': DateInput(),  # DateInput 위젯 사용
+        }
 
-    def clean_password(self):
-        password = self.cleaned_data.get('password')
-        pattern = r'^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8}$'
-        if not re.match(pattern, password ):
-            raise forms.ValidationError("문자, 숫자, 특수문자를 포함한 8자리 이상이어야 합니다.")
-        return password
+class intargetForm(forms.ModelForm):
+    class Meta:
+        model = Target_Inhibition
+        fields = ['date', 'user', 'vitro_at_10' , 'Taret_IC50' , 'comment']
+        widgets = {
+            'date': DateInput(),  # DateInput 위젯 사용
+        }
 
-    def clean_userID(self):
-        userID = self.cleaned_data.get('userID')
-        if User.objects.filter(userID=userID).exists():
-            raise forms.ValidationError("중복된 아이디입니다.")
-        if len(userID) < 4:
-            print(userID)
-            raise forms.ValidationError("아이디는 4자 이상입니다.")
-        return userID
+class otherForm(forms.ModelForm):
+    class Meta:
+        model = other_asssay
+        fields = ['date', 'user', 'title' , 'comment']
+        widgets = {
+            'date': DateInput(),  # DateInput 위젯 사용
+        }
 
-    def clean_email(self):
-        email = self.cleaned_data.get('email')
-        # 이메일 형식 검증
-        if not self.is_valid_email_format(email):
-            raise forms.ValidationError('유효하지 않은 이메일 주소 형식입니다.')
-        return email
-    def is_valid_email_format(self, email):
-        # 이메일 형식 검증을 위한 정규 표현식
-        email_regex = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
-        return re.match(email_regex, email) is not None
+# class invtroimgForm(forms.ModelForm):
+#     images = forms.FileField(widget=forms.ClearableFileInput(attrs={'multiple': True}))
+#     class Meta:
+#         model = invtro_Image
+#         fields = ['image']
 
+class in_vivoForm(forms.ModelForm):
+    class Meta:
+        model = in_vivo
+        fields = ['user', 'start_date', 'end_date', 'cell', 'does', 'solvent', 'inject_date', 'group', 'comment', 'category']
+        widgets = {
+            'date': DateInput(),  # DateInput 위젯 사용
+        }
+class CustomClearableFileInput(ClearableFileInput):
+    allow_multiple_selected = True
 
+    def __init__(self, attrs=None):
+        super().__init__(attrs)
+        if attrs is None:
+            attrs = {}
+        attrs.update({'multiple': True})
+
+    def value_from_datadict(self, data, files, name):
+        if self.allow_multiple_selected:
+            return files.getlist(name)
+        return files.get(name)
+
+class InvtroimgForm(forms.ModelForm):
+    images = forms.ImageField(widget=CustomClearableFileInput)
+    class Meta:
+        model = invtro_Image
+        fields = ['images']
+
+class ColumnForm(forms.Form):
+    column_name = forms.CharField(label='Column Name', max_length=100)
+    column_type = forms.ChoiceField(
+        label='Column Type',
+        choices=[('CharField', 'CharField'), ('IntegerField', 'IntegerField')]
+    )
+ColumnFormSet = formset_factory(ColumnForm, extra=1)
+
+class TableForm(forms.Form):
+    table_name = forms.CharField(label='Table Name', max_length=100)
