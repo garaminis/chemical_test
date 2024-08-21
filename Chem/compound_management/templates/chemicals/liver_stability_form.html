@@ -1,0 +1,78 @@
+{% extends 'base.html' %}
+{% block title %}
+    Add Liver Microsomal Stability Data for {{ chem_id }
+{% endblock %}
+{% block content %}
+<h2>{{ target }} / Chem id : {{ chem_id }}</h2>
+<div class="pagetitle">
+    <nav style="--bs-breadcrumb-divider: '>';">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{% url 'home' %}">Home</a></li>
+            <li class="breadcrumb-item active">Targets</li>
+            <li class="breadcrumb-item active"><a href="{% url 'target_view' target=target %}">{{ target }}</a> </li>
+            <li class="breadcrumb-item active"><a href="{% url 'pharmacokinetic_list' target=target chem_id=chem_id%}">Result</a> </li>
+            <li class="breadcrumb-item active">Liver Microsomal Stability</li>
+        </ol>
+    </nav>
+</div>
+
+
+<div class="col-lg-6">
+  <div class="card">
+    <div class="card-body">
+      <h4 class="card-title">Add Liver Microsomal Stability Data for {{ chem_id }}</h4>
+       <button class="btn btn-outline-primary btn-sm" onclick="history.back()">Back</button>
+        <form method="post" >
+         {% csrf_token %}
+            <div class="row mb-3">
+              <label for="date" class="col-sm-2 col-form-label">Date</label>
+              <div class="col-sm-10">
+                <input type="date" class="form-control" id="date" name="date"
+                 value="{{ form.date.value|date:'Y-m-d' }}">  <!-- 필드의 초기값을 폼에서 가져와서 입력 필드에 설정 -->
+              </div>
+            </div>
+
+            <div class="row mb-3">
+              <label for="mouse" class="col-sm-2 col-form-label">Mouse(%)</label>
+              <div class="col-sm-10">
+                  <input type="number" step="any" class="form-control" id="mouse" name="mouse" value="{{ form.mouse.value|default_if_none:'' }}">
+              </div>
+            </div>
+
+            <div class="row mb-3">
+              <label for="rat" class="col-sm-2 col-form-label">Rat(%)</label>
+              <div class="col-sm-10">
+                  <input type="number" step="any" class="form-control" id="rat" name="rat" value="{{ form.rat.value|default_if_none:'' }}">
+              </div>
+            </div>
+
+          <div class="row mb-3">
+              <label for="human" class="col-sm-2 col-form-label">Human(%)</label>
+              <div class="col-sm-10">
+                  <input type="number" step="any" class="form-control" id="human" name="human" value="{{ form.human.value|default_if_none:'' }}">
+              </div>
+          </div>
+
+        <div class="row mb-3">
+          <label class="col-sm-2 col-form-label"></label>
+          <div class="col-sm-10">
+            <button type="submit" class="btn btn-primary">Submit Form</button>
+            <button class="btn btn-primary">cancel</button>
+          </div>
+        </div>
+
+        <div class="row mb-3 " style="display:none">
+          <label for="id_userid" class="col-sm-2 col-form-label" > User</label>
+          <div class="col-sm-10">
+             <input class="form-control" type="text" id="id_userid" name="user" value="{{ user.name }}" readonly>
+          </div>
+        </div>
+
+      </form>
+
+    </div>
+  </div>
+</div>
+
+
+{% endblock %}

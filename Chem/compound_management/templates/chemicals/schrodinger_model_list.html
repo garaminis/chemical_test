@@ -1,0 +1,58 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    Schrödinger Modeling for {{ chemical.chem_id }}
+{% endblock %}
+{% block content %}
+<h3>Schrödinger Modeling for {{ chemical.chem_id }}</h3>
+<!--<div class="container my-3">-->
+  <div class="row">
+    <div class="card">
+     <form method="post" action="{% url 'schrodinger_model_upload' target=chemical.target chem_id=chemical.chem_id %}" enctype="multipart/form-data">
+        {% csrf_token %}
+        <br>
+        <button type="submit"   class="btn btn-primary btn-sm" ><i class="bi bi-upload"></i> Upload</button>
+     </form>
+      <div class="card-body"> <br>
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">QPlogS</th>
+                    <th scope="col">QPlogHERG</th>
+                    <th scope="col">QPPCaco</th>
+                    <th scope="col">QPlogBB</th>
+                    <th scope="col">QPPMDCK</th>
+                    <th scope="col">Metab</th>
+                    <th scope="col">QPlogKhsa</th>
+                    <th scope="col">HOralAbs</th>
+                    <th scope="col">PerHOralAbs</th>
+                    <th scope="col">Field 11</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for model in models %}
+                <tr>
+                    <th scope="row"></th>
+                    <td>{{ model.QPlogS }}</td>
+                    <td>{{ model.QPlogHERG }}</td>
+                    <td>{{ model.QPPCaco }}</td>
+                    <td>{{ model.QPlogBB }}</td>
+                    <td>{{ model.QPPMDCK }}</td>
+                    <td>{{ model.Metab }}</td>
+                    <td>{{ model.QPlogKhsa }}</td>
+                    <td>{{ model.HOralAbs }}</td>
+                    <td>{{ model.PerHOralAbs }}</td>
+                    <td>{{ model.field_11 }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <a href="{% url 'schrodinger_model_add' target=chemical.target chem_id=chemical.chem_id %}"  class="btn btn-outline-primary btn-sm" >Add Modeling Data</a>
+      </div>
+    </div>
+  </div>
+<!--</div>-->
+    <a href="{% url 'target_view' target=chemical.target %}" class="btn btn-outline-primary btn-sm">Back to {{ chemical.target }}</a>
+<!--    <a href="{% url 'home' %}" class="btn btn-outline-primary btn-sm">Home</a>-->
+{% endblock %}
