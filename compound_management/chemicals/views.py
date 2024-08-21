@@ -33,7 +33,7 @@ from io import BytesIO
 from django.core.files.base import ContentFile
 import logging
 import csv
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponse
 import os
 from django.conf import settings
 from users.models import DatabaseList
@@ -727,7 +727,10 @@ def SLselected_gene_input(request):
 
 
 def create_dynamic_model(table_name, fields):
-    attrs = {'__module__': __name__}
+    attrs = {
+        '__module__': 'chemicals.models',
+        'Meta': type('Meta', (), {'db_table': table_name, 'app_label': 'chemicals'}),
+    }
     for field_name, field_type in fields.items():
         if field_type == 'CharField':
             attrs[field_name] = models.CharField(max_length=255)
@@ -782,7 +785,7 @@ def create_table_view(request):
             call_command('makemigrations', 'chemicals')  # 'chemicals' 앱에 대해 마이그레이션 생성
             call_command('migrate', 'chemicals')
 
-        return redirect('/admin')
+        return redirect('home')
     else:
         table_form = TableForm()
         column_formset = ColumnFormSet(prefix='columns')

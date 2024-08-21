@@ -49,22 +49,22 @@
 {% endblock %}
 {% block extra_js %}
 <script>
-<!--    function addColumn() {-->
-<!--        const container = document.getElementById('columns-container');-->
-<!--        const totalForms = document.querySelectorAll('.column-form').length;-->
-<!--        const formHtml = `-->
-<!--            <div class="column-form">-->
-<!--                <label>Column Name:</label>-->
-<!--                <input type="text" name="columns-${totalForms}-column_name" />-->
-<!--                <label>Column Type:</label>-->
-<!--                <select name="columns-${totalForms}-column_type">-->
-<!--                    <option value="CharField">CharField</option>-->
-<!--                    <option value="IntegerField">IntegerField</option>-->
-<!--                </select>-->
-<!--            </div>-->
-<!--        `;-->
-<!--        container.insertAdjacentHTML('beforeend', formHtml);-->
-<!--        document.getElementById('id_columns-TOTAL_FORMS').value = totalForms + 1;-->
-<!--    }-->
+    function addColumn() {
+        const container = document.getElementById('columns-container');
+        const totalForms = document.querySelectorAll('.column-form').length;
+        const formHtml = `
+            <div class="column-form">
+                <label>Column Name:</label>
+                <input type="text" name="columns-${totalForms}-column_name" />
+                <label>Column Type:</label>
+                <select name="columns-${totalForms}-column_type">
+                    <option value="CharField">CharField</option>
+                    <option value="IntegerField">IntegerField</option>
+                </select>
+            </div>
+        `;
+        container.insertAdjacentHTML('beforeend', formHtml);
+        document.getElementById('id_columns-TOTAL_FORMS').value = totalForms + 1;
+    }
 </script>
 {% endblock %}

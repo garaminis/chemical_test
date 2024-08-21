@@ -209,17 +209,3 @@ class Test0(models.Model):
         db_table = 'test0'
         app_label = 'chemicals'
 
-
-
-class Test1(models.Model):
-    name = models.CharField(max_length=255)
-    class Meta:
-        db_table = 'test1'
-        app_label = 'chemicals'
-
-
-class Test2(models.Model):
-    name = models.CharField(max_length=255)
-    class Meta:
-        db_table = 'test2'
-        app_label = 'chemicals'

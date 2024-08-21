@@ -21,6 +21,4 @@ admin.site.register(in_vivo)
 # 동적으로 생성한 테이블
 admin.site.register(Test0)
 
-admin.site.register(Test1)
 
-admin.site.register(Test2)
