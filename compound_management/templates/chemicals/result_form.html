@@ -68,11 +68,11 @@
                     <form method="POST">
                     {% csrf_token %}
                     {% for db_name in db_names %}
-                       {% if db_name.group == 'in_vitro' %}
+<!--                       {% if db_name.group == 'in_vitro' %}-->
                         <label>
                             <input type="radio" name="dbOption" value="{{ db_name}}" class="db-radio"> {{ db_name}}
                         </label>
-                       {% endif %}
+<!--                       {% endif %}-->
                     {% endfor %}
                         <table id="resultTable">
                             <thead>

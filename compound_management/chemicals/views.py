@@ -59,7 +59,6 @@ def result_add(request, target):
         print(selected_db)
         data_to_save = request.POST.get('data_field')  # 저장할 데이터
         try:
-            # 선택된 데이터베이스 테이블에 해당하는 모델 클래스를 동적으로 가져오기
             DynamicModel = apps.get_model('chemicals', selected_db.capitalize())
             if DynamicModel:
                 new_entry = DynamicModel(name=data_to_save)
@@ -736,7 +735,6 @@ def create_dynamic_model(table_name, fields):
             attrs[field_name] = models.CharField(max_length=255)
         elif field_type == 'IntegerField':
             attrs[field_name] = models.IntegerField()
-
     # 모델 클래스 생성
     model = type(capfirst(table_name), (models.Model,), attrs)
 
