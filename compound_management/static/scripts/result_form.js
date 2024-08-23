@@ -37,7 +37,7 @@ function updateResultTable() {
     const $resultTableBody = $('#resultTable tbody');
     $resultTableBody.empty();
 
-     const filteredFields = data.fields.filter(field => field.help_text.includes('check'));
+    // const filteredFields = data.fields.filter(field => field.help_text.includes('check'));
 
     $('.data-checkbox:checked').each(function() {
         var $row = $(this).closest("tr")
