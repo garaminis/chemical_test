@@ -53,6 +53,7 @@ class User(AbstractBaseUser,PermissionsMixin):
 class DatabaseList(models.Model):
     name = models.CharField(max_length=100, unique=True)
     group = models.CharField(max_length=100, null=True)
+    title = models.CharField(max_length=100 ,unique=True)
 
     def __str__(self):
         return self.name

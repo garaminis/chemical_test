@@ -4,7 +4,8 @@ from django.contrib.auth.models import User
 from django.contrib import admin
 from django.forms import forms, formset_factory
 from django import forms
-from .models import User
+from .models import User, DatabaseList
+
 
 class UserForm(forms.ModelForm):
     # 패스워드 필드를 정의하며, 입력 시 비밀번호 입력 필드를 사용합니다.
@@ -49,5 +50,7 @@ class UserForm(forms.ModelForm):
             user.save()
         return user
 
-
-
+class DataListForm(forms.ModelForm):
+    class Meta:
+        model = DatabaseList
+        fields = ['name', 'group', 'title']

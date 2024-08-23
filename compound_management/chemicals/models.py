@@ -142,8 +142,8 @@ class CCK_assay(models.Model):
     date = models.DateField()
     user = models.CharField(max_length=200, null=True)
     cell = models.TextField(null=True)
-    IC50 = models.FloatField(null=True, blank=True)
-    Out = models.CharField(max_length=200,null=True)
+    IC50 = models.FloatField(null=True, blank=True, help_text='check')
+    Out = models.CharField(max_length=200,null=True, help_text='check')
     comment = models.TextField(null=True)
 
     def __str__(self):
@@ -201,11 +201,4 @@ class in_vivo(models.Model):
 
     def __str__(self):
         return f'{self.chemical.chem_id} - in_vivo'
-
-
-class Test0(models.Model):
-    name = models.CharField(max_length=255)
-    class Meta:
-        db_table = 'test0'
-        app_label = 'chemicals'
 

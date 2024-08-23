@@ -2,13 +2,12 @@ from django.contrib import admin
 from . import views
 from django.urls import path, include
 from django.conf import settings
-from .views import delete_selected_chems, create_table_view
+from .views import delete_selected_chems
 from django.conf.urls.static import static
 
 urlpatterns = [
     path('', views.home_view, name='home'),
     # path('admin/', include('chemicals.urls')),
-    path('chemicals/create-table/', create_table_view, name='create_table_view'),
 # target CRUD
     path('chemicals/<str:target>/', views.target_view, name='target_view'),
     path('chemicals/<str:target>/new/', views.chemical_new_view, name='chemical_new'),
@@ -54,6 +53,7 @@ urlpatterns = [
     path('chemicals/<str:target>/ot/<str:chem_id>/del/<int:id>', views.other_delete, name='other_delete'),
 # result invitro update
     path('chemicals/<str:target>/cck/<str:chem_id>/update/<int:id>', views.cck_update, name='cck_update'),
+    path('get_columns/<str:table_name>/', views.get_columns, name='get_columns'),
 
 
 ]

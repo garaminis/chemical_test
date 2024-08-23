@@ -20,7 +20,7 @@ from .models import Chemical, Pharmacokinetic, Cytotoxicity, SchrödingerModel, 
     CCK_assay, invtro_Image, Western_blot, Target_Inhibition, other_asssay, in_vivo
 from .forms import ChemicalForm, ChemicalUploadForm, PharmacokineticForm, CytotoxicityForm, SchrödingerModelForm, \
     SchrödingerModelUploadForm, LiverMicrosomalStabilityForm, CYPInhibitionForm, cckForm, wbForm, \
-    intargetForm, otherForm, in_vivoForm, TableForm, ColumnFormSet
+    intargetForm, otherForm, in_vivoForm
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 # R2Py
@@ -37,7 +37,7 @@ from django.http import JsonResponse, HttpResponse
 import os
 from django.conf import settings
 from users.models import DatabaseList
-
+from users.forms import DataListForm
 
 # 로거 설정
 logger = logging.getLogger(__name__)
@@ -48,36 +48,6 @@ def home_view(request):
 
 # db_names = DatabaseList.objects.all()
 # db_names = DatabaseList.objects.values_list('name','group')
-@login_required
-@csrf_exempt
-def result_add(request, target):
-    db_names = DatabaseList.objects.all()
-    chemicals = Chemical.objects.filter(target=target).order_by('-datetime')
-
-    if request.method == 'POST':
-        selected_db = request.POST.get('dbOption')
-        print(selected_db)
-        data_to_save = request.POST.get('data_field')  # 저장할 데이터
-        try:
-            DynamicModel = apps.get_model('chemicals', selected_db.capitalize())
-            if DynamicModel:
-                new_entry = DynamicModel(name=data_to_save)
-                new_entry.save()
-                print(f"Data saved to {selected_db} table")
-            else:
-                print('해당 모델을 찾을 수 없습니다.')
-
-        except LookupError:
-            print(f"The model for {selected_db} was not found.")
-        except Exception as e:
-            print(f"An error occurred: {str(e)}")
-
-    return render(request, 'chemicals/result_form.html', {
-        'target': target,
-        'chemicals': chemicals,
-        'db_names': db_names,
-
-    })
 
 @login_required
 def target_view(request, target):
@@ -724,71 +694,57 @@ def SLselected_gene_input(request):
             context['img_path'] = None
     return render(request, 'sl.html', context)
 
+db_names = DatabaseList.objects.all()
+db_list = DatabaseList.objects.values_list('name')
+@login_required
+@csrf_exempt
+def result_add(request, target):
+    chemicals = Chemical.objects.filter(target=target).order_by('-datetime')
 
-def create_dynamic_model(table_name, fields):
-    attrs = {
-        '__module__': 'chemicals.models',
-        'Meta': type('Meta', (), {'db_table': table_name, 'app_label': 'chemicals'}),
-    }
-    for field_name, field_type in fields.items():
-        if field_type == 'CharField':
-            attrs[field_name] = models.CharField(max_length=255)
-        elif field_type == 'IntegerField':
-            attrs[field_name] = models.IntegerField()
-    # 모델 클래스 생성
-    model = type(capfirst(table_name), (models.Model,), attrs)
-
-    # 모델을 전역 네임스페이스에 추가
-    globals()[model.__name__] = model
-
-    # DatabaseList에 새로운 DB 이름 추가
-    if not DatabaseList.objects.filter(name=table_name).exists():
-        DatabaseList.objects.create(name=table_name)
-
-    models_path = os.path.join('chemicals', 'models.py') # a:추가모드
-    with open(models_path, 'a') as models_file:
-        models_file.write(f"\n\nclass {model.__name__}(models.Model):\n")
-        for field_name, field in fields.items():
-            if field == 'CharField':
-                models_file.write(f"    {field_name} = models.CharField(max_length=255)\n")
-            elif field == 'IntegerField':
-                models_file.write(f"    {field_name} = models.IntegerField()\n")
-        models_file.write(f"    class Meta:\n")
-        models_file.write(f"        db_table = '{table_name}'\n")
-        models_file.write(f"        app_label = 'chemicals'\n")
-
-    # admin.py에 모델 등록 추가
-    admin_path = os.path.join('chemicals', 'admin.py')
-    with open(admin_path, 'a') as admin_file:
-        admin_file.write(f"\nadmin.site.register({model.__name__})\n")
-
-    return model
-
-@staff_member_required
-def create_table_view(request):
     if request.method == 'POST':
-        table_form = TableForm(request.POST)
-        column_formset = ColumnFormSet(request.POST, prefix='columns')
+        selected_db = request.POST.get('dbOption')
+        print(selected_db)
+        data_to_save = request.POST.get('data_field')  # 저장할 데이터
+        try:
+            DynamicModel = apps.get_model('chemicals', selected_db.capitalize())
+            if DynamicModel:
+                new_entry = DynamicModel(name=data_to_save)
+                new_entry.save()
+                print(f"Data saved to {selected_db} table")
+            else:
+                print('해당 모델을 찾을 수 없습니다.')
 
-        if table_form.is_valid() and column_formset.is_valid():
-            table_name = table_form.cleaned_data['table_name'].replace(' ', '_').lower()
-            columns = column_formset.cleaned_data
+        except LookupError:
+            print(f"The model for {selected_db} was not found.")
+        except Exception as e:
+            print(f"An error occurred: {str(e)}")
 
-            # 필드 정보 구성
-            fields = {column['column_name']: column['column_type'] for column in columns if column['column_name'] and column['column_type']}
+    return render(request, 'chemicals/result_form.html', {
+        'target': target,
+        'chemicals': chemicals,
+        'db_names': db_names,
 
-            # 동적으로 모델을 생성
-            create_dynamic_model(table_name, fields)
-
-            call_command('makemigrations', 'chemicals')  # 'chemicals' 앱에 대해 마이그레이션 생성
-            call_command('migrate', 'chemicals')
-
-        return redirect('home')
-    else:
-        table_form = TableForm()
-        column_formset = ColumnFormSet(prefix='columns')
-
-    return render(request, 'admin/create_table.html', {
-        'table_form': table_form,
-        'column_formset': column_formset,
     })
+
+
+def get_columns(request, table_name):
+    try:
+        model = apps.get_model('chemicals', table_name)
+    except LookupError:
+        try:
+            model = apps.get_model('data', table_name)
+        except LookupError:
+            return JsonResponse({'fields': []})
+
+    fields = []
+    for field in model._meta.get_fields():
+        if isinstance(field, models.ManyToOneRel): # 관계형 필드 (ManyToOneRel) 패스
+            continue
+
+        fields.append({
+            'name': field.name,
+            'help_text': getattr(field, 'help_text', '')  # help_text 속성 없는 예외 처리
+        })
+
+    return JsonResponse({'fields': fields})
+
