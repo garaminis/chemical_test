@@ -8,7 +8,7 @@ from .models import User, DatabaseList
 
 
 class UserForm(forms.ModelForm):
-    # 패스워드 필드를 정의하며, 입력 시 비밀번호 입력 필드를 사용합니다.
+    # 패스워드 필드를 정의
     password = forms.CharField(widget=forms.PasswordInput)
     password2 = forms.CharField(widget=forms.PasswordInput())
 
@@ -38,8 +38,9 @@ class UserForm(forms.ModelForm):
         if not self.is_valid_email_format(email):
             raise forms.ValidationError('유효하지 않은 이메일 주소 형식입니다.')
         return email
+
     def is_valid_email_format(self, email):
-        # 이메일 형식 검증을 위한 정규 표현식
+        # 이메일 형식 검증 표현식
         email_regex = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
         return re.match(email_regex, email) is not None
 

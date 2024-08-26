@@ -7,7 +7,7 @@ from django.conf.urls.static import static
 
 urlpatterns = [
     path('', views.home_view, name='home'),
-    # path('admin/', include('chemicals.urls')),
+
 # target CRUD
     path('chemicals/<str:target>/', views.target_view, name='target_view'),
     path('chemicals/<str:target>/new/', views.chemical_new_view, name='chemical_new'),

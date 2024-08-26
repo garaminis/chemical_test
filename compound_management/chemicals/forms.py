@@ -2,10 +2,6 @@ from django import forms
 from django.forms import ClearableFileInput, formset_factory
 from .models import Chemical, Pharmacokinetic, Cytotoxicity, SchrödingerModel, LiverMicrosomalStability, CYPInhibition, \
      CCK_assay, invtro_Image, Western_blot, Target_Inhibition, other_asssay, in_vivo
-
-
-# from compound_management.chemicals.models import Chemical, Pharmacokinetic, Cytotoxicity, SchrödingerModel, LiverMicrosomalStability, CYPInhibition, User
-
 class DateInput(forms.DateInput):
     input_type = 'date'
 
@@ -121,14 +117,3 @@ class InvtroimgForm(forms.ModelForm):
         model = invtro_Image
         fields = ['images']
 
-
-# class ColumnForm(forms.Form):
-#     column_name = forms.CharField(label='Column Name', max_length=100)
-#     column_type = forms.ChoiceField(
-#         label='Column Type',
-#         choices=[('CharField', 'CharField'), ('IntegerField', 'IntegerField')]
-#     )
-# ColumnFormSet = formset_factory(ColumnForm, extra=1)
-#
-# class TableForm(forms.Form):
-#     table_name = forms.CharField(label='Table Name', max_length=100)

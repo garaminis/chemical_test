@@ -5,5 +5,5 @@ from .models import *
 
 
 
-
+# 동적 모델 관리자 페이지 등록
 admin.site.register(Test0)

@@ -50,7 +50,7 @@ function updateResultTable() {
 }
 
 
-    // 페이지가 로드될 때, 저장된 탭 상태를 복원
+    // 탭 복원
     var activeTab = localStorage.getItem('activeTab');
     if (activeTab) {
         var $tabElement = $(activeTab);
@@ -59,7 +59,7 @@ function updateResultTable() {
         }
     }
 
-    // 탭 클릭 시, 로컬 스토리지에 상태 저장
+    // 탭  저장
     $('.tab-link').on('click', function() {
         var target = $(this).attr('href');
         localStorage.setItem('activeTab', target);

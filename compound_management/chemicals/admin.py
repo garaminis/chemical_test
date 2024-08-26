@@ -18,4 +18,4 @@ admin.site.register(in_vivo)
 
 #ssj338, Abbb1122!, sangjoonshin, Abbb1122!
 
-# 동적으로 생성한 테이블
+
