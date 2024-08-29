@@ -1,3 +1,4 @@
+import json
 import re
 
 from django.apps import apps
@@ -15,9 +16,10 @@ from django.forms import modelformset_factory
 from django.shortcuts import render, redirect, get_object_or_404
 from django.utils.text import capfirst
 from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.http import require_POST
 
 from .models import Chemical, Pharmacokinetic, Cytotoxicity, SchrödingerModel, LiverMicrosomalStability, CYPInhibition, \
-    CCK_assay, invtro_Image, Western_blot, Target_Inhibition, other_asssay, in_vivo
+    CCK_assay, invtro_Image, Western_blot, Target_Inhibition, other_asssay, in_vivo, Favorite
 from .forms import ChemicalForm, ChemicalUploadForm, PharmacokineticForm, CytotoxicityForm, SchrödingerModelForm, \
     SchrödingerModelUploadForm, LiverMicrosomalStabilityForm, CYPInhibitionForm, cckForm, wbForm, \
     intargetForm, otherForm, in_vivoForm
@@ -50,6 +52,7 @@ def home_view(request):
 def target_view(request, target):
     sort_by = request.GET.get('sort_by', 'chem_id')
     sort_order = request.GET.get('sort_order', 'asc')
+    favorite_items = Favorite.objects.filter(user=request.user).values_list('item_id',flat=True)
 
     def sort_key(value):
         str_value = str(value)
@@ -98,6 +101,7 @@ def target_view(request, target):
         'sort_by': sort_by,
         'sort_order': sort_order,
         # 'page_range': page_range,
+        'favorite_items': favorite_items,
     })
         # chemicals = Chemical.objects.filter(target__iexact=target)
         # if not chemicals.exists():
@@ -486,7 +490,7 @@ def cck_add(request, target, chem_id):
 
             images = request.FILES.getlist('images') #  파일 업로드를 처리.리스트 반환
             for image in images:
-                invtro_Image.objects.create(cck_assay=CCK_assay, image=image) # CCK_Image 모델의 새로운 객체를 생성하고 데이터베이스에 저장
+                invtro_Image.objects.create(CCK_assay=CCK_assay, image=image) # CCK_Image 모델의 새로운 객체를 생성하고 데이터베이스에 저장
 
             return redirect('pharmacokinetic_list', target=target, chem_id=chem_id)
     else:
@@ -497,18 +501,27 @@ def cck_add(request, target, chem_id):
         'target': target,
     })
 
+
 @login_required
-def cck_delete (request, target, chem_id ,id):
-    cck_images = invtro_Image.objects.filter(cck_assay=id)
-    CCKassay = get_object_or_404(CCK_assay, id=id) #특정 조건에 맞는 객체를 데이터베이스에서 가져옴,일치하는 객체가 없으면 404 에러를 반환
+def cck_delete(request, target, chem_id, id):
+    cck_images = invtro_Image.objects.filter(CCK_assay_id=id)
+
+    # CCK_assay 인스턴스 가져오기
+    CCKassay = get_object_or_404(CCK_assay, id=id)
+
     if request.method == 'POST':
-        for images in cck_images:
-            if images.image and os.path.exists(images.image.path):
-                os.remove(images.image.path)
-        # CCKassay.objects.get(id=id).delete()
+        # 관련 이미지 파일 삭제
+        for image in cck_images:
+            if image.image and os.path.exists(image.image.path):
+                os.remove(image.image.path)
+
+        # CCK_assay 인스턴스 삭제
         CCKassay.delete()
+
         return JsonResponse({'success': True, 'id': id})
+
     return JsonResponse({'success': False, 'error': 'Invalid request'}, status=400)
+
 
 @login_required
 def cck_update(request, target, chem_id ,id):
@@ -538,7 +551,7 @@ def wb_add(request, target, chem_id):
             Western_blot.save()
             images = request.FILES.getlist('images')
             for image in images:
-                invtro_Image.objects.create(wb=Western_blot, image=image)
+                invtro_Image.objects.create(Western_blot=Western_blot, image=image)
             return redirect('pharmacokinetic_list', target=target, chem_id=chem_id)
     else:
         form = wbForm()
@@ -551,7 +564,7 @@ def wb_add(request, target, chem_id):
 @login_required
 def wb_delete (request, target, chem_id ,id):
     Westernblot = get_object_or_404(Western_blot, id=id)
-    wbimages = invtro_Image.objects.filter(wb=id)
+    wbimages = invtro_Image.objects.filter(Western_blot=id)
     if request.method == 'POST':
         for images in wbimages:
             if images.image and os.path.exists(images.image.path):
@@ -559,6 +572,19 @@ def wb_delete (request, target, chem_id ,id):
         Westernblot.delete()
         return JsonResponse({'success': True, 'id': id})
     return JsonResponse({'success': False, 'error': 'Invalid request'}, status=400)
+
+@login_required
+def wb_update(request, target, chem_id ,id):
+    wb = get_object_or_404(Western_blot, id=id)
+    if request.method == 'POST':
+        form = wbForm(request.POST, instance=wb)
+        if form.is_valid() :
+            wb = form.save(commit=False)
+            wb.save()
+            return redirect('pharmacokinetic_list', target=target, chem_id=chem_id)
+    else:
+        form = wbForm(instance=wb)
+    return render(request, 'chemicals/wb_form.html', {'form': form, 'target': target, 'id':id, 'chem_id': chem_id})
 
 @login_required
 def in_target_add(request, target, chem_id):
@@ -571,7 +597,7 @@ def in_target_add(request, target, chem_id):
             Target_Inhibition.save()
             images = request.FILES.getlist('images')
             for image in images:
-                invtro_Image.objects.create(in_target=Target_Inhibition, image=image)
+                invtro_Image.objects.create(Target_Inhibition=Target_Inhibition, image=image)
             return redirect('pharmacokinetic_list', target=target, chem_id=chem_id)
     else:
         form = intargetForm()
@@ -582,7 +608,7 @@ def in_target_add(request, target, chem_id):
     })
 @login_required
 def in_target_delete(request, target, chem_id ,id):
-    in_image = invtro_Image.objects.filter(in_target=id)
+    in_image = invtro_Image.objects.filter(Target_Inhibition=id)
     in_target = get_object_or_404(Target_Inhibition, id=id)
     if request.method == 'POST' :
         for images in in_image :
@@ -591,6 +617,7 @@ def in_target_delete(request, target, chem_id ,id):
         in_target.delete()
         return JsonResponse({'success': True, 'id': id})
     return JsonResponse({'success': False, 'error': 'Invalid request'}, status=400)
+
 
 @login_required
 def other_add(request, target, chem_id):
@@ -603,7 +630,7 @@ def other_add(request, target, chem_id):
             other.save()
             images = request.FILES.getlist('images')
             for image in images:
-                invtro_Image.objects.create(others=other, image=image)
+                invtro_Image.objects.create(other_asssay=other, image=image)
             return redirect('pharmacokinetic_list', target=target, chem_id=chem_id)
     else:
         form = intargetForm()
@@ -615,7 +642,7 @@ def other_add(request, target, chem_id):
 
 @login_required
 def other_delete(request, target, chem_id ,id):
-    other_image = invtro_Image.objects.filter(others=id)
+    other_image = invtro_Image.objects.filter(other_asssay=id)
     other = get_object_or_404(other_asssay, id=id)
     if request.method == 'POST' :
         for images in other_image :
@@ -693,6 +720,8 @@ def SLselected_gene_input(request):
 
 db_names = DatabaseList.objects.all()
 db_list = DatabaseList.objects.values_list('name')
+
+
 @login_required
 @csrf_exempt
 def result_add(request, target):
@@ -726,10 +755,10 @@ def result_add(request, target):
 
 def get_columns(request, table_name):
     try:
-        model = apps.get_model('chemicals', table_name)
+        model = apps.get_model('chemicals', table_name) # 기본 앱
     except LookupError:
         try:
-            model = apps.get_model('data', table_name)
+            model = apps.get_model('data', table_name) # 동적 생성 앱
         except LookupError:
             return JsonResponse({'fields': []})
 
@@ -737,11 +766,72 @@ def get_columns(request, table_name):
     for field in model._meta.get_fields():
         if isinstance(field, models.ManyToOneRel): # 관계형 필드 (ManyToOneRel) 패스
             continue
-
         fields.append({
             'name': field.name,
-            'help_text': getattr(field, 'help_text', '')  # help_text 속성 없는 예외 처리
+            'help_text': getattr(field, 'help_text', '') # help_text 속성 없는 예외 처리
         })
 
     return JsonResponse({'fields': fields})
 
+@csrf_exempt
+def save_table_data(request):
+    if request.method == 'POST':
+        try:
+            data = request.POST
+            files = request.FILES.getlist('images')  # 여러 파일 가져오기
+
+            for key in data:
+                if key.startswith('row'):
+                    row = json.loads(data[key])  # 각 row는 JSON으로 변환
+                    db_name = row.pop('db_name')  # 'db_name' 추출
+                    try:
+                        model = apps.get_model('chemicals', db_name)  # 기본 앱에서 모델 가져오기
+                    except LookupError:
+                        try:
+                            model = apps.get_model('data', db_name)  # 동적 생성 앱에서 모델 가져오기
+                        except LookupError:
+                            return JsonResponse({'status': 'error', 'message': f'Model {db_name} not found'}, status=400)
+
+                    if model:
+                        chemical_id = row.pop('chemical', None)
+                        if chemical_id:
+                            try:
+                                chemical_instance = Chemical.objects.get(chem_id=chemical_id)
+                                row['chemical'] = chemical_instance
+                            except Chemical.DoesNotExist:
+                                return JsonResponse({'status': 'error', 'message': f'Chemical {chemical_id} not found'}, status=400)
+
+                        # 모델 인스턴스 생성 및 저장
+                        instance = model.objects.create(**row)
+
+                        # 동적으로 외래키 필드에 이미지 저장
+                        related_name = db_name  # db_name을 사용하여 외래키 필드명 생성
+                        if hasattr(invtro_Image, related_name):
+                            for image in files:
+                                image_instance = invtro_Image(image=image)
+                                setattr(image_instance, related_name, instance)  # 외래키 필드를 정확히 설정
+                                image_instance.save()
+                        else:
+                            print(f"Invalid foreign key field: {related_name}")
+
+            return JsonResponse({'status': 'success'}, status=201)
+        except Exception as e:
+            print("Error:", e)
+            return JsonResponse({'status': 'error', 'message': str(e)}, status=400)
+    else:
+        return JsonResponse({'status': 'invalid request'}, status=400)
+
+@login_required
+@require_POST
+def toggle_favorite(request, chem_id):
+    print(f"Toggle favorite called with chem_id: {chem_id}")  # 이 줄을 추가
+    chemical = get_object_or_404(Chemical, chem_id=chem_id)
+    favorite, created = Favorite.objects.get_or_create(user=request.user, item=chemical)
+
+    if not created:
+        favorite.delete()
+        is_favorite = False
+    else:
+        is_favorite = True
+
+    return JsonResponse({'success': True, 'is_favorite': is_favorite})

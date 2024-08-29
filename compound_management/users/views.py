@@ -1,17 +1,16 @@
 import os
 
 import django
-from django.contrib import messages, admin
-from django.contrib.admin.views.decorators import staff_member_required
+from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
-from django.core.management import call_command
-from django.db import models
-from django.shortcuts import render, redirect
-from django.utils.text import capfirst
+from django.contrib.auth.decorators import login_required
+from django.http import JsonResponse
+from django.shortcuts import render, redirect, get_object_or_404
+from django.views.decorators.http import require_POST
+
 from .forms import UserForm
-from .models import DatabaseList
-from django.db import connections
-# from Chem.compound_management.users.forms import UserForm, TableForm, ColumnFormSet
+
+
 
 def register_view(request):
     if request.method == 'POST':
@@ -39,4 +38,21 @@ def login_view(request):
 def logout_view(request):
     logout(request)
     return redirect('login')
+
+
+# @login_required
+# @require_POST
+# def toggle_favorite(request, chem_id):
+#     print(f"Toggle favorite called with chem_id: {chem_id}")  # 이 줄을 추가
+#     chemical = get_object_or_404(Chemical, chem_id=chem_id)
+#     favorite, created = Favorite.objects.get_or_create(user=request.user, item=chemical)
+#
+#     if not created:
+#         favorite.delete()
+#         is_favorite = False
+#     else:
+#         is_favorite = True
+#
+#     return JsonResponse({'success': True, 'is_favorite': is_favorite})
+
 

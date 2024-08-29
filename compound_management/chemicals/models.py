@@ -6,6 +6,8 @@ from django.utils import timezone
 from rdkit import Chem
 from rdkit.Chem import Descriptors, Crippen
 
+from users.models import User
+
 
 class Chemical(models.Model):
     target = models.CharField(max_length=50)
@@ -141,10 +143,11 @@ class CCK_assay(models.Model):
     chemical = models.ForeignKey(Chemical, on_delete=models.CASCADE)
     date = models.DateField()
     user = models.CharField(max_length=200, null=True)
-    cell = models.TextField(null=True)
+    cell = models.TextField(null=True, help_text='default')
     IC50 = models.FloatField(null=True, blank=True, help_text='check')
     Out = models.CharField(max_length=200,null=True, help_text='check')
-    comment = models.TextField(null=True)
+    comment = models.TextField(null=True, help_text='default')
+    
 
     def __str__(self):
         return f'{self.chemical.chem_id} - {self.date} CCK_assay'
@@ -153,7 +156,7 @@ class Western_blot(models.Model):
     chemical = models.ForeignKey(Chemical, on_delete=models.CASCADE)
     date = models.DateField()
     user = models.CharField(max_length=200, null=True)
-    comment = models.TextField(null=True)
+    comment = models.TextField(null=True, help_text='default')
 
     def __str__(self):
         return f'{self.chemical.chem_id} - {self.date} Western_blot'
@@ -162,9 +165,9 @@ class Target_Inhibition(models.Model):
     chemical = models.ForeignKey(Chemical, on_delete=models.CASCADE)
     date = models.DateField()
     user = models.CharField(max_length=200, null=True)
-    vitro_at_10 = models.FloatField(null=True, blank=True)
-    Taret_IC50 = models.FloatField(null=True, blank=True)
-    comment = models.TextField(null=True)
+    vitro_at_10 = models.FloatField(null=True, blank=True, help_text='check')
+    Taret_IC50 = models.FloatField(null=True, blank=True, help_text='check')
+    comment = models.TextField(null=True, help_text='default')
 
     def __str__(self):
         return f'{self.chemical.chem_id} - {self.date} Target_Inhibition'
@@ -180,11 +183,11 @@ class other_asssay(models.Model):
         return f'{self.chemical.chem_id} - {self.date} other_asssay'
 
 class invtro_Image(models.Model):
-    cck_assay = models.ForeignKey(CCK_assay, related_name='images', on_delete=models.CASCADE,null=True)
+    CCK_assay = models.ForeignKey(CCK_assay, related_name='images', on_delete=models.CASCADE,null=True)
     image = models.ImageField(upload_to='in_vitro/')
-    wb = models.ForeignKey(Western_blot, related_name='images', on_delete=models.CASCADE,null=True)
-    in_target = models.ForeignKey(Target_Inhibition,related_name='images',on_delete=models.CASCADE,null=True)
-    others = models.ForeignKey(other_asssay,related_name='images',on_delete=models.CASCADE,null=True)
+    Western_blot = models.ForeignKey(Western_blot, related_name='images', on_delete=models.CASCADE,null=True)
+    Target_Inhibition = models.ForeignKey(Target_Inhibition,related_name='images',on_delete=models.CASCADE,null=True)
+    other_asssay = models.ForeignKey(other_asssay,related_name='images',on_delete=models.CASCADE,null=True)
 
 class in_vivo(models.Model):
     chemical = models.ForeignKey(Chemical, on_delete=models.CASCADE)
@@ -202,3 +205,10 @@ class in_vivo(models.Model):
     def __str__(self):
         return f'{self.chemical.chem_id} - in_vivo'
 
+class Favorite(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    item = models.ForeignKey(Chemical, on_delete=models.CASCADE)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        unique_together = ('user', 'item')

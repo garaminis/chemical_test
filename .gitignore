@@ -7,10 +7,14 @@ __pycache__/
 dist/
 build/
 *.log
+.idea/
+*.pyc
+*/migrations/
 
 # Django
 *.sqlite3
 media/
+
 
 # Environments
 venv/

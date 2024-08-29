@@ -9,13 +9,6 @@
 </style>
 
 <h2>{{ target }} / Chem id : {{ chem_id }}</h2>
-<!--<form method="post" enctype="multipart/form-data">-->
-<!--    {% csrf_token %}-->
-<!--    {{ form.as_p }}-->
-<!--    {{ image_form.as_p }}-->
-<!--    <button type="submit">Save</button>-->
-<!--</form>-->
-<!--<a href="{% url 'pharmacokinetic_list' target=target chem_id=chem_id %}">Cancel</a>-->
 <div class="pagetitle">
     <nav style="--bs-breadcrumb-divider: '>';">
         <ol class="breadcrumb">
@@ -27,22 +20,24 @@
         </ol>
     </nav>
 </div>
-<div class="col-lg-6">
+<div class="col-lg-8">
   <div class="card">
     <div class="card-body">
        <div class="tab-content pt-2" id="myTabContent">
           <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
-          <h4 class="card-title">In vitro Data : Western blot </h4>
              <a href="{% url 'pharmacokinetic_list' target=target chem_id=chem_id%}"  class="btn btn-outline-primary btn-sm">Back</a>
+          <h4 class="card-title">In vitro Data : Western blot </h4>
+
+
           <form method="post" enctype="multipart/form-data">
              {% csrf_token %}
-              <div class="row mb-3">
-                <label for="date" class="col-sm-2 col-form-label">Date</label>
-                <div class="col-sm-10">
-                  <input type="date" class="form-control" id="date" name="date"
-                   value="{{ form.date.value|default_if_none:'' }}">  <!-- 필드의 초기값을 폼에서 가져와서 입력 필드에 설정 -->
+                <div class="row mb-3">
+                  <label for="date" class="col-sm-2 col-form-label">Date</label>
+                  <div class="col-sm-10">
+                    <input type="date" class="form-control" id="date" name="date"
+                     value="{{ form.date.value|date:'Y-m-d' }}">  <!-- 필드의 초기값을 폼에서 가져와서 입력 필드에 설정 -->
+                  </div>
                 </div>
-              </div>
 
               <div class="row mb-3">
                   <label for="comment" class="col-sm-2 col-form-label">Comment</label>

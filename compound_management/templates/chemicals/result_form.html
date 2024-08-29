@@ -8,7 +8,15 @@
       <div class="card">
         <div class="card-body">
           <h4 class="card-title">{{ target }}</h4>
-            <table class="table table-hover" id="sourceTable">
+            <form id="filter-form">
+              <div id="radio-options">
+                {% for db_name in db_names %}
+                    <label>
+                        <input type="radio" name="dbOption" value="{{ db_name.name }}" class="db-radio"> {{ db_name.title }}
+                    </label>
+                {% endfor %}
+              </div>
+              <table class="table datatable" id="sourceTable">
                 <thead>
                 <tr>
                     <th></th>
@@ -16,9 +24,6 @@
                     <th>MW</th>
                     <th>cLogP</th>
                     <th>TPSA</th>
-    <!--                <th>H_donors</th>-->
-    <!--                <th>H_acceptors</th>-->
-    <!--                <th>lipinski</th>-->
                 </tr>
                 </thead>
                 <tbody>
@@ -29,81 +34,61 @@
                     <td>{{ chem.MW }}</td>
                     <td>{{ chem.cLogP }}</td>
                     <td>{{ chem.TPSA }}</td>
-        <!--                <td>{{ chem.H_donors }}</td>-->
-        <!--                <td>{{ chem.H_acceptors }}</td>-->
-        <!--                <td>{{ chem.lipinski }}</td>-->
                 </tr>
                 {% endfor %}
                 </tbody>
-            </table>
+              </table>
+            <button type="button" id="update-button"  class="btn btn-primary">Update Table</button>
+            </form>
         </div>
       </div>
     </div>
     <div class="col-lg-6">
         <div class="card">
             <div class="card-body">
-                 <h4 class="card-title">{{ target }}</h4>
-                <form>
-                    {% for db_name in db_names %}
-                        <label>
-                            <input type="radio" name="dbOption" value="{{ db_name.name }}" class="db-radio"> {{ db_name.title }}
-                        </label>
-                    {% endfor %}
-                    </form>
-                    <table id="data-table" class="table table-hover" >
+             <h4 class="card-title">Data upload</h4>
 
-                 <div class="row mb-3">
-                  <label for="date" class="col-sm-2 col-form-label">Date</label>
-                  <div class="col-sm-10">
-                    <input type="date" class="form-control" id="date" name="date"
-                     value="{{ form.date.value|date:'Y-m-d' }}">  <!-- 필드의 초기값을 폼에서 가져와서 입력 필드에 설정 -->
-                  </div>
-                </div>
+                    <div class="row mb-3 date-div" style="display:none" >
+                    <label for="date" class="col-sm-2 col-form-label"  >Date</label>
+                        <div class="col-sm-10">
+                            <input type="date" class="form-control" id="date" name="date"
+                             value="{{ form.date.value|date:'Y-m-d' }}">  <!-- 필드의 초기값을 폼에서 가져와서 입력 필드에 설정 -->
+                        </div>
+                    </div>
 
-                <div class="row mb-3">
-                  <label for="cell" class="col-sm-2 col-form-label">세포주</label>
-                  <div class="col-sm-10">
-                      <textarea class="form-control" id="cell" name="cell"  >{{ form.cell.value|default_if_none:'' }}</textarea>
-                  </div>
-                </div>
+                    <div class="row mb-3 " style="display:none" >
+                    <label for="id_userid" class="col-sm-2 col-form-label" > User</label>
+                        <div class="col-sm-10">
+                            <input class="form-control" type="text" id="id_userid" name="user" value="{{ user.name }}" readonly>
+                        </div>
+                    </div>
 
-                <div class="row mb-3">
-                  <label for="comment" class="col-sm-2 col-form-label">Comment</label>
-                  <div class="col-sm-10">
-                    <textarea  class="form-control" id="comment" name="comment" >{{ form.comment.value|default_if_none:'' }}</textarea>
-                  </div>
-                </div>
-
-
-             <div class="row mb-3 " >
-               <label for="id_userid" class="col-sm-2 col-form-label" > User</label>
-               <div class="col-sm-10">
-                  <input class="form-control" type="text" id="id_userid" name="user" value="{{ user.name }}" readonly>
-               </div>
-             </div>
-
+                    <table id="data-table"  class="table table-hover" >
+                        <thead></thead>
+                        <tbody></tbody>
                     </table>
-                    <table id="resultTable" class="table table-hover">
-                        <thead>
-                            <tr>
-                                <th>Data</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                        </tbody>
-                    </table>
+                    <button type="button" id="save-button"  class="btn btn-primary">add Table</button>
 
-<!--                        <input type="text" name="data_field" placeholder="Enter data to save" required>-->
-<!--                        <button type="submit">Save Data</button>-->
+                    <h5 class="card-title">선택사항</h5>
+                    <div class="row mb-3">
+                      <label for="image" class="col-sm-2 col-form-label">Image</label>
+                      <div class="col-sm-10" >
+                        <input type="file" id="image" name="images" class="form-control" accept="image/*" multiple>
+                      </div>
+                    </div>
             </div>
-        </div><!-- End Default Tabs -->
+        </div>
     </div>
 </div>
-
 
 
 {% endblock %}
 {% block extra_js %}
 {% load static %}
 <script src="{% static 'scripts/result_form.js' %}"></script>
+<script>
+
+
+
+</script>
 {% endblock %}

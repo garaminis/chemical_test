@@ -9,6 +9,7 @@ urlpatterns = [
     path('', views.home_view, name='home'),
 
 # target CRUD
+    path('item/<str:chem_id>/toggle_favorite/', views.toggle_favorite, name='toggle_favorite'),
     path('chemicals/<str:target>/', views.target_view, name='target_view'),
     path('chemicals/<str:target>/new/', views.chemical_new_view, name='chemical_new'),
     path('chemicals/upload/<str:target>/', views.upload_chemicals, name='upload_chemicals'),
@@ -53,7 +54,9 @@ urlpatterns = [
     path('chemicals/<str:target>/ot/<str:chem_id>/del/<int:id>', views.other_delete, name='other_delete'),
 # result invitro update
     path('chemicals/<str:target>/cck/<str:chem_id>/update/<int:id>', views.cck_update, name='cck_update'),
+    path('chemicals/<str:target>/wb/<str:chem_id>/update/<int:id>', views.wb_update, name='wb_update'),
     path('get_columns/<str:table_name>/', views.get_columns, name='get_columns'),
+    path('save_table_data/', views.save_table_data, name='save_table_data' ),
 
 
 ]
