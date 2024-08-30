@@ -12,17 +12,17 @@ from django.contrib.auth.hashers import check_password
 from django.core.paginator import Paginator
 from django.db.models import Case, When, IntegerField, CharField, Value
 from django.db.models.functions import Cast, Substr, Length
-from django.forms import modelformset_factory
+from django.forms import modelformset_factory, model_to_dict
 from django.shortcuts import render, redirect, get_object_or_404
 from django.utils.text import capfirst
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_POST
 
 from .models import Chemical, Pharmacokinetic, Cytotoxicity, SchrödingerModel, LiverMicrosomalStability, CYPInhibition, \
-    CCK_assay, invtro_Image, Western_blot, Target_Inhibition, other_asssay, in_vivo, Favorite
+    CCK_assay, invtro_Image, Western_blot, Target_Inhibition, other_asssay, in_vivo, Favorite, FDA_result
 from .forms import ChemicalForm, ChemicalUploadForm, PharmacokineticForm, CytotoxicityForm, SchrödingerModelForm, \
     SchrödingerModelUploadForm, LiverMicrosomalStabilityForm, CYPInhibitionForm, cckForm, wbForm, \
-    intargetForm, otherForm, in_vivoForm
+    intargetForm, otherForm, in_vivoForm, FDA_Form
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 # R2Py
@@ -115,7 +115,7 @@ def delete_selected_chems(request, target):
         selected_chems = request.POST.getlist('selected_chems[]')
         chems_img = Chemical.objects.filter(pk__in=selected_chems)
         for chem in chems_img:
-            if os.path.exists(chem.image.path):
+            if chem.image and chem.image.path and os.path.exists(chem.image.path):  # 이미지가 존재하는지 확인
                 os.remove(chem.image.path)
         Chemical.objects.filter(pk__in=selected_chems).delete()
         return JsonResponse({'status': 'success'})
@@ -169,12 +169,16 @@ def chemical_edit_view(request, target, chem_id):
             new_value = form.cleaned_data['smiles']
             chemical_instance = Chemical.objects.get(chem_id=chem_id)
             smiles = chemical_instance.smiles
-            if smiles != new_value :
-                if os.path.exists(chemical.image.path):
+
+            if smiles != new_value:
+                # 파일이 존재하는지 확인하고, 파일 경로가 있을 때만 삭제
+                if chemical.image and hasattr(chemical.image, 'path') and os.path.exists(chemical.image.path):
                     os.remove(chemical.image.path)
+
+                # 새로운 이미지를 생성하고 저장
                 image_data = generate_image(chemical.smiles)
                 if image_data:
-                   chemical.image.save(f'{chemical.chem_id}.png', ContentFile(image_data), save=False)
+                    chemical.image.save(f'{chemical.chem_id}.png', ContentFile(image_data), save=False)
 
             chemical.save()
             logger.debug(f'Chemical updated: {chemical}')
@@ -191,7 +195,7 @@ def chemical_delete_view(request, target, chem_id):
     chemical = get_object_or_404(Chemical, chem_id=chem_id)
     if request.method == 'POST':
 
-        if os.path.isfile(chemical.image.path) : #경로에 있는 파일이 실제파일인지 아닌지
+        if chemical.image and os.path.isfile(chemical.image.path) : #경로에 있는 파일이 실제파일인지 아닌지
             os.remove(chemical.image.path) # 주어진 경로의 파일 삭제
             # image_folder = os.path.dirname(chemical.image.path) # 같은 경로 반환
             # # png_file_path = os.path.join(image_folder, f"{chemical.chem_id}.png") #같은 경로의 png파일
@@ -721,11 +725,24 @@ def SLselected_gene_input(request):
 db_names = DatabaseList.objects.all()
 db_list = DatabaseList.objects.values_list('name')
 
+def sanitize_attribute_name(name):
+    # 유효한 문자만 허용 (영문자, 숫자, 하이픈, 밑줄)
+    return re.sub(r'[^a-zA-Z0-9-_]', '', name)
 
 @login_required
 @csrf_exempt
 def result_add(request, target):
     chemicals = Chemical.objects.filter(target=target).order_by('-datetime')
+
+    sanitized_chemicals = []
+    for chemical in chemicals:
+        sanitized_chemical = {
+            'chem_id': sanitize_attribute_name(chemical.chem_id),
+            'MW': chemical.MW,
+            'cLogP': chemical.cLogP,
+            'TPSA': chemical.TPSA,
+        }
+        sanitized_chemicals.append(sanitized_chemical)
 
     if request.method == 'POST':
         selected_db = request.POST.get('dbOption')
@@ -747,7 +764,7 @@ def result_add(request, target):
 
     return render(request, 'chemicals/result_form.html', {
         'target': target,
-        'chemicals': chemicals,
+        'chemicals': sanitized_chemicals ,
         'db_names': db_names,
 
     })
@@ -835,3 +852,60 @@ def toggle_favorite(request, chem_id):
         is_favorite = True
 
     return JsonResponse({'success': True, 'is_favorite': is_favorite})
+
+
+@login_required
+def FDA_result_view(request, target, chem_id, period=None ):
+    chemical = get_object_or_404(Chemical, chem_id=chem_id)
+    fda = FDA_result.objects.filter(chemical=chemical)
+    # query = FDA_result.objects.filter(target=target)
+
+    if period:
+        fda = fda.filter(period=period)
+
+    FDA = fda
+
+    return render(request, 'chemicals/FDA_result.html', {
+        'chemical': chemical,
+        'target': target,
+        'FDA': FDA,
+    })
+
+@login_required
+def FDA_result_add (request, target, chem_id ):
+    chemical = get_object_or_404(Chemical, chem_id=chem_id)
+    if request.method == 'POST':
+        form = FDA_Form (request.POST)
+        if form.is_valid():
+            fda = form.save(commit=False)
+            fda.chemical = chemical
+            fda.save()
+            return redirect('FDA_result_view', target=target, chem_id=chem_id)
+    else:
+        FDA_Form()
+    return render(request, 'chemicals/FDA_result_form.html', {
+        'chemical': chemical,
+        'target': target,
+        'chem_id': chem_id,
+    })
+
+@login_required
+def FDA_delete(request, target, chem_id ,id):
+    fda = get_object_or_404(FDA_result, id=id)
+    if request.method == 'POST':
+        fda.delete()
+        return JsonResponse({'success': True, 'id': id})
+    return JsonResponse({'success': False, 'error': 'Invalid request'}, status=400)
+
+@login_required
+def FDA_update(request, target, chem_id ,id):
+    fda = get_object_or_404(FDA_result, id=id)
+    if request.method == 'POST':
+        form = FDA_Form(request.POST, instance=fda)
+        if form.is_valid():
+            fda = form.save(commit=False)
+            fda.save()
+            return redirect('FDA_result_view', target=target, chem_id=chem_id)
+    else:
+        form = FDA_Form(instance=fda)
+    return render(request, 'chemicals/FDA_result_form.html', {'form': form, 'target': target, 'id':id, 'chem_id': chem_id})

@@ -48,34 +48,35 @@
             <div class="card-body">
              <h4 class="card-title">Data upload</h4>
 
-                    <div class="row mb-3 date-div" style="display:none" >
-                    <label for="date" class="col-sm-2 col-form-label"  >Date</label>
-                        <div class="col-sm-10">
-                            <input type="date" class="form-control" id="date" name="date"
-                             value="{{ form.date.value|date:'Y-m-d' }}">  <!-- 필드의 초기값을 폼에서 가져와서 입력 필드에 설정 -->
-                        </div>
+                <div class="row mb-3 date-div" style="display:none" >
+                <label for="date" class="col-sm-2 col-form-label"  >Date</label>
+                    <div class="col-sm-10">
+                        <input type="date" class="form-control" id="date" name="date"
+                         value="{{ form.date.value|date:'Y-m-d' }}">  <!-- 필드의 초기값을 폼에서 가져와서 입력 필드에 설정 -->
                     </div>
+                </div>
 
-                    <div class="row mb-3 " style="display:none" >
-                    <label for="id_userid" class="col-sm-2 col-form-label" > User</label>
-                        <div class="col-sm-10">
-                            <input class="form-control" type="text" id="id_userid" name="user" value="{{ user.name }}" readonly>
-                        </div>
+                <div class="row mb-3 " style="display:none" >
+                <label for="id_userid" class="col-sm-2 col-form-label" > User</label>
+                    <div class="col-sm-10">
+                        <input class="form-control" type="text" id="id_userid" name="user" value="{{ user.name }}" readonly>
                     </div>
+                </div>
 
-                    <table id="data-table"  class="table table-hover" >
-                        <thead></thead>
-                        <tbody></tbody>
-                    </table>
-                    <button type="button" id="save-button"  class="btn btn-primary">add Table</button>
+                <table id="data-table"  class="table table-hover" >
+                    <thead></thead>
+                    <tbody></tbody>
+                </table>
+                <button type="button" id="save-button"  class="btn btn-primary">add Table</button>
 
-                    <h5 class="card-title">선택사항</h5>
-                    <div class="row mb-3">
-                      <label for="image" class="col-sm-2 col-form-label">Image</label>
-                      <div class="col-sm-10" >
-                        <input type="file" id="image" name="images" class="form-control" accept="image/*" multiple>
-                      </div>
-                    </div>
+                <h5 class="card-title">선택 사항</h5>
+                <div class="row mb-3">
+                  <label for="image" class="col-sm-2 col-form-label">Image</label>
+                  <div class="col-sm-10" >
+                    <input type="file" id="image" name="images" class="form-control" accept="image/*" multiple>
+                  </div>
+                </div>
+
             </div>
         </div>
     </div>

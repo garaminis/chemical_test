@@ -113,7 +113,7 @@ $(document).ready(function() {
                 </head>
                 <div class="container">
                     <img src="${this.src}" alt="${this.alt}">
-                    <h1>{{ target }} / Chem_id : ${row.find('td').eq(2).text()}</h1>
+                    <h1>[{{ target }}]  ${row.find('td').eq(2).text()}</h1>
                     <table>
                         <tr>
                             <td>MW</td>
@@ -149,7 +149,7 @@ $(document).ready(function() {
 $(document).on('click', '.favorite-btn', function() {
     var chemId = $(this).data('id');
     var csrfToken = $('input[name=csrfmiddlewaretoken]').val();
-    var isFavorite = $(this).text().trim() === '✔️';
+    var isFavorite = $(this).text().trim() === '⭐';
     var button = $(this);
 
     $.ajax({
@@ -162,7 +162,7 @@ $(document).on('click', '.favorite-btn', function() {
         data: JSON.stringify({ is_favorite: isFavorite }),
         success: function(data) {
             if (data.success) {
-                 button.text(data.is_favorite ? '✔️' : '◻️' );
+                 button.text(data.is_favorite ? '⭐' : '☆' );
             } else {
                 alert("An error occurred. Please try again.");
             }
@@ -245,14 +245,17 @@ img {
                 <th>
                 </th>
                 <th>
-                    <a href="?sort_by=chem_id&sort_order={% if sort_by == 'chem_id' and sort_order == 'asc' %}desc{% else %}asc{% endif %}">chem_ID</a>
+                    {% if  target == "FDA" %}
+                        <a href="?sort_by=chem_id&sort_order={% if sort_by == 'chem_id' and sort_order == 'asc' %}desc{% else %}asc{% endif %}">Product</a>
+                    {% else %}
+                        <a href="?sort_by=chem_id&sort_order={% if sort_by == 'chem_id' and sort_order == 'asc' %}desc{% else %}asc{% endif %}">chem_ID</a>
+                    {% endif %}
                 </th>
                 <th>
                     Str_Image
                 </th>
                 <th>
-                    MW
-                    <a href="?sort_by=MW&sort_order={% if sort_by == 'MW' and sort_order == 'asc' %}desc{% else %}asc{% endif %}"><i class="bi bi-funnel"></i></a>
+                    <a href="?sort_by=MW&sort_order={% if sort_by == 'MW' and sort_order == 'asc' %}desc{% else %}asc{% endif %}">MW</a>
                 </th>
                 <th>
                     <a href="?sort_by=cLogP&sort_order={% if sort_by == 'cLogP' and sort_order == 'asc' %}desc{% else %}asc{% endif %}">cLogP</a>
@@ -276,17 +279,22 @@ img {
                     <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
                     <span class="favorite-btn" data-id="{{ chem.chem_id }}">
                     {% if chem.chem_id in favorite_items %}
-                        ✔️
+                        ⭐
                     {% else %}
-                        ◻️
+                        ☆
                     {% endif %}
                     </span>
                 </td>
                 <td>{{ chem.chem_id }}</td>
                 <td>
                     {% if chem.image %}
-                    <img src="{{ chem.image.url }}" alt="Structure Image" class="image-popup" style="max-width: 180px; cursor: pointer;">
+                        <img src="{{ chem.image.url }}" alt="Structure Image" class="image-popup" style="max-width: 180px; cursor: pointer;">
+                    {% else %}
+                        <img src=""  alt="default Image" class="image-popup" style="max-width: 180px; cursor: pointer;">
                     {% endif %}
+<!--                    {% if chem.image %}-->
+<!--                    <img src="{{ chem.image.url }}" alt="Structure Image" class="image-popup" style="max-width: 180px; cursor: pointer;">-->
+<!--                    {% endif %}-->
                 </td>
                 <td>{{ chem.MW }}</td>
                 <td>{{ chem.cLogP }}</td>
@@ -295,8 +303,13 @@ img {
                 <td>{{ chem.H_acceptors }}</td>
                 <td>{{ chem.lipinski }}</td>
                 <td><br>
-                    <a href="{% url 'pharmacokinetic_list' target=target chem_id=chem.chem_id %}" class ="btn btn-outline-primary btn-sm"> result </a>
-                    <a href="{% url 'schrodinger_model_list' target=target chem_id=chem.chem_id %}" class ="btn btn-outline-primary btn-sm">modeling</a> <!-- 추가된 부분 -->
+                    {% if  target == "FDA" %}
+                        <a href="{% url 'FDA_result_view' target=target chem_id=chem.chem_id %}" class ="btn btn-outline-primary btn-sm"> result </a>
+                        <a href="{% url 'pharmacokinetic_list' target=target chem_id=chem.chem_id %}" class ="btn btn-outline-primary btn-sm">reference</a>
+                    {% else %}
+                        <a href="{% url 'pharmacokinetic_list' target=target chem_id=chem.chem_id %}" class ="btn btn-outline-primary btn-sm"> result </a>
+                        <a href="{% url 'schrodinger_model_list' target=target chem_id=chem.chem_id %}" class ="btn btn-outline-primary btn-sm">modeling</a> <!-- 추가된 부분 -->
+                    {% endif %}
                 </td>
                 <td>
                     <a href="{% url 'chemical_edit' target=target chem_id=chem.chem_id %}" class ="btn btn-outline-secondary btn-sm">수정</a>

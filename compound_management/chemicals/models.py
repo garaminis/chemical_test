@@ -68,6 +68,11 @@ class Result(models.Model):
     def __str__(self):
         return f"{self.chemical} - {self.description}"
 
+class Document (models.Model):
+    chemical = models.ForeignKey(Chemical, on_delete=models.CASCADE)
+    file = models.FileField(upload_to='uploads/')
+    uploaded_at = models.DateTimeField(auto_now_add=True)
+
 class Pharmacokinetic(models.Model):
     chemical = models.ForeignKey(Chemical, on_delete=models.CASCADE)
     date = models.DateField()
@@ -212,3 +217,21 @@ class Favorite(models.Model):
 
     class Meta:
         unique_together = ('user', 'item')
+
+
+class FDA_result(models.Model):
+    PERIOD_CHOICES = [
+        ('1', '2'),
+        ('pk1', 'pk2'),
+    ]
+    chemical = models.ForeignKey(Chemical, on_delete=models.CASCADE)
+    user = models.CharField(max_length=200, null=True)
+    tmax = models.FloatField(null=True, blank=True)
+    max_concentration = models.FloatField(null=True, blank=True)
+    AUC = models.FloatField(null=True, blank=True)
+    t_half = models.FloatField(null=True, blank=True)
+    period = models.CharField(max_length=3, choices=PERIOD_CHOICES, default='1')
+
+    def __str__(self):
+        return self.chemical
+

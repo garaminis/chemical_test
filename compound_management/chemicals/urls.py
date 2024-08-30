@@ -9,14 +9,13 @@ urlpatterns = [
     path('', views.home_view, name='home'),
 
 # target CRUD
-    path('item/<str:chem_id>/toggle_favorite/', views.toggle_favorite, name='toggle_favorite'),
+    path('item/<str:chem_id>/toggle_favorite/', views.toggle_favorite, name='toggle_favorite'), # 찜
     path('chemicals/<str:target>/', views.target_view, name='target_view'),
     path('chemicals/<str:target>/new/', views.chemical_new_view, name='chemical_new'),
     path('chemicals/upload/<str:target>/', views.upload_chemicals, name='upload_chemicals'),
     path('chemicals/<str:target>/edit/<str:chem_id>/', views.chemical_edit_view, name='chemical_edit'),
     path('chemicals/<str:target>/delete/<str:chem_id>/', views.chemical_delete_view, name='chemical_delete'),
     path('chemicals/<str:target>/delete_selected/', delete_selected_chems, name='delete_selected_chems'),
-
 # result add,list
     path('chemicals/<str:target>/result2/<str:chem_id>/', views.pharmacokinetic_list, name='pharmacokinetic_list'),
     path('chemicals/<str:target>/result/', views.result_add, name='result_add'),
@@ -57,8 +56,11 @@ urlpatterns = [
     path('chemicals/<str:target>/wb/<str:chem_id>/update/<int:id>', views.wb_update, name='wb_update'),
     path('get_columns/<str:table_name>/', views.get_columns, name='get_columns'),
     path('save_table_data/', views.save_table_data, name='save_table_data' ),
-
-
+# FDA
+    path('chemicals/<str:target>/FDA/<str:chem_id>', views.FDA_result_view, name='FDA_result_view'),
+    path('chemicals/<str:target>/FDA_add/<str:chem_id>', views.FDA_result_add, name='FDA_result_add'),
+    path('chemicals/<str:target>/FDA_del/<str:chem_id>/<int:id>', views.FDA_delete, name='FDA_delete'),
+    path('chemicals/<str:target>/FDA_update/<str:chem_id>/<int:id>', views.FDA_update, name='FDA_update'),
 ]
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

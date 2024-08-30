@@ -1,0 +1,88 @@
+{% extends 'base.html' %}
+{% block title %} FDA for {{ chemical.chem_id }}{% endblock %}
+{% block content %}
+<div class="col-lg-8">
+    <div class="card">
+        <div class="card-body">
+            <div class="d-flex justify-content-between align-items-center">
+                <div class="text-start">
+                    <h3 class="card-title"> FDA result </h3>
+                </div>
+                <div class="d-flex justify-content-end">
+                    <form method="post" action="{% url 'FDA_result_add' target=chemical.target chem_id=chemical.chem_id %}" >
+                    {% csrf_token %}
+                    {{ form.as_p }}
+                    <button type="submit" class="btn btn-outline-primary btn-sm"><i class="bi bi-plus-square"></i> FDA</button>
+                  </form>
+                </div>
+            </div>
+             <table class="table table-hover"  id="data-table" >
+                 <thead>
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Tmax(h)</th>
+                        <th scope="col">Cmax(μg/mL)</th>
+                        <th scope="col">AUCt(μg·h/mL)</th>
+                        <th scope="col">t1/2(h)</th>
+                        <th scope="col"></th>
+                    </tr>
+                 </thead>
+                 <tbody>
+                    {% for fda in FDA %}
+                    <tr>
+                        {% if fda.period == '1' %}
+                            <th scope="row">pk {{ forloop.counter }}</th>
+                            <td>{{ fda.tmax }}</td>
+                            <td>{{ fda.max_concentration }} </td>
+                            <td>{{ fda.AUC }}</td>
+                            <td>{{ fda.t_half }}</td>
+                        {% elif fda.period == '2' %}
+                            <th scope="row">pk {{ forloop.counter }}</th>
+                            <td>{{ fda.tmax }}</td>
+                            <td>{{ fda.max_concentration }} </td>
+                            <td>{{ fda.AUC }}</td>
+                            <td>{{ fda.t_half }}</td>
+                        {% endif %}
+                            <td>
+                                <a href="{% url 'FDA_update' target=chemical.target chem_id=chemical.chem_id id=fda.id %}" class ="btn btn-outline-secondary btn-sm">수정</a>
+                                <button class ="btn btn-outline-danger btn-sm delete-btn"
+                                    data-url="{% url 'FDA_delete' target=chemical.target chem_id=chemical.chem_id id=fda.id %}">삭제</button>
+                            </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}
+{% block extra_js %}
+<script>
+// 삭제 버튼
+$('.delete-btn').click(function() {
+    var url = $(this).data('url');
+    var csrfToken = '{{ csrf_token }}';
+    var row = $(this).closest('tr');
+   if (confirm('삭제하시겠습니까? (삭제 후 복구가 불가능합니다.)')) {
+    $.ajax({
+        url: url,
+        type: 'POST',
+        data: {
+            'csrfmiddlewaretoken': csrfToken
+        },
+        success: function(response) {
+            if (response.success) {
+                 row.remove();
+            } else {
+                console.log('error');
+                alert('Error: ' + response.error);
+            }
+        },
+        error: function(xhr, status, error) {
+            console.error("AJAX 요청 실패:", status, error);
+        }
+      })
+    }
+});
+</script>
+{% endblock %}

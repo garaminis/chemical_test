@@ -1,7 +1,9 @@
 from django import forms
 from django.forms import ClearableFileInput, formset_factory
 from .models import Chemical, Pharmacokinetic, Cytotoxicity, SchrödingerModel, LiverMicrosomalStability, CYPInhibition, \
-     CCK_assay, invtro_Image, Western_blot, Target_Inhibition, other_asssay, in_vivo
+    CCK_assay, invtro_Image, Western_blot, Target_Inhibition, other_asssay, in_vivo, FDA_result, Document
+
+
 class DateInput(forms.DateInput):
     input_type = 'date'
 
@@ -9,6 +11,11 @@ class ChemicalForm(forms.ModelForm):
     class Meta:
         model = Chemical
         fields = ['chem_id', 'smiles', 'image', 'MW', 'cLogP', 'TPSA' , 'H_donors', 'H_acceptors', 'lipinski','user']
+
+class DocumentForm(forms.ModelForm):
+    class Meta:
+        model = Document
+        fields = ['file']
 
 class ChemicalUploadForm(forms.Form):
     file = forms.FileField()
@@ -117,3 +124,11 @@ class InvtroimgForm(forms.ModelForm):
         model = invtro_Image
         fields = ['images']
 
+class FDA_Form(forms.ModelForm):
+    class Meta:
+        model = FDA_result
+        fields = ['user','tmax','max_concentration','AUC','t_half','period']
+        widgets = {
+            'period': forms.Select(choices=FDA_result.PERIOD_CHOICES),
+            # 다른 필드의 위젯 설정
+        }
