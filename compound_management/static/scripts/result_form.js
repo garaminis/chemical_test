@@ -129,12 +129,12 @@ $('#save-button').on('click', function() {
         //tableData.push(rowData);
     });
     // 이미지 파일 추가
-    var images = $('#image')[0].files;
-    $.each(images, function(index, file) {
+   var images = $('#image')[0].files;
+   $.each(images, function(index, file) {
         tableData.append('images', file);
-    });
+   });
 
-    $.ajax({
+   $.ajax({
         type: 'POST',
         url: '/save_table_data/',
         data: tableData,

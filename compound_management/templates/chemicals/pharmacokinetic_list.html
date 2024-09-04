@@ -121,7 +121,9 @@
     margin: 5px 0 0;
     font-size: 14px;
 }
-
+span{
+    cursor: pointer;
+}
 
 </style>
 <div class="pagetitle">
@@ -201,7 +203,7 @@
                         <td>{{ pk.CL }}</td>
                         <td>{{ pk.Vss }}</td>
                         <td>{{ pk.F }}</td>
-                        <td>raw data</td>
+                        <td><button onclick="openPopup('{% url 'result_file' db='Pharmacokinetic' id=pk.id %}')" class="btn btn-success btn-sm" ><i class="bi bi-check-circle"></i></button></td>
                         <td>
                         <a href="{% url 'pharmacokinetic_update' target=chemical.target chem_id=chemical.chem_id id=pk.id %}" class ="btn btn-outline-secondary btn-sm">수정</a>
                         <button class ="btn btn-outline-danger btn-sm delete-btn" data-url="{% url 'pharmacokinetic_delete' target=chemical.target chem_id=chemical.chem_id id=pk.id %}">삭제</button>
@@ -248,7 +250,7 @@
                         <td>{{ ct.L929 }}</td>
                         <td>{{ ct.NIH_3T3 }}</td>
                         <td>{{ ct.CHO_K1 }}</td>
-                        <td>raw data</td>
+                       <td><button onclick="openPopup('{% url 'result_file' db='Cytotoxicity' id=ct.id %}')" class="btn btn-success btn-sm" ><i class="bi bi-check-circle"></i></button></td>
                         <td>
                             <a href="{% url 'cytotoxicity_update' target=chemical.target chem_id=chemical.chem_id id=ct.id %}" class ="btn btn-outline-secondary btn-sm">수정</a>
                             <button class ="btn btn-outline-danger btn-sm delete-btn"
@@ -292,7 +294,7 @@
                         <td>{{ ls.mouse }}</td>
                         <td>{{ ls.rat }}</td>
                         <td>{{ ls.human }}</td>
-                        <td>raw data </td>
+                        <td><button onclick="openPopup('{% url 'result_file' db='LiverMicrosomalStability' id=ls.id %}')" class="btn btn-success btn-sm" ><i class="bi bi-check-circle"></i></button></td>
                         <td>
                             <a href="{% url 'liver_stability_update' target=chemical.target chem_id=chemical.chem_id id=ls.id %}" class ="btn btn-outline-secondary btn-sm">수정</a>
                              <button class ="btn btn-outline-danger btn-sm delete-btn"
@@ -340,7 +342,7 @@
                             <td>{{ cyp.cyp_2c19 }}</td>
                             <td>{{ cyp.cyp_2d6 }}</td>
                             <td>{{ cyp.cyp_3a4 }}</td>
-                            <td>raw data</td>
+                            <td><button onclick="openPopup('{% url 'result_file' db='LiverMicrosomalStability' id=cyp.id %}')" class="btn btn-success btn-sm" ><i class="bi bi-check-circle"></i></button></td>
                             <td>
                                 <a href="{% url 'cyp_inhibition_update' target=chemical.target chem_id=chemical.chem_id id=cyp.id %}" class ="btn btn-outline-secondary btn-sm">수정</a>
                                <button class ="btn btn-outline-danger btn-sm delete-btn"
@@ -352,6 +354,7 @@
                 </table>
             <!--                <a href="{% url 'home' %}" class="btn btn-outline-primary btn-sm">Home</a>-->
             </div>
+
         </div>
 <!--    In vitro      -->
         <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab" >
@@ -361,8 +364,8 @@
                  <h4 class="card-title">CCK assay</h4>
               </div>
               <div class="d-flex justify-content-end">
-              <a href="{% url 'cck_add' target=chemical.target chem_id=chemical.chem_id %}" class="btn btn-outline-primary btn-sm"><i class="bi bi-plus-square"></i> add</a>
-              <a href="{% url 'cck_add' target=chemical.target chem_id=chemical.chem_id %}" class="btn btn-outline-primary btn-sm"><i class="bi bi-plus-square"></i> Img</a>
+              <a href="{% url 'cck_add' target=chemical.target chem_id=chemical.chem_id %}" class="btn btn-outline-primary btn-sm"><i class="bi bi-plus-square"></i> add</a> &nbsp
+              <a href="{% url 'cck_add' target=chemical.target chem_id=chemical.chem_id %}" class="btn btn-outline-primary btn-sm"><i class="bi bi-file-earmark-image"></i></a>
               </div>
             </div>
             <table  class="table table-hover">
@@ -400,10 +403,13 @@
                                  {% endif %}
                             </div>
                         </td>
-                        <td>raw data</td>
+                        <td> <button onclick="openPopup('{% url 'result_file' db='CCK_assay' id=assay.id %}')" class="btn btn-success btn-sm" ><i class="bi bi-check-circle"></i></button></td>
                         <td>
                             <a href="{% url 'cck_update' target=chemical.target chem_id=chemical.chem_id id=assay.id %}" class ="btn btn-outline-secondary btn-sm">수정</a>
                             <button class ="btn btn-outline-danger btn-sm delete-btn" data-url="{% url 'cck_delete' target=chemical.target chem_id=chemical.chem_id id=assay.id %}">삭제</button>
+                            {% if assay.images.exists %}
+                                <a href="" class="btn btn-outline-success btn-sm" ><i class="bi bi-dash"></i>Img</a>
+                            {% endif %}
                         </td>
                     </tr>
                     {% endfor %}
@@ -448,7 +454,7 @@
                                 {% endif %}
                             </div>
                         </td>
-                        <td>raw data</td>
+                            <td> <button onclick="openPopup('{% url 'result_file' db='Western_blot' id=wb.id %}')" class="btn btn-success btn-sm" ><i class="bi bi-check-circle"></i></button></td>
                         <td>
                             <a href="{% url 'wb_update' target=chemical.target chem_id=chemical.chem_id id=wb.id %}" class ="btn btn-outline-secondary btn-sm">수정</a>
                             <button class ="btn btn-outline-danger btn-sm delete-btn"
@@ -500,7 +506,7 @@
                                  {% endif %}
                             </div>
                         </td>
-                        <td>raw data</td>
+                       <td><button onclick="openPopup('{% url 'result_file' db='Target_Inhibition' id=ta.id %}')" class="btn btn-success btn-sm" ><i class="bi bi-check-circle"></i></button></td>
                         <td>
                             <a href="" class ="btn btn-outline-secondary btn-sm">수정</a>
                             <button class ="btn btn-outline-danger btn-sm delete-btn"
@@ -512,55 +518,94 @@
             </table>
             </div>
             <div class="card-body">
-            <div class="d-flex justify-content-between align-items-center">
-            <div class="text-start">
-             <h4 class="card-title">기타실험</h4>
-            </div>
-            <div class="d-flex justify-content-end">
-             <a href="{% url 'other_add' target=chemical.target chem_id=chemical.chem_id %}" class="btn btn-outline-primary btn-sm"><i class="bi bi-plus-square"></i> 기타실험</a>
-            </div>
-            </div>
-            <table  class="table table-hover">
-            <thead>
-                <tr>
-                    <th scope="col">#</th>
-                    <th scope="col">Date</th>
-                    <th scope="col">실험명</th>
-                    <th scope="col">진행자</th>
-                    <th scope="col">Comment</th>
-                    <th scope="col">Image</th>
-                    <th scope="col">Raw data</th>
-                    <th scope="col"></th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for ot in other %}
-                <tr>
-                    <th scope="row">{{ forloop.counter }}</th>
-                    <td data-date={{ot.date|date:"Y-m-d"}} >{{ ot.date|date:"Y-m-d" }}</td>
-                    <td>{{ ot.title }}</td>
-                    <td>{{ ot.user }}</td>
-                    <td data-commnet={{ot.comment}}>{{ ot.comment }}</td>
-                    <td>
-                         <div style="width:100%; height:auto;">
-                            {% if ot.images.exists %}
-                                <span class="badge badge-secondary py-1 open-modal" data-images="{% for image in ot.images.all %}{{ image.image.url }}{% if not forloop.last %},{% endif %}{% endfor %}">
-                                    ◯
-                                </span>
-                            {% endif %}
-                        </div>
-                    </td>
-                    <td>raw data</td>
-                    <td>
-                        <a href="" class ="btn btn-outline-secondary btn-sm">수정</a>
-                         <button class ="btn btn-outline-danger btn-sm delete-btn"
-                                    data-url="{% url 'other_delete' target=chemical.target chem_id=chemical.chem_id id=ot.id %}">삭제</button>
-                    </td>
-                </tr>
-                {% endfor %}
-            </tbody>
+                <div class="d-flex justify-content-between align-items-center">
+                    <div class="text-start">
+                        <h4 class="card-title">기타실험</h4>
+                    </div>
+                    <div class="d-flex justify-content-end">
+                        <a href="{% url 'other_add' target=chemical.target chem_id=chemical.chem_id %}" class="btn btn-outline-primary btn-sm"><i class="bi bi-plus-square"></i> 기타실험</a>
+                    </div>
+                </div>
+                <table  class="table table-hover">
+                <thead>
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Date</th>
+                        <th scope="col">실험명</th>
+                        <th scope="col">진행자</th>
+                        <th scope="col">Comment</th>
+                        <th scope="col">Image</th>
+                        <th scope="col">Raw data</th>
+                        <th scope="col"></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for ot in other %}
+                    <tr>
+                        <th scope="row">{{ forloop.counter }}</th>
+                        <td data-date={{ot.date|date:"Y-m-d"}} >{{ ot.date|date:"Y-m-d" }}</td>
+                        <td>{{ ot.title }}</td>
+                        <td>{{ ot.user }}</td>
+                        <td data-commnet={{ot.comment}}>{{ ot.comment }}</td>
+                        <td>
+                             <div style="width:100%; height:auto;">
+                                {% if ot.images.exists %}
+                                    <span class="badge badge-secondary py-1 open-modal" data-images="{% for image in ot.images.all %}{{ image.image.url }}{% if not forloop.last %},{% endif %}{% endfor %}">
+                                        ◯
+                                    </span>
+                                {% endif %}
+                            </div>
+                        </td>
+                        <td><button onclick="openPopup('{% url 'result_file' db='other_asssay' id=ot.id %}')" class="btn btn-success btn-sm" ><i class="bi bi-check-circle"></i></button></td>
+                        <td>
+                            <a href="" class ="btn btn-outline-secondary btn-sm">수정</a>
+                             <button class ="btn btn-outline-danger btn-sm delete-btn"
+                                        data-url="{% url 'other_delete' target=chemical.target chem_id=chemical.chem_id id=ot.id %}">삭제</button>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
             </table>
             </div>
+
+{% for db_id, db_data in results.items %}
+    {% if db_id is not null %}
+        <div class="card-body">
+            <div class="d-flex justify-content-between align-items-center">
+                <div class="text-start">
+                    <h4 class="card-title">{{ db_data.name }}</h4>
+                </div>
+            </div>
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th scope="col">#</th>
+                        {% if db_data.data %}
+                            {% for record_key in db_data.data.0.keys %}
+                                {% if record_key != 'id' and record_key != 'chemical_id' %}
+                                    <th scope="col">{{ record_key }}</th>
+                                {% endif %}
+                            {% endfor %}
+                        {% endif %}
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for record in db_data.data %}
+                        <tr>
+                            <td>{{ forloop.counter }}</td>  <!-- Row number -->
+                            {% for record_key, record_value in record.items %}
+                                {% if record_key != 'id' and record_key != 'chemical_id' %}
+                                    <td>{{ record_value }}</td>
+                                {% endif %}
+                            {% endfor %}
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% endif %}
+{% endfor %}
+
         </div>
 <!--    In vivo     -->
         <div class="tab-pane fade" id="contact" role="tabpanel" aria-labelledby="contact-tab">
@@ -614,7 +659,7 @@
 <!--                                 {% endif %}-->
 <!--                            </div>-->
                         </td>
-                        <td>raw data</td>
+                        <td><button onclick="openPopup('{% url 'result_file' db='in_vivo' id=toxi.id %}')" class="btn btn-success btn-sm" ><i class="bi bi-check-circle"></i></button></td>
                         <td>
                             <a href="" class ="btn btn-outline-secondary btn-sm">수정</a>
                             <button class ="btn btn-outline-danger btn-sm delete-btn" data-url="">삭제</button>
@@ -677,7 +722,7 @@
 <!--                                 {% endif %}-->
 <!--                            </div>-->
                         </td>
-                        <td>raw data</td>
+                        <td><button onclick="openPopup('{% url 'result_file' db='in_vivo' id=toxi.id %}')" class="btn btn-success btn-sm" ><i class="bi bi-check-circle"></i></button></td>
                         <td>
                             <a href="" class ="btn btn-outline-secondary btn-sm">수정</a>
                             <button class ="btn btn-outline-danger btn-sm delete-btn" data-url="">삭제</button>
@@ -740,7 +785,7 @@
 <!--                                 {% endif %}-->
 <!--                            </div>-->
                         </td>
-                        <td>raw data</td>
+                        <td><button onclick="openPopup('{% url 'result_file' db='in_vivo' id=toxi.id %}')" class="btn btn-success btn-sm" ><i class="bi bi-check-circle"></i></button></td>
                         <td>
                             <a href="" class ="btn btn-outline-secondary btn-sm">수정</a>
                             <button class ="btn btn-outline-danger btn-sm delete-btn" data-url="">삭제</button>
@@ -751,7 +796,6 @@
                     {% endfor %}
                 </tbody>
             </table>
-
             </div>
         </div>
         </div>
@@ -781,6 +825,7 @@
 
 {% endblock %}
 {% block extra_js %}
+
 <script src="https://cdn.jsdelivr.net/npm/swiper/swiper-bundle.min.js"></script>
 <script>
 
@@ -878,6 +923,9 @@ $('.delete-btn').click(function() {
       })
     }
 });
+function openPopup(url) {
+        window.open(url, "popupWindow", "width=700,height=700,left=100,top=50");
+    }
 document.addEventListener("DOMContentLoaded", function() {
     // 페이지가 로드될 때, 저장된 탭 상태를 복원
     var activeTab = localStorage.getItem('activeTab');

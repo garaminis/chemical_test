@@ -3,7 +3,7 @@
 {% block extra_head %}
 {% endblock %}
 {% block content %}
-<div class="row">
+<div class="row" xmlns="http://www.w3.org/1999/html">
     <div class="col-lg-6">
       <div class="card">
         <div class="card-body">
@@ -11,9 +11,11 @@
             <form id="filter-form">
               <div id="radio-options">
                 {% for db_name in db_names %}
+                  {% if db_name.group == 'in_vitro' %}
                     <label>
-                        <input type="radio" name="dbOption" value="{{ db_name.name }}" class="db-radio"> {{ db_name.title }}
+                        <input type="radio" name="dbOption" value="{{ db_name.name }}" class="db-radio"> {{ db_name.title }} &nbsp
                     </label>
+                   {% endif%}
                 {% endfor %}
               </div>
               <table class="table datatable" id="sourceTable">
@@ -49,7 +51,7 @@
              <h4 class="card-title">Data upload</h4>
 
                 <div class="row mb-3 date-div" style="display:none" >
-                <label for="date" class="col-sm-2 col-form-label"  >Date</label>
+                <label for="date" class="col-sm-2 col-form-label" >Date</label>
                     <div class="col-sm-10">
                         <input type="date" class="form-control" id="date" name="date"
                          value="{{ form.date.value|date:'Y-m-d' }}">  <!-- 필드의 초기값을 폼에서 가져와서 입력 필드에 설정 -->

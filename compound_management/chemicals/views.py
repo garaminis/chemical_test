@@ -1,6 +1,8 @@
+import io
 import json
 import re
 
+import chardet
 from django.apps import apps
 from django.contrib import messages, admin
 from django.contrib.admin.views.decorators import staff_member_required
@@ -17,12 +19,13 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.utils.text import capfirst
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_POST
-
+from django.contrib.contenttypes.models import ContentType
 from .models import Chemical, Pharmacokinetic, Cytotoxicity, SchrödingerModel, LiverMicrosomalStability, CYPInhibition, \
-    CCK_assay, invtro_Image, Western_blot, Target_Inhibition, other_asssay, in_vivo, Favorite, FDA_result
+    CCK_assay, invtro_Image, Western_blot, Target_Inhibition, other_asssay, in_vivo, Favorite, FDA_result, Document, \
+    result_document
 from .forms import ChemicalForm, ChemicalUploadForm, PharmacokineticForm, CytotoxicityForm, SchrödingerModelForm, \
     SchrödingerModelUploadForm, LiverMicrosomalStabilityForm, CYPInhibitionForm, cckForm, wbForm, \
-    intargetForm, otherForm, in_vivoForm, FDA_Form
+    intargetForm, otherForm, in_vivoForm, FDA_Form, DocumentForm, FDA_UploadForm
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 # R2Py
@@ -35,13 +38,15 @@ from io import BytesIO
 from django.core.files.base import ContentFile
 import logging
 import csv
-from django.http import JsonResponse, HttpResponse
+from django.http import JsonResponse, HttpResponse, HttpResponseNotFound
 import os
 from django.conf import settings
 from users.models import DatabaseList
 
+
 # 로거 설정
 logger = logging.getLogger(__name__)
+
 
 @login_required
 def home_view(request):
@@ -109,6 +114,8 @@ def target_view(request, target):
         # else:
         #     logger.debug(f'Found chemicals for target {target}: {chemicals}')
         # return render(request, 'chemicals/target.html', {'chemicals': chemicals, 'target': target,})
+
+
 @login_required
 def delete_selected_chems(request, target):
     if request.method == 'POST':
@@ -143,6 +150,7 @@ def chemical_new_view(request, target):
         form = ChemicalForm()
     logger.debug(f'New chemical form for {target}')
     return render(request, 'chemicals/chemical_form.html', {'form': form, 'target': target})
+
 def calculate_cLogP(smiles):
     mol = Chem.MolFromSmiles(smiles)
     if mol:
@@ -215,6 +223,7 @@ def upload_chemicals(request, target):
             file = request.FILES['file']
             decoded_file = file.read().decode('utf-8').splitlines()
             reader = csv.DictReader(decoded_file)
+            print(reader.fieldnames)
             for row in reader:
                 smiles = row['smiles']
                 MW = row['MW']
@@ -239,21 +248,38 @@ def upload_chemicals(request, target):
         form = ChemicalUploadForm()
     return render(request, 'chemicals/upload_chemicals.html', {'form': form, 'target': target})
 
+db_names = DatabaseList.objects.all() #쿼리셋
+db_list = list(db_names.values_list('name', flat=True)) #리스트
+
 @login_required
-def pharmacokinetic_list(request, target, chem_id, other=None):
+def pharmacokinetic_list(request, target, chem_id):
     chemical = get_object_or_404(Chemical, chem_id=chem_id)
+
+    cck_assay = CCK_assay.objects.filter(chemical=chemical)
+    wb = Western_blot.objects.filter(chemical=chemical)
+    in_target = Target_Inhibition.objects.filter(chemical=chemical)
+    others = other_asssay.objects.filter(chemical=chemical)
 
     pharmacokinetics = Pharmacokinetic.objects.filter(chemical=chemical)
     cytotoxicities = Cytotoxicity.objects.filter(chemical=chemical)
     liver_stabilities = LiverMicrosomalStability.objects.filter(chemical=chemical)
     cyp_inhibitions = CYPInhibition.objects.filter(chemical=chemical)
 
-    cck_assay = CCK_assay.objects.filter(chemical=chemical).all()
-    wb = Western_blot.objects.filter(chemical=chemical).all()
-    in_target = Target_Inhibition.objects.filter(chemical=chemical).all()
-    others = other_asssay.objects.filter(chemical=chemical).all()
+    invivo = in_vivo.objects.filter(chemical=chemical)
 
-    invivo = in_vivo.objects.filter(chemical=chemical).all()
+    results = {}
+    for db in db_names:
+        if db.id >= 10:
+            try:
+                model = apps.get_model('data', db.name) #모델 가져옴
+            except LookupError: # 모델 없을때 예외처리
+                print(f"'{db.name}' does not exist.")
+                continue  # 오류시, 다음 루프로 건너뜀
+            queryset = model.objects.filter(chemical=chemical)
+            results[db.id] = {
+                'name': db.name,  # db.name 추가
+                'data': list(queryset.values())  # 쿼리셋을 리스트로 변환
+            }
 
     return render(request, 'chemicals/pharmacokinetic_list.html', {
         'target': target,
@@ -266,7 +292,8 @@ def pharmacokinetic_list(request, target, chem_id, other=None):
         'Western_blot': wb,
         'Target_Inhibition': in_target,
         'other': others,
-        'invivo' : invivo,
+        'invivo': invivo,
+        'results': results,
     })
 
 @login_required
@@ -283,6 +310,7 @@ def pharmacokinetic_add(request, target, chem_id):
     else:
         form = PharmacokineticForm()
     return render(request, 'chemicals/pharmacokinetic_form.html', {'form': form, 'target': target,'chem_id': chem_id})
+
 @login_required
 def pharmacokinetic_delete (request, target, chem_id ,id):
     Pharm = get_object_or_404(Pharmacokinetic, id=id)
@@ -291,6 +319,8 @@ def pharmacokinetic_delete (request, target, chem_id ,id):
         Pharm.delete()
         return JsonResponse({'success': True, 'id': id})
     return JsonResponse({'success': False, 'error': 'Invalid request'}, status=400)
+
+
 @login_required
 def pharmacokinetic_update(request, target, chem_id ,id):
     Pharm = get_object_or_404(Pharmacokinetic, id=id)
@@ -480,6 +510,7 @@ def cyp_inhibition_update(request, target, chem_id ,id):
     else:
         form = CYPInhibitionForm(instance=CYP)
     return render(request, 'chemicals/cyp_inhibition_form.html', {'form': form, 'target': target, 'id':id, 'chem_id': chem_id})
+
 @login_required
 def cck_add(request, target, chem_id):
     chemical = get_object_or_404(Chemical, chem_id=chem_id)
@@ -610,6 +641,7 @@ def in_target_add(request, target, chem_id):
         'chem_id': chem_id,
         'target': target,
     })
+
 @login_required
 def in_target_delete(request, target, chem_id ,id):
     in_image = invtro_Image.objects.filter(Target_Inhibition=id)
@@ -621,7 +653,6 @@ def in_target_delete(request, target, chem_id ,id):
         in_target.delete()
         return JsonResponse({'success': True, 'id': id})
     return JsonResponse({'success': False, 'error': 'Invalid request'}, status=400)
-
 
 @login_required
 def other_add(request, target, chem_id):
@@ -675,6 +706,7 @@ def run_r_script_and_get_results(patient_id):
     # 결과 파일 읽기
     results_df = pd.read_csv("/Users/sangjoonshin/Desktop/top_10_cell_lines.csv")
     return results_df
+
 def patient_input(request):
     context = {}
     if request.method == 'POST':
@@ -722,9 +754,6 @@ def SLselected_gene_input(request):
             context['img_path'] = None
     return render(request, 'sl.html', context)
 
-db_names = DatabaseList.objects.all()
-db_list = DatabaseList.objects.values_list('name')
-
 def sanitize_attribute_name(name):
     # 유효한 문자만 허용 (영문자, 숫자, 하이픈, 밑줄)
     return re.sub(r'[^a-zA-Z0-9-_]', '', name)
@@ -733,7 +762,7 @@ def sanitize_attribute_name(name):
 @csrf_exempt
 def result_add(request, target):
     chemicals = Chemical.objects.filter(target=target).order_by('-datetime')
-
+    db_names = DatabaseList.objects.all()
     sanitized_chemicals = []
     for chemical in chemicals:
         sanitized_chemical = {
@@ -746,7 +775,6 @@ def result_add(request, target):
 
     if request.method == 'POST':
         selected_db = request.POST.get('dbOption')
-        print(selected_db)
         data_to_save = request.POST.get('data_field')  # 저장할 데이터
         try:
             DynamicModel = apps.get_model('chemicals', selected_db.capitalize())
@@ -766,11 +794,10 @@ def result_add(request, target):
         'target': target,
         'chemicals': sanitized_chemicals ,
         'db_names': db_names,
-
     })
 
-
-def get_columns(request, table_name):
+@login_required
+def get_columns(request, table_name): # 다중 data 업로드 시, 변경data 컬럼을 가져오는 코드
     try:
         model = apps.get_model('chemicals', table_name) # 기본 앱
     except LookupError:
@@ -790,6 +817,7 @@ def get_columns(request, table_name):
 
     return JsonResponse({'fields': fields})
 
+@login_required
 @csrf_exempt
 def save_table_data(request):
     if request.method == 'POST':
@@ -892,7 +920,7 @@ def FDA_result_add (request, target, chem_id ):
 @login_required
 def FDA_delete(request, target, chem_id ,id):
     fda = get_object_or_404(FDA_result, id=id)
-    if request.method == 'POST':
+    if request.method == 'POST' and request.is_ajax():
         fda.delete()
         return JsonResponse({'success': True, 'id': id})
     return JsonResponse({'success': False, 'error': 'Invalid request'}, status=400)
@@ -909,3 +937,104 @@ def FDA_update(request, target, chem_id ,id):
     else:
         form = FDA_Form(instance=fda)
     return render(request, 'chemicals/FDA_result_form.html', {'form': form, 'target': target, 'id':id, 'chem_id': chem_id})
+
+@login_required
+def download_file(request, chem_id, target): # target 연결
+    chemical = get_object_or_404(Chemical, chem_id=chem_id)
+    documents = chemical.documents.filter(chemical=chemical)
+
+    if request.method == 'POST':
+        form = DocumentForm(request.POST, request.FILES)
+        if form.is_valid():
+            document = form.save(commit=False)
+            document.chemical = chemical
+            document.save()
+            return redirect('download_file',chem_id=chem_id, target=target )
+    else:
+        form = DocumentForm()
+
+    return render(request, 'chemicals/download_file.html', {
+        'documents': documents,
+        'target': target,
+        'chemical': chemical,
+        'form': form
+    })
+
+@login_required
+def result_file(request, db, id): # result 연결 generic foreignkey 사용
+    content_type = ContentType.objects.get(model=db.lower())
+    model_class = content_type.model_class()
+    product = get_object_or_404(model_class, id=id)
+
+    if request.method == 'POST':
+        if 'file' in request.FILES:
+            file = request.FILES['file']
+            result_document.objects.create(content_object=product, file=file)
+            return redirect('result_file', db=db, id=id)
+    files = product.files.all()
+
+    return render(request, 'chemicals/result_file.html', {
+        'product': product,
+        'files': files,
+        'db': db,
+    })
+
+def delete_file(request,id,target):
+    print(target)
+    if target == "FDA" :
+        documents = get_object_or_404(Document, id=id)
+        if request.method == 'POST':
+            documents.file.delete()
+            documents.delete()
+            return JsonResponse({'status': 'success'})
+    else :
+        file = get_object_or_404(result_document, id=id)
+        if request.method == 'POST':
+            file.file.delete()
+            file.delete()
+            return JsonResponse({'status': 'success'})
+    return JsonResponse({'status': 'fail'}, status=400)
+
+
+def upload_fda_result(request,target):
+    if request.method == 'POST':
+        form = FDA_UploadForm(request.POST, request.FILES)
+        if form.is_valid():
+            csv_file = request.FILES['file']
+            raw_data = csv_file.read()
+            # 인코딩 감지
+            result = chardet.detect(raw_data)
+            encoding = result['encoding']
+            print(f"Detected encoding: {encoding}")
+
+            data_set = raw_data.decode(encoding)
+            io_string = io.StringIO(data_set)
+            reader = csv.DictReader(io_string)
+            for row in reader:
+                chemical_name=row.get('Product')
+                try:
+                    chemical = Chemical.objects.get(chem_id=chemical_name)
+                    FDA_result.objects.create(
+                        chemical=chemical,
+                        tmax= row['Tmax_1'],
+                        max_concentration=row['Cmax_1'],
+                        AUC=row['AUC_1'],
+                        t_half=row['T1/2_1'],
+                        period='1',  # period 1로 저장
+
+                    )
+                    FDA_result.objects.create(
+                        chemical=chemical,
+                        tmax=row['Tmax_2'],
+                        max_concentration=row['Cmax_2'],
+                        AUC=row['AUC_2'],
+                        t_half=row['T1/2_2'],
+                        period='2',
+
+                    )
+                except Chemical.DoesNotExist:
+                    print(f"Chemical '{chemical_name}' does not exist. Skipping this entry.")
+            return redirect('target_view', target=target)
+    else:
+        form = FDA_UploadForm
+    return render(request, 'chemicals/FDA_upload.html', {'form': form, 'target': target})

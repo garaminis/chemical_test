@@ -128,7 +128,6 @@ class FDA_Form(forms.ModelForm):
     class Meta:
         model = FDA_result
         fields = ['user','tmax','max_concentration','AUC','t_half','period']
-        widgets = {
-            'period': forms.Select(choices=FDA_result.PERIOD_CHOICES),
-            # 다른 필드의 위젯 설정
-        }
+
+class FDA_UploadForm(forms.Form):
+    file = forms.FileField()

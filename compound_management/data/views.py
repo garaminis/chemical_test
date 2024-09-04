@@ -1,4 +1,6 @@
 import os
+
+from django.apps import apps
 from django.contrib.admin.views.decorators import staff_member_required
 from django.core.management import call_command
 from django.shortcuts import redirect, render
@@ -21,7 +23,8 @@ def create_dynamic_model(table_name, fields):
     model = type(capfirst(table_name), (models.Model,), attrs)
 
     # 모델을 전역 네임스페이스에 추가
-    # globals()[model.__name__] = model
+    apps.get_app_config('data').models[model.__name__.lower()] = model
+
 
     # DatabaseList에 새로운 DB 이름 추가
     if not DatabaseList.objects.filter(name=table_name).exists():
@@ -37,7 +40,7 @@ def create_dynamic_model(table_name, fields):
                 models_file.write(f"    {field_name} = models.IntegerField()\n")
         models_file.write(f"    class Meta:\n")
         models_file.write(f"        db_table = '{table_name}'\n")
-        models_file.write(f"        app_label = 'chemicals'\n")
+        models_file.write(f"        app_label = 'data'\n")
 
     # admin.py에 모델 등록 추가
     admin_path = os.path.join('data', 'admin.py')

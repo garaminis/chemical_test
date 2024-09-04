@@ -180,6 +180,9 @@ function getSortOrder(currentOrder, column) {
         return 'asc';
     }
 }
+function openPopup(url) {
+        window.open(url, "popupWindow", "width=700,height=700,left=100,top=50");
+    }
 </script>
 <style>
 table, th, tr, td {
@@ -231,13 +234,17 @@ img {
                  <a href="{% url 'result_add' target=target %}" class="btn btn-outline-primary btn-sm"><i class="bi bi-plus-square"></i> result </a>
                 <a href="{% url 'chemical_new' target=target %}" class="btn btn-outline-primary btn-sm"><i class="bi bi-plus-square"></i> New </a>
                 <a href="{% url 'upload_chemicals' target=target %}" class="btn btn-outline-primary btn-sm"><i class="bi bi-files"></i> Upload </a>
+                {% if  target == "FDA" %}
+                    <a href="{% url 'upload_fda_result' target=target %}" class="btn btn-outline-primary btn-sm"><i class="bi bi-files"></i> data </a>
+                {% endif %}
             </div>
+
         </div>
 <!--                <a href="{% url 'chemical_new' target=target %}" class="btn btn-success rounded-pill"><i class="bi bi-plus-square"></i> New</a>-->
 <!--                <a href="{% url 'upload_chemicals' target=target %}" class="btn btn-success rounded-pill"><i class="bi bi-files"></i> Upload </a>-->
         <br>
         <table  class="table table-bordered">
-        <thead>
+            <thead>
             <tr>
                 <th class="no-bootstrap-feature">
                     <input type="checkbox" id="select_all">
@@ -270,8 +277,8 @@ img {
                 <th></th>
                 <th></th>
             </tr>
-        </thead>
-        <tbody>
+            </thead>
+            <tbody>
             {% for chem in chemicals %}
             <tr>
                 <td><input type="checkbox" name="selected_chems" value="{{ chem.pk }}" id="select_check"></td>
@@ -305,7 +312,7 @@ img {
                 <td><br>
                     {% if  target == "FDA" %}
                         <a href="{% url 'FDA_result_view' target=target chem_id=chem.chem_id %}" class ="btn btn-outline-primary btn-sm"> result </a>
-                        <a href="{% url 'pharmacokinetic_list' target=target chem_id=chem.chem_id %}" class ="btn btn-outline-primary btn-sm">reference</a>
+                         <button onclick="openPopup('{% url 'download_file' target=target chem_id=chem.chem_id %}')" class ="btn btn-outline-primary btn-sm">reference</button>
                     {% else %}
                         <a href="{% url 'pharmacokinetic_list' target=target chem_id=chem.chem_id %}" class ="btn btn-outline-primary btn-sm"> result </a>
                         <a href="{% url 'schrodinger_model_list' target=target chem_id=chem.chem_id %}" class ="btn btn-outline-primary btn-sm">modeling</a> <!-- 추가된 부분 -->
@@ -317,7 +324,7 @@ img {
                 </td>
             </tr>
             {% endfor %}
-        </tbody>
+            </tbody>
         </table>
 
 <!--            <ul class="pagination disabled justify-content-right">-->
@@ -367,4 +374,5 @@ img {
 <!--      </div>-->
 <!--</div>-->
 {% endblock %}
+
 

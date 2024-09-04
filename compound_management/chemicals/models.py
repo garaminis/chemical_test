@@ -7,6 +7,8 @@ from rdkit import Chem
 from rdkit.Chem import Descriptors, Crippen
 
 from users.models import User
+from django.contrib.contenttypes.models import ContentType
+from django.contrib.contenttypes.fields import GenericForeignKey, GenericRelation
 
 
 class Chemical(models.Model):
@@ -68,10 +70,10 @@ class Result(models.Model):
     def __str__(self):
         return f"{self.chemical} - {self.description}"
 
-class Document (models.Model):
-    chemical = models.ForeignKey(Chemical, on_delete=models.CASCADE)
+class Document(models.Model):
+    chemical = models.ForeignKey(Chemical, on_delete=models.CASCADE, related_name='documents')
     file = models.FileField(upload_to='uploads/')
-    uploaded_at = models.DateTimeField(auto_now_add=True)
+    uploaded_at = models.DateTimeField(default=timezone.now)
 
 class Pharmacokinetic(models.Model):
     chemical = models.ForeignKey(Chemical, on_delete=models.CASCADE)
@@ -86,6 +88,7 @@ class Pharmacokinetic(models.Model):
     CL = models.FloatField(null=True, blank=True)
     Route = models.CharField(max_length=200, null=True)
     user = models.CharField(max_length=200, null=True)
+    files = GenericRelation('result_document')
 
     def __str__(self):
         return f'{self.chemical.chem_id} - {self.date}'
@@ -99,6 +102,7 @@ class Cytotoxicity(models.Model):
     NIH_3T3 = models.FloatField()
     CHO_K1 = models.FloatField()
     user = models.CharField(max_length=200, null=True)
+    files = GenericRelation('result_document')
 
     def __str__(self):
         return f'{self.chemical.chem_id} - {self.date}'
@@ -127,6 +131,7 @@ class LiverMicrosomalStability(models.Model):
     rat = models.FloatField()
     human = models.FloatField()
     user = models.CharField(max_length=200, null=True)
+    files = GenericRelation('result_document')
 
     def __str__(self):
         return f'{self.chemical.chem_id} - {self.date} Liver Microsomal Stability'
@@ -140,6 +145,7 @@ class CYPInhibition(models.Model):
     cyp_2d6 = models.FloatField()
     cyp_3a4 = models.FloatField()
     user = models.CharField(max_length=200, null=True)
+    files = GenericRelation('result_document')
 
     def __str__(self):
         return f'{self.chemical.chem_id} - {self.date} CYP Inhibition'
@@ -152,7 +158,7 @@ class CCK_assay(models.Model):
     IC50 = models.FloatField(null=True, blank=True, help_text='check')
     Out = models.CharField(max_length=200,null=True, help_text='check')
     comment = models.TextField(null=True, help_text='default')
-    
+    files = GenericRelation('result_document')
 
     def __str__(self):
         return f'{self.chemical.chem_id} - {self.date} CCK_assay'
@@ -162,6 +168,7 @@ class Western_blot(models.Model):
     date = models.DateField()
     user = models.CharField(max_length=200, null=True)
     comment = models.TextField(null=True, help_text='default')
+    files = GenericRelation('result_document')
 
     def __str__(self):
         return f'{self.chemical.chem_id} - {self.date} Western_blot'
@@ -173,6 +180,7 @@ class Target_Inhibition(models.Model):
     vitro_at_10 = models.FloatField(null=True, blank=True, help_text='check')
     Taret_IC50 = models.FloatField(null=True, blank=True, help_text='check')
     comment = models.TextField(null=True, help_text='default')
+    files = GenericRelation('result_document')
 
     def __str__(self):
         return f'{self.chemical.chem_id} - {self.date} Target_Inhibition'
@@ -183,6 +191,7 @@ class other_asssay(models.Model):
     user = models.CharField(max_length=200, null=True)
     title = models.CharField(max_length=200, default="NA")
     comment = models.TextField(null=True)
+    files = GenericRelation('result_document')
 
     def __str__(self):
         return f'{self.chemical.chem_id} - {self.date} other_asssay'
@@ -193,6 +202,7 @@ class invtro_Image(models.Model):
     Western_blot = models.ForeignKey(Western_blot, related_name='images', on_delete=models.CASCADE,null=True)
     Target_Inhibition = models.ForeignKey(Target_Inhibition,related_name='images',on_delete=models.CASCADE,null=True)
     other_asssay = models.ForeignKey(other_asssay,related_name='images',on_delete=models.CASCADE,null=True)
+
 
 class in_vivo(models.Model):
     chemical = models.ForeignKey(Chemical, on_delete=models.CASCADE)
@@ -206,6 +216,7 @@ class in_vivo(models.Model):
     group = models.TextField(null=True)
     comment = models.TextField(null=True)
     category = models.CharField(max_length=200, null=True)
+    files = GenericRelation('result_document')
 
     def __str__(self):
         return f'{self.chemical.chem_id} - in_vivo'
@@ -219,19 +230,27 @@ class Favorite(models.Model):
         unique_together = ('user', 'item')
 
 
+
 class FDA_result(models.Model):
-    PERIOD_CHOICES = [
-        ('1', '2'),
-        ('pk1', 'pk2'),
-    ]
+
     chemical = models.ForeignKey(Chemical, on_delete=models.CASCADE)
     user = models.CharField(max_length=200, null=True)
-    tmax = models.FloatField(null=True, blank=True)
-    max_concentration = models.FloatField(null=True, blank=True)
-    AUC = models.FloatField(null=True, blank=True)
-    t_half = models.FloatField(null=True, blank=True)
-    period = models.CharField(max_length=3, choices=PERIOD_CHOICES, default='1')
+    tmax = models.CharField(max_length=200, null=True)
+    max_concentration = models.CharField(max_length=200, null=True)
+    AUC = models.CharField(max_length=200, null=True)
+    t_half = models.CharField(max_length=200, null=True)
+    period = models.CharField(max_length=3, default='1')
 
     def __str__(self):
         return self.chemical
 
+class result_document(models.Model):
+    content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
+    object_id = models.PositiveIntegerField()
+    content_object = GenericForeignKey('content_type', 'object_id')
+
+    file = models.FileField(upload_to='uploads/')
+    uploaded_at = models.DateTimeField(default=timezone.now)
+
+    def __str__(self):
+        return self.file.name

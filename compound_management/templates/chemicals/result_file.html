@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
-{% block title %} FDA for {{ chemical.chem_id }}{% endblock %}
+{% block title %} {{ chemical.chem_id }}{% endblock %}
 {% block content %}
-<h2>Upload a new Document</h2>
+<h2>Upload a new Document {{ db }} </h2>
 <div class="col-lg-6">
   <div class="card">
     <div class="card-body">
@@ -9,21 +9,21 @@
         <form method="post" enctype="multipart/form-data">
             {% csrf_token %}
             <input type="file" name="file" required>
-            <button type="submit" class="btn btn-outline-primary btn-sm">Upload File</button>
+            <button type="submit" class="btn btn-outline-primary btn-sm">Upload File </button>
         </form>
-         <input type="hidden" id='db' value="{{ target }}">
+          <input type="hidden" id='db' value="{{ db }}">
         <br>
         <h4>Uploaded Files:</h4>
-       <ul id="document-list">
-            {% for document in documents %}
-                <li id="document-{{ document.id }}">
-                    <a href="{{ document.file.url }}" download>{{ document.file.name }}</a>
-                    <button class ="btn btn-outline-danger btn-sm btn_del" data-id="{{ document.id }}">Delete</button>
+        <ul  id="document-list">
+            {% for file in files %}
+                <li id="document-{{ file.id }}">
+                    <a href="{{ file.file.url }}" download>{{ file.file.name }}</a>
+                   <button class ="btn btn-outline-danger btn-sm btn_del" data-id="{{ file.id }}">Delete</button>
                 </li>
             {% empty %}
-                <p>업로드 파일 없음</p>
+                <li>No files uploaded yet.</li>
             {% endfor %}
-       </ul>
+        </ul>
 
 
     </div>
@@ -37,7 +37,7 @@ $(document).ready(function() {
         var fileId = $(this).data('id');
         var $fileItem = $('#document-' + fileId);
         var target = $('#db').val();
-        console.log(target);
+        console.log($fileItem)
 
         if (confirm('삭제하시겠습니까? (삭제 후 복구가 불가능합니다.)')) {
             $.ajax({
@@ -58,7 +58,6 @@ $(document).ready(function() {
                 }
             });
         }
-
     });
 });
 </script>

@@ -2,7 +2,7 @@ from django.contrib import admin
 from . import views
 from django.urls import path, include
 from django.conf import settings
-from .views import delete_selected_chems
+from .views import delete_selected_chems, delete_file
 from django.conf.urls.static import static
 
 urlpatterns = [
@@ -16,6 +16,7 @@ urlpatterns = [
     path('chemicals/<str:target>/edit/<str:chem_id>/', views.chemical_edit_view, name='chemical_edit'),
     path('chemicals/<str:target>/delete/<str:chem_id>/', views.chemical_delete_view, name='chemical_delete'),
     path('chemicals/<str:target>/delete_selected/', delete_selected_chems, name='delete_selected_chems'),
+
 # result add,list
     path('chemicals/<str:target>/result2/<str:chem_id>/', views.pharmacokinetic_list, name='pharmacokinetic_list'),
     path('chemicals/<str:target>/result/', views.result_add, name='result_add'),
@@ -24,6 +25,7 @@ urlpatterns = [
     path('chemicals/<str:target>/liver_stability/<str:chem_id>/add/', views.liver_stability_add, name='liver_stability_add'),
     path('chemicals/<str:target>/cyp_inhibition/<str:chem_id>/add/', views.cyp_inhibition_add, name='cyp_inhibition_add'),
     path('chemicals/<str:target>/invivo/<str:chem_id>/add/<int:category>', views.invivo_add, name='invivo_add'),
+    path('result/<str:db>/<int:id>/', views.result_file, name='result_file'),
 # result delete
     path('chemicals/<str:target>/pharmacokinetic/<str:chem_id>/del/<int:id>', views.pharmacokinetic_delete, name='pharmacokinetic_delete'),
     path('chemicals/<str:target>/cytotoxicity/<str:chem_id>/del/<int:id>', views.cytotoxicity_delete, name='cytotoxicity_delete'),
@@ -41,6 +43,8 @@ urlpatterns = [
 
     path('r/', views.patient_input, name='patient_input'),
     path('sl/', views.SLselected_gene_input, name='SLselected_gene_input'),
+
+
 # result invitro add
     path('chemicals/<str:target>/cck/<str:chem_id>/add/',views.cck_add, name='cck_add'),
     path('chemicals/<str:target>/wb/<str:chem_id>/add/',views.wb_add, name='wb_add'),
@@ -56,8 +60,13 @@ urlpatterns = [
     path('chemicals/<str:target>/wb/<str:chem_id>/update/<int:id>', views.wb_update, name='wb_update'),
     path('get_columns/<str:table_name>/', views.get_columns, name='get_columns'),
     path('save_table_data/', views.save_table_data, name='save_table_data' ),
+
+
 # FDA
     path('chemicals/<str:target>/FDA/<str:chem_id>', views.FDA_result_view, name='FDA_result_view'),
+    path('chemicals/result_fda/<str:target>/', views.upload_fda_result, name='upload_fda_result'),
+    path('chemicals/<str:target>/<str:chem_id>', views.download_file, name='download_file'),
+    path('delete_file/<int:id>/<str:target>/', views.delete_file, name='delete_file'),
     path('chemicals/<str:target>/FDA_add/<str:chem_id>', views.FDA_result_add, name='FDA_result_add'),
     path('chemicals/<str:target>/FDA_del/<str:chem_id>/<int:id>', views.FDA_delete, name='FDA_delete'),
     path('chemicals/<str:target>/FDA_update/<str:chem_id>/<int:id>', views.FDA_update, name='FDA_update'),

@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+{% block title %}
+    Upload Chemicals for {{ target }}
+{% endblock %}
+{% block content %}
+<h2> {{ target }} Result upload</h2>
+<div class="col-lg-6">
+  <div class="card">
+    <div class="card-body"><br>
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit"  class="btn btn-primary btn-sm" ><i class="bi bi-upload"></i> Upload</button>
+    </form>
+    </div>
+  </div>
+</div>
+   <a href="{% url 'upload_fda_result' target=target %}"  class="btn btn-outline-primary btn-sm">Back to {{ target }}</a>
+{% endblock %}

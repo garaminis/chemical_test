@@ -46,12 +46,15 @@
                   </div>
               </div>
 
+              {% if id is null %}
               <div class="row mb-3">
                   <label for="image" class="col-sm-2 col-form-label">Image</label>
                   <div class="col-sm-10" >
                     <input type="file" id="image" name="images" class="form-control" accept="image/*" multiple>
                   </div>
               </div>
+              {% endif %}
+
 
               <div class="row mb-3">
                  <ul class="lst_thumb"> </ul>
