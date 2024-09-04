@@ -7,40 +7,25 @@ from django.conf.urls.static import static
 
 urlpatterns = [
     path('', views.home_view, name='home'),
-<<<<<<< HEAD
 
 # target CRUD
     path('item/<str:chem_id>/toggle_favorite/', views.toggle_favorite, name='toggle_favorite'), # 찜
-=======
-    path('login/', views.login_view, name='login'),
-    path('register/', views.register_view, name='register'),
-    path('logout/', views.logout_view, name='logout'),
-# target CRUD
->>>>>>> 323fb36a92ed679bfac130e81025e71786d36baf
     path('chemicals/<str:target>/', views.target_view, name='target_view'),
     path('chemicals/<str:target>/new/', views.chemical_new_view, name='chemical_new'),
     path('chemicals/upload/<str:target>/', views.upload_chemicals, name='upload_chemicals'),
     path('chemicals/<str:target>/edit/<str:chem_id>/', views.chemical_edit_view, name='chemical_edit'),
     path('chemicals/<str:target>/delete/<str:chem_id>/', views.chemical_delete_view, name='chemical_delete'),
     path('chemicals/<str:target>/delete_selected/', delete_selected_chems, name='delete_selected_chems'),
-<<<<<<< HEAD
 
 # result add,list
     path('chemicals/<str:target>/result2/<str:chem_id>/', views.pharmacokinetic_list, name='pharmacokinetic_list'),
-=======
-# result add,list
-    path('chemicals/<str:target>/result/<str:chem_id>/', views.pharmacokinetic_list, name='pharmacokinetic_list'),
->>>>>>> 323fb36a92ed679bfac130e81025e71786d36baf
     path('chemicals/<str:target>/result/', views.result_add, name='result_add'),
     path('chemicals/<str:target>/result/<str:chem_id>/add/', views.pharmacokinetic_add, name='pharmacokinetic_add'),
     path('chemicals/<str:target>/cytotoxicity/<str:chem_id>/add/', views.cytotoxicity_add, name='cytotoxicity_add'),
     path('chemicals/<str:target>/liver_stability/<str:chem_id>/add/', views.liver_stability_add, name='liver_stability_add'),
     path('chemicals/<str:target>/cyp_inhibition/<str:chem_id>/add/', views.cyp_inhibition_add, name='cyp_inhibition_add'),
     path('chemicals/<str:target>/invivo/<str:chem_id>/add/<int:category>', views.invivo_add, name='invivo_add'),
-<<<<<<< HEAD
     path('result/<str:db>/<int:id>/', views.result_file, name='result_file'),
-=======
->>>>>>> 323fb36a92ed679bfac130e81025e71786d36baf
 # result delete
     path('chemicals/<str:target>/pharmacokinetic/<str:chem_id>/del/<int:id>', views.pharmacokinetic_delete, name='pharmacokinetic_delete'),
     path('chemicals/<str:target>/cytotoxicity/<str:chem_id>/del/<int:id>', views.cytotoxicity_delete, name='cytotoxicity_delete'),
@@ -58,11 +43,8 @@ urlpatterns = [
 
     path('r/', views.patient_input, name='patient_input'),
     path('sl/', views.SLselected_gene_input, name='SLselected_gene_input'),
-<<<<<<< HEAD
 
 
-=======
->>>>>>> 323fb36a92ed679bfac130e81025e71786d36baf
 # result invitro add
     path('chemicals/<str:target>/cck/<str:chem_id>/add/',views.cck_add, name='cck_add'),
     path('chemicals/<str:target>/wb/<str:chem_id>/add/',views.wb_add, name='wb_add'),
@@ -75,7 +57,6 @@ urlpatterns = [
     path('chemicals/<str:target>/ot/<str:chem_id>/del/<int:id>', views.other_delete, name='other_delete'),
 # result invitro update
     path('chemicals/<str:target>/cck/<str:chem_id>/update/<int:id>', views.cck_update, name='cck_update'),
-<<<<<<< HEAD
     path('chemicals/<str:target>/wb/<str:chem_id>/update/<int:id>', views.wb_update, name='wb_update'),
     path('get_columns/<str:table_name>/', views.get_columns, name='get_columns'),
     path('save_table_data/', views.save_table_data, name='save_table_data' ),
@@ -89,9 +70,6 @@ urlpatterns = [
     path('chemicals/<str:target>/FDA_add/<str:chem_id>', views.FDA_result_add, name='FDA_result_add'),
     path('chemicals/<str:target>/FDA_del/<str:chem_id>/<int:id>', views.FDA_delete, name='FDA_delete'),
     path('chemicals/<str:target>/FDA_update/<str:chem_id>/<int:id>', views.FDA_update, name='FDA_update'),
-=======
-
->>>>>>> 323fb36a92ed679bfac130e81025e71786d36baf
 ]
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

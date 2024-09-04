@@ -10,10 +10,7 @@ $(document).ready(function() {
     $('#select_all').click(function() {
         $('input[name="selected_chems"]').prop('checked', this.checked);
     });
-<<<<<<< HEAD
 
-=======
->>>>>>> 323fb36a92ed679bfac130e81025e71786d36baf
     const isChecked = localStorage.getItem('checkboxStatus') === 'true';
     $('#myCheckbox').prop('checked', isChecked);
 
@@ -51,10 +48,7 @@ $(document).ready(function() {
         });
          console.log(selected);
     });
-<<<<<<< HEAD
 
-=======
->>>>>>> 323fb36a92ed679bfac130e81025e71786d36baf
     $('#select_check').on('change', function() {
         localStorage.setItem('checkboxStatus', $(this).is(':checked'));
         });
@@ -63,99 +57,6 @@ $(document).ready(function() {
     $(document).on('click', '.image-popup', function(event) {
         var row = $(this).closest('tr');
         var imgWindow = window.open("", "Image", "width=800,height=700, scrollbars=yes");
-<<<<<<< HEAD
-=======
-<!--        var checkbox = row.find('.item-checkbox');-->
-<!--        checkbox.prop('checked', !checkbox.prop('checked'));-->
-
-                imgWindow.document.write(`
-                    <!DOCTYPE html>
-                    <html lang="en">
-                    <head>
-                        <meta charset="UTF-8">
-                        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-                        <title>Image</title>
-                        <style>
-                             body {
-                                margin: 0;
-                                background-color: #f5f5f5;
-                                display: flex;
-                                align-items: center;
-                                padding: 20px;
-                            }
-                            .container {
-                                max-width: 800px;
-                                width: 100%;
-                                background: #fff;
-                                box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-                                border-radius: 8px;
-                                overflow: hidden;
-                                padding: 20px;
-                                box-sizing: border-box;
-                                overflow-x: auto;
-                                min-width: 30%; /* 콘텐츠가 최소한 화면 너비를 차지하도록 설정 */
-                            }
-                            img {
-                                max-width: 100%;
-                                height: auto;
-                                display: block;
-                                margin: 0 auto;
-                                border-radius: 8px;
-                            }
-                            table {
-                                width: 100%;
-                                border-collapse: collapse;
-                                margin-top: 20px;
-                            }
-                            th, td {
-                                border: 1px solid #ddd;
-                                padding: 8px;
-                                text-align: left;
-                            }
-                            th {
-                                background-color: #f4f4f4;
-                            }
-                            h1 {
-                                margin-top: 0;
-                            }
-
-                        </style>
-                    </head>
-                     <div class="container">
-                            <img src="${this.src}" alt="${this.alt}">
-                            <h1>{{ target }} / Chem_id : ${row.find('td').eq(1).text()}</h1>
-                            <table>
-                                <tr>
-                                    <td>MW</td>
-                                    <td>${row.find('td').eq(3).text()}</td>
-                                </tr>
-                                <tr>
-                                    <td>cLogP</td>
-                                    <td>${row.find('td').eq(4).text()}</td>
-                                </tr>
-                                <tr>
-                                    <td>TPSA</td>
-                                    <td>${row.find('td').eq(5).text()}</td>
-                                </tr>
-                                <tr>
-                                    <td>H_donors</td>
-                                    <td>${row.find('td').eq(6).text()}</td>
-                                </tr>
-                                 <tr>
-                                    <td>H_acceptors</td>
-                                    <td>${row.find('td').eq(7).text()}</td>
-                                </tr>
-                                 <tr>
-                                    <td>lipinski</td>
-                                    <td>${row.find('td').eq(8).text()}</td>
-                                </tr>
-                            </table>
-                        </div>
-                    </html>
-                `);
-        });
-    });
->>>>>>> 323fb36a92ed679bfac130e81025e71786d36baf
 
         imgWindow.document.write(`
             <!DOCTYPE html>
@@ -297,12 +198,9 @@ img {
     cursor: pointer;
     width: 100px; /* 작은 크기의 이미지 */
 }
-<<<<<<< HEAD
 .favorite-btn {
     cursor: pointer;
 }
-=======
->>>>>>> 323fb36a92ed679bfac130e81025e71786d36baf
 
 
 </style>
@@ -336,7 +234,6 @@ img {
                  <a href="{% url 'result_add' target=target %}" class="btn btn-outline-primary btn-sm"><i class="bi bi-plus-square"></i> result </a>
                 <a href="{% url 'chemical_new' target=target %}" class="btn btn-outline-primary btn-sm"><i class="bi bi-plus-square"></i> New </a>
                 <a href="{% url 'upload_chemicals' target=target %}" class="btn btn-outline-primary btn-sm"><i class="bi bi-files"></i> Upload </a>
-<<<<<<< HEAD
                 {% if  target == "FDA" %}
                     <a href="{% url 'upload_fda_result' target=target %}" class="btn btn-outline-primary btn-sm"><i class="bi bi-files"></i> data </a>
                 {% endif %}
@@ -348,20 +245,11 @@ img {
         <br>
         <table  class="table table-bordered">
             <thead>
-=======
-            </div>
-        </div>
-<!--                <a href="{% url 'chemical_new' target=target %}" class="btn btn-success rounded-pill"><i class="bi bi-plus-square"></i> New</a>-->
-<!--                <a href="{% url 'upload_chemicals' target=target %}" class="btn btn-success rounded-pill"><i class="bi bi-files"></i> Upload </a>-->
-        <table  class="table table-bordered">
-        <thead>
->>>>>>> 323fb36a92ed679bfac130e81025e71786d36baf
             <tr>
                 <th class="no-bootstrap-feature">
                     <input type="checkbox" id="select_all">
                 </th>
                 <th>
-<<<<<<< HEAD
                 </th>
                 <th>
                     {% if  target == "FDA" %}
@@ -369,20 +257,12 @@ img {
                     {% else %}
                         <a href="?sort_by=chem_id&sort_order={% if sort_by == 'chem_id' and sort_order == 'asc' %}desc{% else %}asc{% endif %}">chem_ID</a>
                     {% endif %}
-=======
-                    <a href="?sort_by=chem_id&sort_order={% if sort_by == 'chem_id' and sort_order == 'asc' %}desc{% else %}asc{% endif %}">chem_ID</a>
->>>>>>> 323fb36a92ed679bfac130e81025e71786d36baf
                 </th>
                 <th>
                     Str_Image
                 </th>
                 <th>
-<<<<<<< HEAD
                     <a href="?sort_by=MW&sort_order={% if sort_by == 'MW' and sort_order == 'asc' %}desc{% else %}asc{% endif %}">MW</a>
-=======
-                    MW
-                    <a href="?sort_by=MW&sort_order={% if sort_by == 'MW' and sort_order == 'asc' %}desc{% else %}asc{% endif %}"><i class="bi bi-funnel"></i></a>
->>>>>>> 323fb36a92ed679bfac130e81025e71786d36baf
                 </th>
                 <th>
                     <a href="?sort_by=cLogP&sort_order={% if sort_by == 'cLogP' and sort_order == 'asc' %}desc{% else %}asc{% endif %}">cLogP</a>
@@ -397,7 +277,6 @@ img {
                 <th></th>
                 <th></th>
             </tr>
-<<<<<<< HEAD
             </thead>
             <tbody>
             {% for chem in chemicals %}
@@ -423,18 +302,6 @@ img {
 <!--                    {% if chem.image %}-->
 <!--                    <img src="{{ chem.image.url }}" alt="Structure Image" class="image-popup" style="max-width: 180px; cursor: pointer;">-->
 <!--                    {% endif %}-->
-=======
-        </thead>
-        <tbody>
-            {% for chem in chemicals %}
-            <tr>
-                <td><input type="checkbox" name="selected_chems" value="{{ chem.pk }}" id="select_check"></td>
-                <td>{{ chem.chem_id }}</td>
-                <td>
-                    {% if chem.image %}
-                    <img src="{{ chem.image.url }}" alt="Structure Image" class="image-popup" style="max-width: 180px; cursor: pointer;">
-                    {% endif %}
->>>>>>> 323fb36a92ed679bfac130e81025e71786d36baf
                 </td>
                 <td>{{ chem.MW }}</td>
                 <td>{{ chem.cLogP }}</td>
@@ -443,7 +310,6 @@ img {
                 <td>{{ chem.H_acceptors }}</td>
                 <td>{{ chem.lipinski }}</td>
                 <td><br>
-<<<<<<< HEAD
                     {% if  target == "FDA" %}
                         <a href="{% url 'FDA_result_view' target=target chem_id=chem.chem_id %}" class ="btn btn-outline-primary btn-sm"> result </a>
                          <button onclick="openPopup('{% url 'download_file' target=target chem_id=chem.chem_id %}')" class ="btn btn-outline-primary btn-sm">reference</button>
@@ -451,10 +317,6 @@ img {
                         <a href="{% url 'pharmacokinetic_list' target=target chem_id=chem.chem_id %}" class ="btn btn-outline-primary btn-sm"> result </a>
                         <a href="{% url 'schrodinger_model_list' target=target chem_id=chem.chem_id %}" class ="btn btn-outline-primary btn-sm">modeling</a> <!-- 추가된 부분 -->
                     {% endif %}
-=======
-                    <a href="{% url 'pharmacokinetic_list' target=target chem_id=chem.chem_id %}" class ="btn btn-outline-primary btn-sm"> result </a>
-                    <a href="{% url 'schrodinger_model_list' target=target chem_id=chem.chem_id %}" class ="btn btn-outline-primary btn-sm">modeling</a> <!-- 추가된 부분 -->
->>>>>>> 323fb36a92ed679bfac130e81025e71786d36baf
                 </td>
                 <td>
                     <a href="{% url 'chemical_edit' target=target chem_id=chem.chem_id %}" class ="btn btn-outline-secondary btn-sm">수정</a>
@@ -462,11 +324,7 @@ img {
                 </td>
             </tr>
             {% endfor %}
-<<<<<<< HEAD
             </tbody>
-=======
-        </tbody>
->>>>>>> 323fb36a92ed679bfac130e81025e71786d36baf
         </table>
 
 <!--            <ul class="pagination disabled justify-content-right">-->

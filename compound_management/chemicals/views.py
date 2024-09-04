@@ -1,18 +1,6 @@
-<<<<<<< HEAD
 import io
 import json
 import re
-=======
-import re
-
-from django.contrib import messages
-from django.contrib.auth.hashers import check_password
-from django.core.paginator import Paginator
-from django.db.models import Case, When, IntegerField, CharField, Value
-from django.db.models.functions import Cast, Substr, Length
-from django.forms import modelformset_factory
-from django.shortcuts import render
->>>>>>> 323fb36a92ed679bfac130e81025e71786d36baf
 
 import chardet
 from django.apps import apps
@@ -28,7 +16,6 @@ from django.db.models import Case, When, IntegerField, CharField, Value
 from django.db.models.functions import Cast, Substr, Length
 from django.forms import modelformset_factory, model_to_dict
 from django.shortcuts import render, redirect, get_object_or_404
-<<<<<<< HEAD
 from django.utils.text import capfirst
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_POST
@@ -39,14 +26,6 @@ from .models import Chemical, Pharmacokinetic, Cytotoxicity, SchrödingerModel, 
 from .forms import ChemicalForm, ChemicalUploadForm, PharmacokineticForm, CytotoxicityForm, SchrödingerModelForm, \
     SchrödingerModelUploadForm, LiverMicrosomalStabilityForm, CYPInhibitionForm, cckForm, wbForm, \
     intargetForm, otherForm, in_vivoForm, FDA_Form, DocumentForm, FDA_UploadForm
-=======
-
-from .models import Chemical, Pharmacokinetic, Cytotoxicity, SchrödingerModel, LiverMicrosomalStability, CYPInhibition, \
-    User, CCK_assay, invtro_Image, Western_blot, Target_Inhibition, other_asssay, in_vivo
-from .forms import ChemicalForm, ChemicalUploadForm, PharmacokineticForm, CytotoxicityForm, SchrödingerModelForm, \
-    SchrödingerModelUploadForm, LiverMicrosomalStabilityForm, CYPInhibitionForm, UserForm, cckForm, wbForm, \
-    intargetForm, otherForm, in_vivoForm
->>>>>>> 323fb36a92ed679bfac130e81025e71786d36baf
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 # R2Py
@@ -68,35 +47,6 @@ from users.models import DatabaseList
 # 로거 설정
 logger = logging.getLogger(__name__)
 
-<<<<<<< HEAD
-=======
-def register_view(request):
-    if request.method == 'POST':
-        form = UserForm(request.POST)
-        if form.is_valid():
-            form.save()
-            return redirect('login')
-    else:
-        form = UserForm()
-    return render(request, 'chemicals/register.html', {'form': form}) # 오류 렌더링
-
-def login_view(request):
-    if request.method == 'POST':
-        userID = request.POST['userID']     #userID = request.POST.get('userID')도 가능
-        password = request.POST['password']
-        user = authenticate(request, username=userID, password=password)
-        print(user)
-        if user is not None:
-            login(request, user)
-            return redirect('home')
-        else:
-            messages.error(request, '로그인에 실패하였습니다.')
-    return render(request, 'chemicals/login.html')
-
-def logout_view(request):
-    logout(request)
-    return redirect('login')
->>>>>>> 323fb36a92ed679bfac130e81025e71786d36baf
 
 @login_required
 def home_view(request):
@@ -104,32 +54,10 @@ def home_view(request):
 
 
 @login_required
-def result_add(request, target):
-    chemicals = Chemical.objects.filter(target=target).order_by('-datetime')
-    return render(request, 'chemicals/result_form.html', {
-        'target': target,
-        'chemicals': chemicals,
-    })
-
-@login_required
 def target_view(request, target):
     sort_by = request.GET.get('sort_by', 'chem_id')
     sort_order = request.GET.get('sort_order', 'asc')
     favorite_items = Favorite.objects.filter(user=request.user).values_list('item_id',flat=True)
-
-    def sort_key(value):
-        str_value = str(value)
-        match = re.match(r'([a-zA-Z]*)([\d.]+)', str_value) # 문자와 숫자를 분리
-        if match:
-            alpha_part = match.group(1)  # 문자 부분
-            numeric_part = match.group(2)  # 숫자 부분
-            # 숫자 부분을 float으로 변환
-            try:
-                numeric_part = float(numeric_part)
-            except ValueError:
-                numeric_part = 0
-            return alpha_part, numeric_part
-        return str_value, 0
 
     def sort_key(value):
         str_value = str(value)
@@ -157,7 +85,6 @@ def target_view(request, target):
             reverse=True
         )
 
-<<<<<<< HEAD
         # if sort_order == 'asc':
         #     chemicals = Chemical.objects.filter(target=target).order_by(sort_by)
         # else:
@@ -170,20 +97,6 @@ def target_view(request, target):
         # start_index = (page_obj.number - 1) // 10 * 10 + 1
         # end_index = min(page_obj.number + 9, paginator.num_pages)
         # page_range = range(start_index, end_index + 1)
-=======
-    # if sort_order == 'asc':
-    #     chemicals = Chemical.objects.filter(target=target).order_by(sort_by)
-    # else:
-    #     chemicals = Chemical.objects.filter(target=target).order_by('-' + sort_by)
-
-    # paginator = Paginator(chemicals, 10)  # 갯수 정해서 보여줌
-    # page_number = request.GET.get('page') #get요청된 페이지 번호
-    # page_obj = paginator.get_page(page_number) # 해당 번호에 맞는 페이지 가져옴
-    #
-    # start_index = (page_obj.number - 1) // 10 * 10 + 1
-    # end_index = min(page_obj.number + 9, paginator.num_pages)
-    # page_range = range(start_index, end_index + 1)
->>>>>>> 323fb36a92ed679bfac130e81025e71786d36baf
 
     return render(request, 'chemicals/target.html', {
         # 'chemicals': page_obj,
@@ -193,10 +106,7 @@ def target_view(request, target):
         'sort_by': sort_by,
         'sort_order': sort_order,
         # 'page_range': page_range,
-<<<<<<< HEAD
         'favorite_items': favorite_items,
-=======
->>>>>>> 323fb36a92ed679bfac130e81025e71786d36baf
     })
         # chemicals = Chemical.objects.filter(target__iexact=target)
         # if not chemicals.exists():
@@ -267,7 +177,6 @@ def chemical_edit_view(request, target, chem_id):
             new_value = form.cleaned_data['smiles']
             chemical_instance = Chemical.objects.get(chem_id=chem_id)
             smiles = chemical_instance.smiles
-<<<<<<< HEAD
 
             if smiles != new_value:
                 # 파일이 존재하는지 확인하고, 파일 경로가 있을 때만 삭제
@@ -278,14 +187,6 @@ def chemical_edit_view(request, target, chem_id):
                 image_data = generate_image(chemical.smiles)
                 if image_data:
                     chemical.image.save(f'{chemical.chem_id}.png', ContentFile(image_data), save=False)
-=======
-            if smiles != new_value :
-                if os.path.exists(chemical.image.path):
-                    os.remove(chemical.image.path)
-                image_data = generate_image(chemical.smiles)
-                if image_data:
-                   chemical.image.save(f'{chemical.chem_id}.png', ContentFile(image_data), save=False)
->>>>>>> 323fb36a92ed679bfac130e81025e71786d36baf
 
             chemical.save()
             logger.debug(f'Chemical updated: {chemical}')
@@ -302,21 +203,12 @@ def chemical_delete_view(request, target, chem_id):
     chemical = get_object_or_404(Chemical, chem_id=chem_id)
     if request.method == 'POST':
 
-<<<<<<< HEAD
         if chemical.image and os.path.isfile(chemical.image.path) : #경로에 있는 파일이 실제파일인지 아닌지
             os.remove(chemical.image.path) # 주어진 경로의 파일 삭제
             # image_folder = os.path.dirname(chemical.image.path) # 같은 경로 반환
             # # png_file_path = os.path.join(image_folder, f"{chemical.chem_id}.png") #같은 경로의 png파일
             # # if os.path.isfile(png_file_path):
             # #     os.remove(png_file_path)
-=======
-        if os.path.isfile(chemical.image.path) : #경로에 있는 파일이 실제파일인지 아닌지
-            os.remove(chemical.image.path) # 주어진 경로의 파일 삭제
-        image_folder = os.path.dirname(chemical.image.path) # 같은 경로 반환
-        # png_file_path = os.path.join(image_folder, f"{chemical.chem_id}.png") #같은 경로의 png파일
-        # if os.path.isfile(png_file_path):
-        #     os.remove(png_file_path)
->>>>>>> 323fb36a92ed679bfac130e81025e71786d36baf
 
         chemical.delete()
         logger.debug(f'Chemical deleted: {chemical}')
@@ -356,30 +248,23 @@ def upload_chemicals(request, target):
         form = ChemicalUploadForm()
     return render(request, 'chemicals/upload_chemicals.html', {'form': form, 'target': target})
 
-<<<<<<< HEAD
 db_names = DatabaseList.objects.all() #쿼리셋
 db_list = list(db_names.values_list('name', flat=True)) #리스트
 
-=======
->>>>>>> 323fb36a92ed679bfac130e81025e71786d36baf
 @login_required
-def pharmacokinetic_list(request, target, chem_id, other=None):
+def pharmacokinetic_list(request, target, chem_id):
     chemical = get_object_or_404(Chemical, chem_id=chem_id)
 
-<<<<<<< HEAD
     cck_assay = CCK_assay.objects.filter(chemical=chemical)
     wb = Western_blot.objects.filter(chemical=chemical)
     in_target = Target_Inhibition.objects.filter(chemical=chemical)
     others = other_asssay.objects.filter(chemical=chemical)
 
-=======
->>>>>>> 323fb36a92ed679bfac130e81025e71786d36baf
     pharmacokinetics = Pharmacokinetic.objects.filter(chemical=chemical)
     cytotoxicities = Cytotoxicity.objects.filter(chemical=chemical)
     liver_stabilities = LiverMicrosomalStability.objects.filter(chemical=chemical)
     cyp_inhibitions = CYPInhibition.objects.filter(chemical=chemical)
 
-<<<<<<< HEAD
     invivo = in_vivo.objects.filter(chemical=chemical)
 
     results = {}
@@ -395,14 +280,6 @@ def pharmacokinetic_list(request, target, chem_id, other=None):
                 'name': db.name,  # db.name 추가
                 'data': list(queryset.values())  # 쿼리셋을 리스트로 변환
             }
-=======
-    cck_assay = CCK_assay.objects.filter(chemical=chemical).all()
-    wb = Western_blot.objects.filter(chemical=chemical).all()
-    in_target = Target_Inhibition.objects.filter(chemical=chemical).all()
-    others = other_asssay.objects.filter(chemical=chemical).all()
-
-    invivo = in_vivo.objects.filter(chemical=chemical).all()
->>>>>>> 323fb36a92ed679bfac130e81025e71786d36baf
 
     return render(request, 'chemicals/pharmacokinetic_list.html', {
         'target': target,
@@ -415,12 +292,8 @@ def pharmacokinetic_list(request, target, chem_id, other=None):
         'Western_blot': wb,
         'Target_Inhibition': in_target,
         'other': others,
-<<<<<<< HEAD
         'invivo': invivo,
         'results': results,
-=======
-        'invivo' : invivo,
->>>>>>> 323fb36a92ed679bfac130e81025e71786d36baf
     })
 
 @login_required
@@ -437,10 +310,7 @@ def pharmacokinetic_add(request, target, chem_id):
     else:
         form = PharmacokineticForm()
     return render(request, 'chemicals/pharmacokinetic_form.html', {'form': form, 'target': target,'chem_id': chem_id})
-<<<<<<< HEAD
 
-=======
->>>>>>> 323fb36a92ed679bfac130e81025e71786d36baf
 @login_required
 def pharmacokinetic_delete (request, target, chem_id ,id):
     Pharm = get_object_or_404(Pharmacokinetic, id=id)
@@ -449,11 +319,8 @@ def pharmacokinetic_delete (request, target, chem_id ,id):
         Pharm.delete()
         return JsonResponse({'success': True, 'id': id})
     return JsonResponse({'success': False, 'error': 'Invalid request'}, status=400)
-<<<<<<< HEAD
 
 
-=======
->>>>>>> 323fb36a92ed679bfac130e81025e71786d36baf
 @login_required
 def pharmacokinetic_update(request, target, chem_id ,id):
     Pharm = get_object_or_404(Pharmacokinetic, id=id)
@@ -466,11 +333,7 @@ def pharmacokinetic_update(request, target, chem_id ,id):
     else:
         form = PharmacokineticForm(instance=Pharm)
     return render(request, 'chemicals/pharmacokinetic_form.html', {'form': form, 'target': target, 'id':id,'chem_id': chem_id})
-<<<<<<< HEAD
  # form으로 인자전잘 꼭 해줘야함.
-=======
- # fomr으로 인자전잘 꼭 해줘야함.
->>>>>>> 323fb36a92ed679bfac130e81025e71786d36baf
 
 @login_required
 def cytotoxicity_add(request, target, chem_id):
@@ -647,10 +510,7 @@ def cyp_inhibition_update(request, target, chem_id ,id):
     else:
         form = CYPInhibitionForm(instance=CYP)
     return render(request, 'chemicals/cyp_inhibition_form.html', {'form': form, 'target': target, 'id':id, 'chem_id': chem_id})
-<<<<<<< HEAD
 
-=======
->>>>>>> 323fb36a92ed679bfac130e81025e71786d36baf
 @login_required
 def cck_add(request, target, chem_id):
     chemical = get_object_or_404(Chemical, chem_id=chem_id)
@@ -665,11 +525,7 @@ def cck_add(request, target, chem_id):
 
             images = request.FILES.getlist('images') #  파일 업로드를 처리.리스트 반환
             for image in images:
-<<<<<<< HEAD
                 invtro_Image.objects.create(CCK_assay=CCK_assay, image=image) # CCK_Image 모델의 새로운 객체를 생성하고 데이터베이스에 저장
-=======
-                invtro_Image.objects.create(cck_assay=CCK_assay, image=image) # CCK_Image 모델의 새로운 객체를 생성하고 데이터베이스에 저장
->>>>>>> 323fb36a92ed679bfac130e81025e71786d36baf
 
             return redirect('pharmacokinetic_list', target=target, chem_id=chem_id)
     else:
@@ -680,7 +536,6 @@ def cck_add(request, target, chem_id):
         'target': target,
     })
 
-<<<<<<< HEAD
 
 @login_required
 def cck_delete(request, target, chem_id, id):
@@ -703,21 +558,6 @@ def cck_delete(request, target, chem_id, id):
     return JsonResponse({'success': False, 'error': 'Invalid request'}, status=400)
 
 
-=======
-@login_required
-def cck_delete (request, target, chem_id ,id):
-    cck_images = invtro_Image.objects.filter(cck_assay=id)
-    CCKassay = get_object_or_404(CCK_assay, id=id) #특정 조건에 맞는 객체를 데이터베이스에서 가져옴,일치하는 객체가 없으면 404 에러를 반환
-    if request.method == 'POST':
-        for images in cck_images:
-            if images.image and os.path.exists(images.image.path):
-                os.remove(images.image.path)
-        # CCKassay.objects.get(id=id).delete()
-        CCKassay.delete()
-        return JsonResponse({'success': True, 'id': id})
-    return JsonResponse({'success': False, 'error': 'Invalid request'}, status=400)
-
->>>>>>> 323fb36a92ed679bfac130e81025e71786d36baf
 @login_required
 def cck_update(request, target, chem_id ,id):
     cck = get_object_or_404(CCK_assay, id=id)
@@ -746,11 +586,7 @@ def wb_add(request, target, chem_id):
             Western_blot.save()
             images = request.FILES.getlist('images')
             for image in images:
-<<<<<<< HEAD
                 invtro_Image.objects.create(Western_blot=Western_blot, image=image)
-=======
-                invtro_Image.objects.create(wb=Western_blot, image=image)
->>>>>>> 323fb36a92ed679bfac130e81025e71786d36baf
             return redirect('pharmacokinetic_list', target=target, chem_id=chem_id)
     else:
         form = wbForm()
@@ -763,11 +599,7 @@ def wb_add(request, target, chem_id):
 @login_required
 def wb_delete (request, target, chem_id ,id):
     Westernblot = get_object_or_404(Western_blot, id=id)
-<<<<<<< HEAD
     wbimages = invtro_Image.objects.filter(Western_blot=id)
-=======
-    wbimages = invtro_Image.objects.filter(wb=id)
->>>>>>> 323fb36a92ed679bfac130e81025e71786d36baf
     if request.method == 'POST':
         for images in wbimages:
             if images.image and os.path.exists(images.image.path):
@@ -777,7 +609,6 @@ def wb_delete (request, target, chem_id ,id):
     return JsonResponse({'success': False, 'error': 'Invalid request'}, status=400)
 
 @login_required
-<<<<<<< HEAD
 def wb_update(request, target, chem_id ,id):
     wb = get_object_or_404(Western_blot, id=id)
     if request.method == 'POST':
@@ -791,8 +622,6 @@ def wb_update(request, target, chem_id ,id):
     return render(request, 'chemicals/wb_form.html', {'form': form, 'target': target, 'id':id, 'chem_id': chem_id})
 
 @login_required
-=======
->>>>>>> 323fb36a92ed679bfac130e81025e71786d36baf
 def in_target_add(request, target, chem_id):
     chemical = get_object_or_404(Chemical, chem_id=chem_id)
     if request.method == 'POST':
@@ -803,11 +632,7 @@ def in_target_add(request, target, chem_id):
             Target_Inhibition.save()
             images = request.FILES.getlist('images')
             for image in images:
-<<<<<<< HEAD
                 invtro_Image.objects.create(Target_Inhibition=Target_Inhibition, image=image)
-=======
-                invtro_Image.objects.create(in_target=Target_Inhibition, image=image)
->>>>>>> 323fb36a92ed679bfac130e81025e71786d36baf
             return redirect('pharmacokinetic_list', target=target, chem_id=chem_id)
     else:
         form = intargetForm()
@@ -816,16 +641,10 @@ def in_target_add(request, target, chem_id):
         'chem_id': chem_id,
         'target': target,
     })
-<<<<<<< HEAD
 
 @login_required
 def in_target_delete(request, target, chem_id ,id):
     in_image = invtro_Image.objects.filter(Target_Inhibition=id)
-=======
-@login_required
-def in_target_delete(request, target, chem_id ,id):
-    in_image = invtro_Image.objects.filter(in_target=id)
->>>>>>> 323fb36a92ed679bfac130e81025e71786d36baf
     in_target = get_object_or_404(Target_Inhibition, id=id)
     if request.method == 'POST' :
         for images in in_image :
@@ -846,11 +665,7 @@ def other_add(request, target, chem_id):
             other.save()
             images = request.FILES.getlist('images')
             for image in images:
-<<<<<<< HEAD
                 invtro_Image.objects.create(other_asssay=other, image=image)
-=======
-                invtro_Image.objects.create(others=other, image=image)
->>>>>>> 323fb36a92ed679bfac130e81025e71786d36baf
             return redirect('pharmacokinetic_list', target=target, chem_id=chem_id)
     else:
         form = intargetForm()
@@ -862,11 +677,7 @@ def other_add(request, target, chem_id):
 
 @login_required
 def other_delete(request, target, chem_id ,id):
-<<<<<<< HEAD
     other_image = invtro_Image.objects.filter(other_asssay=id)
-=======
-    other_image = invtro_Image.objects.filter(others=id)
->>>>>>> 323fb36a92ed679bfac130e81025e71786d36baf
     other = get_object_or_404(other_asssay, id=id)
     if request.method == 'POST' :
         for images in other_image :
@@ -943,7 +754,6 @@ def SLselected_gene_input(request):
             context['img_path'] = None
     return render(request, 'sl.html', context)
 
-<<<<<<< HEAD
 def sanitize_attribute_name(name):
     # 유효한 문자만 허용 (영문자, 숫자, 하이픈, 밑줄)
     return re.sub(r'[^a-zA-Z0-9-_]', '', name)
@@ -1228,5 +1038,3 @@ def upload_fda_result(request,target):
     else:
         form = FDA_UploadForm
     return render(request, 'chemicals/FDA_upload.html', {'form': form, 'target': target})
-=======
->>>>>>> 323fb36a92ed679bfac130e81025e71786d36baf

@@ -3,7 +3,6 @@
 {% block extra_head %}
 {% endblock %}
 {% block content %}
-<<<<<<< HEAD
 <div class="row" xmlns="http://www.w3.org/1999/html">
     <div class="col-lg-6">
       <div class="card">
@@ -83,48 +82,11 @@
             </div>
         </div>
     </div>
-=======
-<div class="col-lg-5">
-  <div class="card">
-    <div class="card-body">
-      <h5 class="card-title">{{ target }}</h5>
-        <table class="table table-hover">
-        <thead>
-        <tr>
-            <th></th>
-            <th>chem_ID</th>
-            <th>MW</th>
-            <th>cLogP</th>
-            <th>TPSA</th>
-<!--            <th>H_donors</th>-->
-<!--            <th>H_acceptors</th>-->
-<!--            <th>lipinski</th>-->
-        </tr>
-    </thead>
-        <tbody>
-        {% for chem in chemicals %}
-        <tr>
-            <td><input type="checkbox" name="selected_chems" value="{{ chem.pk }}" id="select_check"></td>
-            <td>{{ chem.chem_id }}</td>
-            <td>{{ chem.MW }}</td>
-            <td>{{ chem.cLogP }}</td>
-            <td>{{ chem.TPSA }}</td>
-<!--            <td>{{ chem.H_donors }}</td>-->
-<!--            <td>{{ chem.H_acceptors }}</td>-->
-<!--            <td>{{ chem.lipinski }}</td>-->
-        </tr>
-        {% endfor %}
-    </tbody>
-        </table>
-    </div>
-  </div>
->>>>>>> 323fb36a92ed679bfac130e81025e71786d36baf
 </div>
 
 
 {% endblock %}
 {% block extra_js %}
-<<<<<<< HEAD
 {% load static %}
 <script src="{% static 'scripts/result_form.js' %}"></script>
 <script>
@@ -132,6 +94,4 @@
 
 
 </script>
-=======
->>>>>>> 323fb36a92ed679bfac130e81025e71786d36baf
 {% endblock %}
