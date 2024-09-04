@@ -21,6 +21,7 @@
     position: relative;
     height: auto;
     padding: 50px 0 100px;
+<<<<<<< HEAD
 
 }
 .swiper {
@@ -28,6 +29,14 @@
     width: 100%;
     height: 400px; /* 슬라이드 높이 조정 */
     padding-bottom: 100px; /* 하단 여백 추가 */
+=======
+    
+}
+.swiper {
+    width: 100%;
+    height: 400px;
+    overflow: visible;
+>>>>>>> 323fb36a92ed679bfac130e81025e71786d36baf
 }
 .swiper-slide {
     display: flex;
@@ -39,13 +48,19 @@
     overflow: hidden;
     position: relative;
     padding: 0 5px;
+<<<<<<< HEAD
     height: 100%; /* 슬라이드의 높이를 부모 컨테이너에 맞추기 */
 
 &.swiper-slide-active {
+=======
+
+  &.swiper-slide-active {
+>>>>>>> 323fb36a92ed679bfac130e81025e71786d36baf
     transform: scale(1.4);
     z-index: 2
   }
 }
+<<<<<<< HEAD
 /* SCROLLBAR 스타일 수정 */
 .swiper-scrollbar {
     background: rgba(0, 0, 0, 0.1); /* 스크롤바 배경 */
@@ -104,6 +119,14 @@
     height:  100%;  /* 높이는 자동으로 조정 */
     object-fit: contain; /* 이미지가 잘리지 않도록 조정 */
 
+=======
+.slide-image {
+    width: 80%;
+    height: auto;
+    object-fit: cover;
+    object-position: center;
+    max-height: 100%;
+>>>>>>> 323fb36a92ed679bfac130e81025e71786d36baf
 }
 .slide-info {
     text-align: center;
@@ -121,8 +144,51 @@
     margin: 5px 0 0;
     font-size: 14px;
 }
+<<<<<<< HEAD
 span{
     cursor: pointer;
+=======
+
+/* ARROWS */
+.swiper-button-prev,
+.swiper-button-next {
+    color: #2f7aeb;
+    width: 44px; /* 버튼 크기 조정 */
+    height: 44px; /* 버튼 크기 조정 */
+    background-color: rgba(255, 255, 255, 0.8); /* 배경색 조정 */
+    border-radius: 50%; /* 둥글게 */
+}
+
+.swiper-button-prev {
+    left: 10px; /* 왼쪽 버튼 위치 조정 */
+}
+
+.swiper-button-next {
+    right: 10px; /* 오른쪽 버튼 위치 조정 */
+}
+
+/* PAGINATION */
+.swiper-pagination {
+    bottom: 10px; /* 하단 여백 조정 */
+}
+
+.swiper-pagination-bullet {
+    width: 20px;
+    height: 20px;
+    text-align: center;
+    line-height: 20px;
+    font-size: 12px;
+    opacity: 1;
+    background: #8bafe6;
+}
+
+.swiper-pagination-bullet-active {
+    color: #fff;
+    background: linear-gradient(45deg, rgb(54, 83, 248), rgb(105, 153, 241));
+}
+.swiper-slide + .swiper-slide {
+    margin-left: 15px; /* 슬라이드 사이의 간격 설정 */
+>>>>>>> 323fb36a92ed679bfac130e81025e71786d36baf
 }
 
 </style>
@@ -197,13 +263,21 @@ span{
                         <td>{{ pk.date|date:"Y-m-d" }}</td>
                         <td>{{ pk.Route }} </td>
                         <td>{{ pk.tmax }}</td>
+<<<<<<< HEAD
                         <td>{{ pk.max_concentration }}</td>
+=======
+                        <td>{{ pk.cmax }}</td>
+>>>>>>> 323fb36a92ed679bfac130e81025e71786d36baf
                         <td>{{ pk.t_half }}</td>
                         <td>{{ pk.AUC }}</td>
                         <td>{{ pk.CL }}</td>
                         <td>{{ pk.Vss }}</td>
                         <td>{{ pk.F }}</td>
+<<<<<<< HEAD
                         <td><button onclick="openPopup('{% url 'result_file' db='Pharmacokinetic' id=pk.id %}')" class="btn btn-success btn-sm" ><i class="bi bi-check-circle"></i></button></td>
+=======
+                        <td>raw data</td>
+>>>>>>> 323fb36a92ed679bfac130e81025e71786d36baf
                         <td>
                         <a href="{% url 'pharmacokinetic_update' target=chemical.target chem_id=chemical.chem_id id=pk.id %}" class ="btn btn-outline-secondary btn-sm">수정</a>
                         <button class ="btn btn-outline-danger btn-sm delete-btn" data-url="{% url 'pharmacokinetic_delete' target=chemical.target chem_id=chemical.chem_id id=pk.id %}">삭제</button>
@@ -250,7 +324,11 @@ span{
                         <td>{{ ct.L929 }}</td>
                         <td>{{ ct.NIH_3T3 }}</td>
                         <td>{{ ct.CHO_K1 }}</td>
+<<<<<<< HEAD
                        <td><button onclick="openPopup('{% url 'result_file' db='Cytotoxicity' id=ct.id %}')" class="btn btn-success btn-sm" ><i class="bi bi-check-circle"></i></button></td>
+=======
+                        <td>raw data</td>
+>>>>>>> 323fb36a92ed679bfac130e81025e71786d36baf
                         <td>
                             <a href="{% url 'cytotoxicity_update' target=chemical.target chem_id=chemical.chem_id id=ct.id %}" class ="btn btn-outline-secondary btn-sm">수정</a>
                             <button class ="btn btn-outline-danger btn-sm delete-btn"
@@ -294,7 +372,11 @@ span{
                         <td>{{ ls.mouse }}</td>
                         <td>{{ ls.rat }}</td>
                         <td>{{ ls.human }}</td>
+<<<<<<< HEAD
                         <td><button onclick="openPopup('{% url 'result_file' db='LiverMicrosomalStability' id=ls.id %}')" class="btn btn-success btn-sm" ><i class="bi bi-check-circle"></i></button></td>
+=======
+                        <td>raw data </td>
+>>>>>>> 323fb36a92ed679bfac130e81025e71786d36baf
                         <td>
                             <a href="{% url 'liver_stability_update' target=chemical.target chem_id=chemical.chem_id id=ls.id %}" class ="btn btn-outline-secondary btn-sm">수정</a>
                              <button class ="btn btn-outline-danger btn-sm delete-btn"
@@ -342,7 +424,11 @@ span{
                             <td>{{ cyp.cyp_2c19 }}</td>
                             <td>{{ cyp.cyp_2d6 }}</td>
                             <td>{{ cyp.cyp_3a4 }}</td>
+<<<<<<< HEAD
                             <td><button onclick="openPopup('{% url 'result_file' db='LiverMicrosomalStability' id=cyp.id %}')" class="btn btn-success btn-sm" ><i class="bi bi-check-circle"></i></button></td>
+=======
+                            <td>raw data</td>
+>>>>>>> 323fb36a92ed679bfac130e81025e71786d36baf
                             <td>
                                 <a href="{% url 'cyp_inhibition_update' target=chemical.target chem_id=chemical.chem_id id=cyp.id %}" class ="btn btn-outline-secondary btn-sm">수정</a>
                                <button class ="btn btn-outline-danger btn-sm delete-btn"
@@ -354,7 +440,10 @@ span{
                 </table>
             <!--                <a href="{% url 'home' %}" class="btn btn-outline-primary btn-sm">Home</a>-->
             </div>
+<<<<<<< HEAD
 
+=======
+>>>>>>> 323fb36a92ed679bfac130e81025e71786d36baf
         </div>
 <!--    In vitro      -->
         <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab" >
@@ -364,8 +453,13 @@ span{
                  <h4 class="card-title">CCK assay</h4>
               </div>
               <div class="d-flex justify-content-end">
+<<<<<<< HEAD
               <a href="{% url 'cck_add' target=chemical.target chem_id=chemical.chem_id %}" class="btn btn-outline-primary btn-sm"><i class="bi bi-plus-square"></i> add</a> &nbsp
               <a href="{% url 'cck_add' target=chemical.target chem_id=chemical.chem_id %}" class="btn btn-outline-primary btn-sm"><i class="bi bi-file-earmark-image"></i></a>
+=======
+              <a href="{% url 'cck_add' target=chemical.target chem_id=chemical.chem_id %}" class="btn btn-outline-primary btn-sm"><i class="bi bi-plus-square"></i> add</a>
+              <a href="{% url 'cck_add' target=chemical.target chem_id=chemical.chem_id %}" class="btn btn-outline-primary btn-sm"><i class="bi bi-plus-square"></i> Img</a>
+>>>>>>> 323fb36a92ed679bfac130e81025e71786d36baf
               </div>
             </div>
             <table  class="table table-hover">
@@ -403,6 +497,7 @@ span{
                                  {% endif %}
                             </div>
                         </td>
+<<<<<<< HEAD
                         <td> <button onclick="openPopup('{% url 'result_file' db='CCK_assay' id=assay.id %}')" class="btn btn-success btn-sm" ><i class="bi bi-check-circle"></i></button></td>
                         <td>
                             <a href="{% url 'cck_update' target=chemical.target chem_id=chemical.chem_id id=assay.id %}" class ="btn btn-outline-secondary btn-sm">수정</a>
@@ -410,6 +505,13 @@ span{
                             {% if assay.images.exists %}
                                 <a href="" class="btn btn-outline-success btn-sm" ><i class="bi bi-dash"></i>Img</a>
                             {% endif %}
+=======
+                        <td>raw data</td>
+                        <td>
+                            <a href="{% url 'cck_update' target=chemical.target chem_id=chemical.chem_id id=assay.id %}" class ="btn btn-outline-secondary btn-sm">수정</a>
+                            <button class ="btn btn-outline-danger btn-sm delete-btn" data-url="{% url 'cck_delete' target=chemical.target chem_id=chemical.chem_id id=assay.id %}">삭제</button>
+                            <button class ="btn btn-outline-danger btn-sm delete-btn" data-url=""><i class="bi bi-dash-square"></i>Img</button>
+>>>>>>> 323fb36a92ed679bfac130e81025e71786d36baf
                         </td>
                     </tr>
                     {% endfor %}
@@ -454,9 +556,15 @@ span{
                                 {% endif %}
                             </div>
                         </td>
+<<<<<<< HEAD
                             <td> <button onclick="openPopup('{% url 'result_file' db='Western_blot' id=wb.id %}')" class="btn btn-success btn-sm" ><i class="bi bi-check-circle"></i></button></td>
                         <td>
                             <a href="{% url 'wb_update' target=chemical.target chem_id=chemical.chem_id id=wb.id %}" class ="btn btn-outline-secondary btn-sm">수정</a>
+=======
+                        <td>raw data</td>
+                        <td>
+                            <a href="" class ="btn btn-outline-secondary btn-sm">수정</a>
+>>>>>>> 323fb36a92ed679bfac130e81025e71786d36baf
                             <button class ="btn btn-outline-danger btn-sm delete-btn"
                                     data-url="{% url 'wb_delete' target=chemical.target chem_id=chemical.chem_id id=wb.id %}">삭제</button>
                         </td>
@@ -506,7 +614,11 @@ span{
                                  {% endif %}
                             </div>
                         </td>
+<<<<<<< HEAD
                        <td><button onclick="openPopup('{% url 'result_file' db='Target_Inhibition' id=ta.id %}')" class="btn btn-success btn-sm" ><i class="bi bi-check-circle"></i></button></td>
+=======
+                        <td>raw data</td>
+>>>>>>> 323fb36a92ed679bfac130e81025e71786d36baf
                         <td>
                             <a href="" class ="btn btn-outline-secondary btn-sm">수정</a>
                             <button class ="btn btn-outline-danger btn-sm delete-btn"
@@ -518,6 +630,7 @@ span{
             </table>
             </div>
             <div class="card-body">
+<<<<<<< HEAD
                 <div class="d-flex justify-content-between align-items-center">
                     <div class="text-start">
                         <h4 class="card-title">기타실험</h4>
@@ -606,6 +719,57 @@ span{
     {% endif %}
 {% endfor %}
 
+=======
+            <div class="d-flex justify-content-between align-items-center">
+            <div class="text-start">
+             <h4 class="card-title">기타실험</h4>
+            </div>
+            <div class="d-flex justify-content-end">
+             <a href="{% url 'other_add' target=chemical.target chem_id=chemical.chem_id %}" class="btn btn-outline-primary btn-sm"><i class="bi bi-plus-square"></i> 기타실험</a>
+            </div>
+            </div>
+            <table  class="table table-hover">
+            <thead>
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Date</th>
+                    <th scope="col">실험명</th>
+                    <th scope="col">진행자</th>
+                    <th scope="col">Comment</th>
+                    <th scope="col">Image</th>
+                    <th scope="col">Raw data</th>
+                    <th scope="col"></th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for ot in other %}
+                <tr>
+                    <th scope="row">{{ forloop.counter }}</th>
+                    <td data-date={{ot.date|date:"Y-m-d"}} >{{ ot.date|date:"Y-m-d" }}</td>
+                    <td>{{ ot.title }}</td>
+                    <td>{{ ot.user }}</td>
+                    <td data-commnet={{ot.comment}}>{{ ot.comment }}</td>
+                    <td>
+                         <div style="width:100%; height:auto;">
+                            {% if ot.images.exists %}
+                                <span class="badge badge-secondary py-1 open-modal" data-images="{% for image in ot.images.all %}{{ image.image.url }}{% if not forloop.last %},{% endif %}{% endfor %}">
+                                    ◯
+                                </span>
+                            {% endif %}
+                        </div>
+                    </td>
+                    <td>raw data</td>
+                    <td>
+                        <a href="" class ="btn btn-outline-secondary btn-sm">수정</a>
+                         <button class ="btn btn-outline-danger btn-sm delete-btn"
+                                    data-url="{% url 'other_delete' target=chemical.target chem_id=chemical.chem_id id=ot.id %}">삭제</button>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+            </table>
+            </div>
+>>>>>>> 323fb36a92ed679bfac130e81025e71786d36baf
         </div>
 <!--    In vivo     -->
         <div class="tab-pane fade" id="contact" role="tabpanel" aria-labelledby="contact-tab">
@@ -659,7 +823,11 @@ span{
 <!--                                 {% endif %}-->
 <!--                            </div>-->
                         </td>
+<<<<<<< HEAD
                         <td><button onclick="openPopup('{% url 'result_file' db='in_vivo' id=toxi.id %}')" class="btn btn-success btn-sm" ><i class="bi bi-check-circle"></i></button></td>
+=======
+                        <td>raw data</td>
+>>>>>>> 323fb36a92ed679bfac130e81025e71786d36baf
                         <td>
                             <a href="" class ="btn btn-outline-secondary btn-sm">수정</a>
                             <button class ="btn btn-outline-danger btn-sm delete-btn" data-url="">삭제</button>
@@ -722,7 +890,11 @@ span{
 <!--                                 {% endif %}-->
 <!--                            </div>-->
                         </td>
+<<<<<<< HEAD
                         <td><button onclick="openPopup('{% url 'result_file' db='in_vivo' id=toxi.id %}')" class="btn btn-success btn-sm" ><i class="bi bi-check-circle"></i></button></td>
+=======
+                        <td>raw data</td>
+>>>>>>> 323fb36a92ed679bfac130e81025e71786d36baf
                         <td>
                             <a href="" class ="btn btn-outline-secondary btn-sm">수정</a>
                             <button class ="btn btn-outline-danger btn-sm delete-btn" data-url="">삭제</button>
@@ -785,7 +957,11 @@ span{
 <!--                                 {% endif %}-->
 <!--                            </div>-->
                         </td>
+<<<<<<< HEAD
                         <td><button onclick="openPopup('{% url 'result_file' db='in_vivo' id=toxi.id %}')" class="btn btn-success btn-sm" ><i class="bi bi-check-circle"></i></button></td>
+=======
+                        <td>raw data</td>
+>>>>>>> 323fb36a92ed679bfac130e81025e71786d36baf
                         <td>
                             <a href="" class ="btn btn-outline-secondary btn-sm">수정</a>
                             <button class ="btn btn-outline-danger btn-sm delete-btn" data-url="">삭제</button>
@@ -796,6 +972,10 @@ span{
                     {% endfor %}
                 </tbody>
             </table>
+<<<<<<< HEAD
+=======
+
+>>>>>>> 323fb36a92ed679bfac130e81025e71786d36baf
             </div>
         </div>
         </div>
@@ -807,14 +987,27 @@ span{
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
+<<<<<<< HEAD
+=======
+<!--                <h5 class="modal-title" id="exampleModalLabel">이미지 보기</h5>-->
+>>>>>>> 323fb36a92ed679bfac130e81025e71786d36baf
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
                 <div class="bk-slider">
                     <div class="swiper">
                         <div class="swiper-wrapper">
+<<<<<<< HEAD
                         </div>
                         <div class="swiper-scrollbar"></div>
+=======
+<!--                            <div class="swiper-slide">Slide 1</div>-->
+<!--                            <div class="swiper-slide">Slide 2</div>-->
+<!--                            <div class="swiper-slide">Slide 3</div>-->
+                        </div>
+                        <div class="swiper-button-next"></div>
+                        <div class="swiper-button-prev"></div>
+>>>>>>> 323fb36a92ed679bfac130e81025e71786d36baf
                     </div>
                     <div class="swiper-pagination"></div>
                 </div>
@@ -823,12 +1016,20 @@ span{
     </div>
 </div>
 
+<<<<<<< HEAD
 {% endblock %}
 {% block extra_js %}
 
 <script src="https://cdn.jsdelivr.net/npm/swiper/swiper-bundle.min.js"></script>
 <script>
 
+=======
+
+{% endblock %}
+{% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/swiper/swiper-bundle.min.js"></script>
+<script>
+>>>>>>> 323fb36a92ed679bfac130e81025e71786d36baf
 $(document).ready(function() {
     var $modal = $("#swiperModal");
     var $modalWrapper = $modal.find(".swiper-wrapper");
@@ -854,9 +1055,15 @@ $(document).ready(function() {
             swiper.destroy(); // 이전 Swiper 인스턴스 제거
         }
          swiper = new Swiper('.swiper', {
+<<<<<<< HEAD
           slidesPerView: 8,
           centeredSlides: true,
           loop: false,
+=======
+          slidesPerView: 3,
+          centeredSlides: true,
+          loop: true,
+>>>>>>> 323fb36a92ed679bfac130e81025e71786d36baf
           spaceBetween: 15,
           pagination: {
             el: '.swiper-pagination',
@@ -865,6 +1072,7 @@ $(document).ready(function() {
               return '<span class="' + className + '">' + (index + 1) + '</span>';
             },
           },
+<<<<<<< HEAD
           scrollbar: {
             el: '.swiper-scrollbar',
             draggable: true,
@@ -872,16 +1080,67 @@ $(document).ready(function() {
           },
           observer: true,
           observeParents: true,
+=======
+          navigation: {
+            nextEl: '.swiper-button-next',
+            prevEl: '.swiper-button-prev',
+          },
+           scrollbar: {
+            el: '.swiper-scrollbar',
+            hide: false,
+          },
+>>>>>>> 323fb36a92ed679bfac130e81025e71786d36baf
         });
         $modal.modal('show');
       }
 
+<<<<<<< HEAD
+=======
+
+    var interval; // 자동 넘김을 위한 인터벌 변수
+
+    function startAutoSlide(direction) {
+        interval = setInterval(function() {
+            if (direction === 'next') {
+                swiper.slideNext();
+            } else if (direction === 'prev') {
+                swiper.slidePrev();
+            }
+        }, 200); // 200ms마다 슬라이드 전환
+    }
+
+    function stopAutoSlide() {
+        clearInterval(interval);
+    }
+
+    $('.swiper-button-next').on('mousedown touchstart', function() {
+    startAutoSlide('next');
+    }).on('mouseup mouseleave touchend', function() {
+        stopAutoSlide();
+    });
+
+    // 이전 버튼
+    $('.swiper-button-prev').on('mousedown touchstart', function() {
+        startAutoSlide('prev');
+    }).on('mouseup mouseleave touchend', function() {
+        stopAutoSlide();
+    });
+
+
+>>>>>>> 323fb36a92ed679bfac130e81025e71786d36baf
     $(".open-modal").on("click", function() {
         var images = $(this).data("images").split(',');
         var $row = $(this).closest("tr")
         var date = $row.find("td[data-date]").data("date");
         var comment =  $row.find("td[data-comment]").data("comment");
 
+<<<<<<< HEAD
+=======
+<!--        var $row = $(this).closest("tr");-->
+<!--        var date = $row.find("td:nth-child(2)").text();-->
+<!--        var comment = $row.find("td:nth-child(7)").text();-->
+
+>>>>>>> 323fb36a92ed679bfac130e81025e71786d36baf
         openModal(images, date, comment);
     });
 
@@ -923,9 +1182,12 @@ $('.delete-btn').click(function() {
       })
     }
 });
+<<<<<<< HEAD
 function openPopup(url) {
         window.open(url, "popupWindow", "width=700,height=700,left=100,top=50");
     }
+=======
+>>>>>>> 323fb36a92ed679bfac130e81025e71786d36baf
 document.addEventListener("DOMContentLoaded", function() {
     // 페이지가 로드될 때, 저장된 탭 상태를 복원
     var activeTab = localStorage.getItem('activeTab');
