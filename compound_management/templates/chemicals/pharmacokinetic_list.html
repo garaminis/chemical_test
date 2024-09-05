@@ -48,14 +48,16 @@
 }
 /* SCROLLBAR 스타일 수정 */
 .swiper-scrollbar {
-    background: rgba(0, 0, 0, 0.1); /* 스크롤바 배경 */
-    height: 16px; /* 스크롤바 두께 (조정됨) */
-    bottom: 10px; /* 하단 여백 추가 */
-    left: 10px;
-    right: 10px;
-    border-radius: 8px; /* 둥근 모서리 */
-    cursor: pointer; /* 커서 모양 변경 */
+<!--    background: rgba(0, 0, 0, 0.1); /* 스크롤바 배경 */-->
+<!--    height: 16px; /* 스크롤바 두께 (조정됨) */-->
+<!--    bottom: 10px; /* 하단 여백 추가 */-->
+<!--    left: 10px;-->
+<!--    right: 10px;-->
+<!--    border-radius: 8px; /* 둥근 모서리 */-->
+<!--    cursor: pointer; /* 커서 모양 변경 */-->
+<!--    width: 50%;-->
 }
+
 
 .swiper-scrollbar-drag {
     background: rgba(47, 122, 235, 0.8); /* 드래그 가능한 스크롤바의 색상 */
@@ -99,11 +101,10 @@
 .swiper-slide + .swiper-slide {
     margin-left: 15px; /* 슬라이드 사이의 간격 설정 */
 }
-.slide-image {
-    width: 100%; /* 슬라이드의 가로 크기에 맞추기 */
-    height:  100%;  /* 높이는 자동으로 조정 */
-    object-fit: contain; /* 이미지가 잘리지 않도록 조정 */
-
+.swiper-slide img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
 }
 .slide-info {
     text-align: center;
@@ -117,6 +118,7 @@
     padding: 10px;
     text-align: center;
 }
+
 .slide-info p {
     margin: 5px 0 0;
     font-size: 14px;
@@ -212,6 +214,7 @@ span{
                     {% endfor %}
                 </tbody>
             </table>
+                  <button id="load-more-table1" data-page="1" data-table="table1">Load More Table 1</button>
             </div>
             <div class="card-body">
             <div class="d-flex justify-content-between align-items-center">
@@ -408,7 +411,7 @@ span{
                             <a href="{% url 'cck_update' target=chemical.target chem_id=chemical.chem_id id=assay.id %}" class ="btn btn-outline-secondary btn-sm">수정</a>
                             <button class ="btn btn-outline-danger btn-sm delete-btn" data-url="{% url 'cck_delete' target=chemical.target chem_id=chemical.chem_id id=assay.id %}">삭제</button>
                             {% if assay.images.exists %}
-                                <a href="" class="btn btn-outline-success btn-sm" ><i class="bi bi-dash"></i>Img</a>
+                                <a href="{% url 'result_img' target=chemical.target chem_id=chemical.chem_id id=assay.id %}" class="btn btn-outline-success btn-sm" ><i class="bi bi-dash"></i>Img</a>
                             {% endif %}
                         </td>
                     </tr>
@@ -854,7 +857,7 @@ $(document).ready(function() {
             swiper.destroy(); // 이전 Swiper 인스턴스 제거
         }
          swiper = new Swiper('.swiper', {
-          slidesPerView: 8,
+          slidesPerView: 6,
           centeredSlides: true,
           loop: false,
           spaceBetween: 15,
@@ -923,6 +926,36 @@ $('.delete-btn').click(function() {
       })
     }
 });
+
+<!--$('button[id^="load-more"]').click(function() {-->
+<!--    var button = $(this);-->
+<!--    var page = button.data('page');-->
+<!--    var tableId = button.data('table');
+<!--    $.ajax({-->
+<!--        url: '/ajax-pagination/',-->
+<!--        data: {-->
+<!--            'page': page,-->
+<!--            'table_id': tableId
+<!--        },-->
+<!--        success: function(response) {-->
+<!--            var items = response.items;-->
+<!--            var container = $('#' + tableId + '-container');
+
+<!--
+<!--            $.each(items, function(index, item) {-->
+<!--                container.append('<tr><td>' + item.name + '</td></tr>');-->
+<!--            });-->
+
+<!--
+<!--            if (response.has_next) {-->
+<!--                button.data('page', page + 1);-->
+<!--            } else {-->
+<!--                button.hide();   버튼 숨기기-->
+<!--            }-->
+<!--        }-->
+<!--    });-->
+<!--});-->
+
 function openPopup(url) {
         window.open(url, "popupWindow", "width=700,height=700,left=100,top=50");
     }

@@ -1,0 +1,64 @@
+{% extends 'base.html' %}
+{% block title %} {{ chemical.chem_id }}{% endblock %}
+{% block content %}
+<h2>Upload a new Document {{ db }} </h2>
+<div class="col-lg-6">
+  <div class="card">
+    <div class="card-body">
+        <br>
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+             <input type="file" id="image" name="images" class="form-control" accept="image/*" multiple>
+            <button type="submit" class="btn btn-outline-primary btn-sm">Upload File </button>
+        </form>
+          <input type="hidden" id='db' value="{{ db }}">
+        <br>
+        <h4>Uploaded Files:</h4>
+        <ul  id="document-list">
+            {% for file in image %}
+                <li id="document-{{ file.id }}">
+                    <a href="{{ file.file.url }}" download>{{ file.file.name }}</a>
+                   <button class ="btn btn-outline-danger btn-sm btn_del" data-id="{{ file.id }}">Delete</button>
+                </li>
+            {% empty %}
+                <li>No files uploaded yet.</li>
+            {% endfor %}
+        </ul>
+
+
+    </div>
+  </div>
+</div>
+{% endblock %}
+{% block extra_js %}
+<script>
+$(document).ready(function() {
+    $('.btn_del').click(function() {
+        var fileId = $(this).data('id');
+        var $fileItem = $('#document-' + fileId);
+        var target = $('#db').val();
+        console.log($fileItem)
+
+        if (confirm('삭제하시겠습니까? (삭제 후 복구가 불가능합니다.)')) {
+            $.ajax({
+                url: '/delete_file/' + fileId + '/' + target + '/',
+                type: 'POST',
+                data: {
+                    'csrfmiddlewaretoken': '{{ csrf_token }}'
+                },
+                success: function(response) {
+                    if (response.status === 'success') {
+                        $fileItem.remove();
+                    } else {
+                        alert('File deletion failed.');
+                    }
+                },
+                error: function() {
+                    alert('An error occurred. Please try again.');
+                }
+            });
+        }
+    });
+});
+</script>
+{% endblock %}

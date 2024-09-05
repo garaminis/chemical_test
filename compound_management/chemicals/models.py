@@ -203,7 +203,6 @@ class invtro_Image(models.Model):
     Target_Inhibition = models.ForeignKey(Target_Inhibition,related_name='images',on_delete=models.CASCADE,null=True)
     other_asssay = models.ForeignKey(other_asssay,related_name='images',on_delete=models.CASCADE,null=True)
 
-
 class in_vivo(models.Model):
     chemical = models.ForeignKey(Chemical, on_delete=models.CASCADE)
     start_date = models.DateField()
