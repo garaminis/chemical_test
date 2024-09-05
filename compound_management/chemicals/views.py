@@ -1021,7 +1021,6 @@ def upload_fda_result(request,target):
                         AUC=row['AUC_1'],
                         t_half=row['T1/2_1'],
                         period='1',  # period 1로 저장
-
                     )
                     FDA_result.objects.create(
                         chemical=chemical,
@@ -1030,7 +1029,6 @@ def upload_fda_result(request,target):
                         AUC=row['AUC_2'],
                         t_half=row['T1/2_2'],
                         period='2',
-
                     )
                 except Chemical.DoesNotExist:
                     print(f"Chemical '{chemical_name}' does not exist. Skipping this entry.")
