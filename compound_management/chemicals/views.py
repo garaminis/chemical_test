@@ -920,7 +920,7 @@ def FDA_result_add (request, target, chem_id ):
 @login_required
 def FDA_delete(request, target, chem_id ,id):
     fda = get_object_or_404(FDA_result, id=id)
-    if request.method == 'POST' and request.is_ajax():
+    if request.method == 'POST' :
         fda.delete()
         return JsonResponse({'success': True, 'id': id})
     return JsonResponse({'success': False, 'error': 'Invalid request'}, status=400)
@@ -1011,23 +1011,25 @@ def upload_fda_result(request,target):
             io_string = io.StringIO(data_set)
             reader = csv.DictReader(io_string)
             for row in reader:
-                chemical_name=row.get('Product')
+                print(row)
+                print(f"Tmax_1: {row['Tmax_1']}, Tmax_2: {row['Tmax_2']}")
+                chemical_name=row.get('Product') # 정확한 값을 가져옴
                 try:
                     chemical = Chemical.objects.get(chem_id=chemical_name)
                     FDA_result.objects.create(
                         chemical=chemical,
-                        tmax= row['Tmax_1'],
-                        max_concentration=row['Cmax_1'],
-                        AUC=row['AUC_1'],
-                        t_half=row['T1/2_1'],
-                        period='1',  # period 1로 저장
+                        tmax= row.get('Tmax_1'),
+                        max_concentration=row.get('Cmax_1'),
+                        AUC=row.get('AUC_1'),
+                        t_half=row.get('T1/2_1'),
+                        period='1',
                     )
                     FDA_result.objects.create(
                         chemical=chemical,
-                        tmax=row['Tmax_2'],
-                        max_concentration=row['Cmax_2'],
-                        AUC=row['AUC_2'],
-                        t_half=row['T1/2_2'],
+                        tmax=row.get('Tmax_2'),
+                        max_concentration=row.get('Cmax_2'),
+                        AUC=row.get('AUC_2'),
+                        t_half=row.get('T1/2_2'),
                         period='2',
                     )
                 except Chemical.DoesNotExist:
