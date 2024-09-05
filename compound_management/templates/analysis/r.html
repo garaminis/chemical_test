@@ -1,9 +1,8 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Patient Input</title>
-</head>
-<body>
+{% extends 'base.html' %}
+{% block title %}Patient Input{% endblock %}
+{% block extra_head %}
+{% endblock %}
+{% block content %}
     <h1>Enter Patient ID</h1>
     <form method="post">
         {% csrf_token %}
@@ -17,5 +16,6 @@
     {% if results %}
         {{ results|safe }}
     {% endif %}
-</body>
-</html>
+{% endblock %}
+{% block extra_js %}
+{% endblock %}

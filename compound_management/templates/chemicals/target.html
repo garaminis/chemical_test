@@ -233,9 +233,10 @@ img {
             <div class="btn-group" role="group">
                  <a href="{% url 'result_add' target=target %}" class="btn btn-outline-primary btn-sm"><i class="bi bi-plus-square"></i> result </a>
                 <a href="{% url 'chemical_new' target=target %}" class="btn btn-outline-primary btn-sm"><i class="bi bi-plus-square"></i> New </a>
-                <a href="{% url 'upload_chemicals' target=target %}" class="btn btn-outline-primary btn-sm"><i class="bi bi-files"></i> Upload </a>
                 {% if  target == "FDA" %}
-                    <a href="{% url 'upload_fda_result' target=target %}" class="btn btn-outline-primary btn-sm"><i class="bi bi-files"></i> data </a>
+                    <a href="{% url 'upload_fda_result' target=target %}" class="btn btn-outline-primary btn-sm"><i class="bi bi-files"></i> Upload </a>
+                {% else %}
+                    <a href="{% url 'upload_chemicals' target=target %}" class="btn btn-outline-primary btn-sm"><i class="bi bi-files"></i> Upload </a>
                 {% endif %}
             </div>
 

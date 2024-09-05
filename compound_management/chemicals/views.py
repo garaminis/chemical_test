@@ -28,9 +28,6 @@ from .forms import ChemicalForm, ChemicalUploadForm, PharmacokineticForm, Cytoto
     intargetForm, otherForm, in_vivoForm, FDA_Form, DocumentForm, FDA_UploadForm
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
-# R2Py
-import subprocess
-import pandas as pd
 # RDKIT
 from rdkit import Chem
 from rdkit.Chem import Descriptors, Draw
@@ -40,7 +37,6 @@ import logging
 import csv
 from django.http import JsonResponse, HttpResponse, HttpResponseNotFound
 import os
-from django.conf import settings
 from users.models import DatabaseList
 
 
@@ -687,72 +683,72 @@ def other_delete(request, target, chem_id ,id):
         return JsonResponse({'success': True, 'id': id})
     return JsonResponse({'success': False, 'error': 'Invalid request'}, status=400)
 
-def run_r_script_and_get_results(patient_id):
-    # R 스크립트 파일 읽기
-    with open("/Users/sangjoonshin/Desktop/231218_cosine_similarity.R", "r") as file:
-        r_script = file.readlines()
-
-    # selected_patient_id 설정
-    patient_id_line = f'selected_patient_id <- "{patient_id}"\n'
-    r_script.insert(0, patient_id_line)  # 스크립트 시작 부분에 삽입
-
-    # 수정된 R 스크립트 파일 임시 저장
-    with open("/Users/sangjoonshin/Desktop/temp_cosine_jy.R", "w") as file:
-        file.writelines(r_script)
-
-    # 수정된 R 스크립트 실행
-    subprocess.run(["/usr/local/bin/Rscript", "/Users/sangjoonshin/Desktop/temp_cosine_jy.R"])
-
-    # 결과 파일 읽기
-    results_df = pd.read_csv("/Users/sangjoonshin/Desktop/top_10_cell_lines.csv")
-    return results_df
-
-def patient_input(request):
-    context = {}
-    if request.method == 'POST':
-        patient_id = request.POST.get('patient_id')
-        results_df = run_r_script_and_get_results(patient_id)
-        context['results'] = results_df.to_html()  # DataFrame을 HTML로 변환
-        context['patient_id'] = patient_id
-    return render(request, 'r.html', context)
-
-def run_r_SL(SLselected_gene):
-    # R 스크립트 파일 읽기
-    with open("/Users/sangjoonshin/Downloads/SL/Synthetic_Lethal.R", "r") as file:
-        r_script = file.readlines()
-
-    # selected_patient_id 설정
-    file_path = f"/Users/sangjoonshin/Downloads/SL/DEGene_{SLselected_gene}.csv"
-    SLselected_gene = f'SLselected_gene <- "{SLselected_gene}"\n'
-    r_script.insert(0, SLselected_gene)  # 스크립트 시작 부분에 삽입
-
-    # 수정된 R 스크립트 파일 임시 저장
-    with open("/Users/sangjoonshin/Downloads/SL/temp_SL.R", "w") as file:
-        file.writelines(r_script)
-
-    # 수정된 R 스크립트 실행
-    subprocess.run(["/usr/local/bin/Rscript", "/Users/sangjoonshin/Downloads/SL/temp_SL.R"])
-
-    # 결과 파일 읽기
-
-    results_df = pd.read_csv(file_path)
-    return results_df
-def SLselected_gene_input(request):
-    context = {}
-    if request.method == 'POST':
-        SLselected_gene = request.POST.get('SLselected_gene')
-        results_df = run_r_SL(SLselected_gene)
-        context['results'] = results_df.to_html()  # DataFrame을 HTML로 변환
-        context['SLselected_gene'] = SLselected_gene
-
-        # 두 번째 기능: 이미지 경로 설정
-        img_relative_path = f'images/CRISPR_Gene_Effect_{SLselected_gene}.png'
-        full_img_path = os.path.join(settings.MEDIA_ROOT, img_relative_path)
-        if os.path.exists(full_img_path):
-            context['img_path'] = os.path.join(settings.MEDIA_URL, img_relative_path)
-        else:
-            context['img_path'] = None
-    return render(request, 'sl.html', context)
+# def run_r_script_and_get_results(patient_id):
+#     # R 스크립트 파일 읽기
+#     with open("/Users/sangjoonshin/Desktop/231218_cosine_similarity.R", "r") as file:
+#         r_script = file.readlines()
+#
+#     # selected_patient_id 설정
+#     patient_id_line = f'selected_patient_id <- "{patient_id}"\n'
+#     r_script.insert(0, patient_id_line)  # 스크립트 시작 부분에 삽입
+#
+#     # 수정된 R 스크립트 파일 임시 저장
+#     with open("/Users/sangjoonshin/Desktop/temp_cosine_jy.R", "w") as file:
+#         file.writelines(r_script)
+#
+#     # 수정된 R 스크립트 실행
+#     subprocess.run(["/usr/local/bin/Rscript", "/Users/sangjoonshin/Desktop/temp_cosine_jy.R"])
+#
+#     # 결과 파일 읽기
+#     results_df = pd.read_csv("/Users/sangjoonshin/Desktop/top_10_cell_lines.csv")
+#     return results_df
+#
+# def patient_input(request):
+#     context = {}
+#     if request.method == 'POST':
+#         patient_id = request.POST.get('patient_id')
+#         results_df = run_r_script_and_get_results(patient_id)
+#         context['results'] = results_df.to_html()  # DataFrame을 HTML로 변환
+#         context['patient_id'] = patient_id
+#     return render(request, 'r.html', context)
+#
+# def run_r_SL(SLselected_gene):
+#     # R 스크립트 파일 읽기
+#     with open("/Users/sangjoonshin/Downloads/SL/Synthetic_Lethal.R", "r") as file:
+#         r_script = file.readlines()
+#
+#     # selected_patient_id 설정
+#     file_path = f"/Users/sangjoonshin/Downloads/SL/DEGene_{SLselected_gene}.csv"
+#     SLselected_gene = f'SLselected_gene <- "{SLselected_gene}"\n'
+#     r_script.insert(0, SLselected_gene)  # 스크립트 시작 부분에 삽입
+#
+#     # 수정된 R 스크립트 파일 임시 저장
+#     with open("/Users/sangjoonshin/Downloads/SL/temp_SL.R", "w") as file:
+#         file.writelines(r_script)
+#
+#     # 수정된 R 스크립트 실행
+#     subprocess.run(["/usr/local/bin/Rscript", "/Users/sangjoonshin/Downloads/SL/temp_SL.R"])
+#
+#     # 결과 파일 읽기
+#
+#     results_df = pd.read_csv(file_path)
+#     return results_df
+# def SLselected_gene_input(request):
+#     context = {}
+#     if request.method == 'POST':
+#         SLselected_gene = request.POST.get('SLselected_gene')
+#         results_df = run_r_SL(SLselected_gene)
+#         context['results'] = results_df.to_html()  # DataFrame을 HTML로 변환
+#         context['SLselected_gene'] = SLselected_gene
+#
+#         # 두 번째 기능: 이미지 경로 설정
+#         img_relative_path = f'images/CRISPR_Gene_Effect_{SLselected_gene}.png'
+#         full_img_path = os.path.join(settings.MEDIA_ROOT, img_relative_path)
+#         if os.path.exists(full_img_path):
+#             context['img_path'] = os.path.join(settings.MEDIA_URL, img_relative_path)
+#         else:
+#             context['img_path'] = None
+#     return render(request, 'sl.html', context)
 
 def sanitize_attribute_name(name):
     # 유효한 문자만 허용 (영문자, 숫자, 하이픈, 밑줄)
@@ -920,7 +916,7 @@ def FDA_result_add (request, target, chem_id ):
 @login_required
 def FDA_delete(request, target, chem_id ,id):
     fda = get_object_or_404(FDA_result, id=id)
-    if request.method == 'POST' :
+    if request.method == 'POST'  :
         fda.delete()
         return JsonResponse({'success': True, 'id': id})
     return JsonResponse({'success': False, 'error': 'Invalid request'}, status=400)
@@ -1011,10 +1007,27 @@ def upload_fda_result(request,target):
             io_string = io.StringIO(data_set)
             reader = csv.DictReader(io_string)
             for row in reader:
-                print(row)
                 print(f"Tmax_1: {row['Tmax_1']}, Tmax_2: {row['Tmax_2']}")
                 chemical_name=row.get('Product') # 정확한 값을 가져옴
                 try:
+                    # for row in reader:
+                    #     smiles = row['smiles']
+                    #     MW = row['MW']
+                    #     chem_id = row['chem_id']
+                    #     try:
+                    #         MW_value = float(MW) if MW else 0
+                    #         chemical = Chemical(
+                    #             chem_id=chem_id,
+                    #             smiles=smiles,
+                    #             target=target,
+                    #             MW=MW_value,
+                    #             cLogP=calculate_cLogP(smiles)
+                    #         )
+                    #         image_data = generate_image(smiles)
+                    #         if image_data:
+                    #             chemical.image.save(f'{chemical.chem_id}.png', ContentFile(image_data), save=False)
+                    #      chemical.save()
+
                     chemical = Chemical.objects.get(chem_id=chemical_name)
                     FDA_result.objects.create(
                         chemical=chemical,

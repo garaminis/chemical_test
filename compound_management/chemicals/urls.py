@@ -40,11 +40,6 @@ urlpatterns = [
     path('chemicals/<str:target>/modeling/<str:chem_id>/', views.schrodinger_model_list, name='schrodinger_model_list'),
     path('chemicals/<str:target>/modeling/<str:chem_id>/add/', views.schrodinger_model_add, name='schrodinger_model_add'),
     path('chemicals/<str:target>/modeling/<str:chem_id>/upload/', views.schrodinger_model_upload, name='schrodinger_model_upload'),
-
-    path('r/', views.patient_input, name='patient_input'),
-    path('sl/', views.SLselected_gene_input, name='SLselected_gene_input'),
-
-
 # result invitro add
     path('chemicals/<str:target>/cck/<str:chem_id>/add/',views.cck_add, name='cck_add'),
     path('chemicals/<str:target>/wb/<str:chem_id>/add/',views.wb_add, name='wb_add'),

@@ -1,9 +1,8 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>SLselected_gene Input</title>
-</head>
-<body>
+{% extends 'base.html' %}
+{% block title %}SLselected_gene Input{% endblock %}
+{% block extra_head %}
+{% endblock %}
+{% block content %}
     <h1>Enter SLselected_gene</h1>
     <form method="post">
         {% csrf_token %}
@@ -26,5 +25,6 @@
             <p>No image found for the specified gene.</p>
         {% endif %}
     {% endif %}
-</body>
-</html>
+{% endblock %}
+{% block extra_js %}
+{% endblock %}
