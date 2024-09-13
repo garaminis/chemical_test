@@ -265,7 +265,7 @@ def pharmacokinetic_list(request, target, chem_id):
 
     invivo = in_vivo.objects.filter(chemical=chemical)
 
-    results = {}
+    results = {} # 데이터자동화 3
     for db in db_names:
         if db.id >= 10:
             try:
@@ -312,7 +312,7 @@ def pharmacokinetic_add(request, target, chem_id):
 @login_required
 def pharmacokinetic_delete (request, target, chem_id ,id):
     Pharm = get_object_or_404(Pharmacokinetic, id=id)
-    chemical = get_object_or_404(Chemical, chem_id=chem_id)
+    #chemical = get_object_or_404(Chemical, chem_id=chem_id)
     if request.method == 'POST':
         Pharm.delete()
         return JsonResponse({'success': True, 'id': id})
@@ -988,7 +988,7 @@ def upload_fda_result(request,target):
         form = FDA_UploadForm
     return render(request, 'chemicals/FDA_upload.html', {'form': form, 'target': target})
 
-@login_required # 미완성 :
+@login_required # 미완성 : img list
 def result_img(request, target, chem_id,id):
     chemical = get_object_or_404(Chemical, chem_id=chem_id)
     image = chemical.invtro_Image.filter(chemical=chemical)

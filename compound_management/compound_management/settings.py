@@ -33,6 +33,14 @@ LOGIN_URL = 'login'
 
 AUTH_USER_MODEL = 'users.User'
 
+# Redis 서버의 기본 포트 번호인 6379번 포트를 사용
+CELERY_BROKER_URL = 'redis://localhost:6379/0'
+CELERY_RESULT_BACKEND = 'redis://localhost:6379/0'
+CELERY_ACCEPT_CONTENT = ['json']
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_RESULT_SERIALIZER = 'json'
+CELERY_TIMEZONE = 'UTC'
+
 # Application definition
 
 INSTALLED_APPS = [
