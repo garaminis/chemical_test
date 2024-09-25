@@ -1,13 +1,17 @@
 import os
-
+import time
 from celery.result import AsyncResult
 from django.conf import settings
 # R2Py
 import subprocess
+import pyRserve
 import pandas as pd
 from django.shortcuts import render
 # Celery
 from analysis.task import run_r_script_task
+from django.http import JsonResponse
+from django.core.cache import cache
+
 
 def run_r_script_and_get_results(patient_id):
     # R 스크립트 파일 읽기
@@ -40,38 +44,92 @@ def patient_input(request):
         context['patient_id'] = patient_id
     return render(request, 'analysis/r.html', context)
 
+
 def run_r_SL(SLselected_gene):
-    # R 스크립트 파일 읽기
-    with open("C:/Users/hasn0737/Desktop/r_study/SL/SL_gr.R", "r", encoding='utf-8') as file:
-        r_script = file.readlines()
+    # 캐시된 R 스크립트 결과 가져오기
+    result = cache.get('r_script_result')
+    print(result)
 
-    # selected_patient_id 설정
-    SLselected_gene = f'SLselected_gene <- "{SLselected_gene}"\n'
-    r_script.insert(0, SLselected_gene)  # 스크립트 시작 부분에 삽입
+    if result is None:
+        return JsonResponse({'status': 'error', 'message': 'No result found in cache.'})
 
-    with open("C:/Users/hasn0737/Desktop/r_study/SL/temp_SL.R", "w") as file:
-        file.writelines(r_script)
+    try:
+        with open("C:/Users/hasn0737/Desktop/r_study/SL/SL_gr.R", "r", encoding='utf-8') as file:
+            r_script = file.readlines()
 
-    #file_path = f"C:/Users/hasn0737/Desktop/r_study/SL/csv_file/{SLselected_gene}.csv"
-    # 수정된 R 스크립트 실행
-    subprocess.run(
-        ["C:/Program Files/R/R-4.4.1/bin/Rscript", "C:/Users/hasn0737/Desktop/r_study/SL/temp_SL.R"],
-        encoding="utf-8"
-    )
+        # selected_patient_id 설정
+        SLselected_gene = f'SLselected_gene <- "{SLselected_gene}"\n'
+        r_script.insert(0, SLselected_gene)  # 스크립트 시작 부분에 삽입
 
-    # 결과 파일 읽기
-    #results_df = pd.read_csv(file_path)
-    return SLselected_gene
-    #return results_df
+        with open("C:/Users/hasn0737/Desktop/r_study/SL/temp_SL.R", "w") as file:
+            file.writelines(r_script)
+
+        # Rserve에 연결
+        conn = pyRserve.connect()
+
+        # 캐시에서 받은 변수를 R로 넘겨줌 (예: SLselected_gene 변수)
+        conn.r.assign("SLselected_gene", SLselected_gene)
+
+        # 새로운 R 스크립트를 실행
+        conn.r.source("C:/Users/hasn0737/Desktop/r_study/SL/temp_SL.R")
+
+        # 스크립트 실행 결과를 Python으로 가져오기 (필요에 따라 수정)
+        output = conn.r('summary(SLselected_gene)')  # 결과 확인 예시
+        print(f"Result from R: {result}")
+
+        conn.close()  # 세션 닫기
+
+        return JsonResponse({'status': 'success', 'output': output})
+
+    except Exception as e:
+        print(f"Error occurred while running R script: {str(e)}")
+        return JsonResponse({'status': 'error', 'message': str(e)})
+
+# def run_r_SL(SLselected_gene):
+#
+#     result = cache.get('r_script_result')
+#     print(result)
+#     if result is None:
+#         return JsonResponse({'status': 'error', 'message': 'No result found in cache.'})
+#
+#     # R 스크립트 파일 읽기
+#     with open("C:/Users/hasn0737/Desktop/r_study/SL/SL_gr.R", "r", encoding='utf-8') as file:
+#         r_script = file.readlines()
+#
+#     # selected_patient_id 설정
+#     SLselected_gene = f'SLselected_gene <- "{SLselected_gene}"\n'
+#     r_script.insert(0, SLselected_gene)  # 스크립트 시작 부분에 삽입
+#
+#     with open("C:/Users/hasn0737/Desktop/r_study/SL/temp_SL.R", "w") as file:
+#         file.writelines(r_script)
+#
+#     #file_path = f"C:/Users/hasn0737/Desktop/r_study/SL/csv_file/{SLselected_gene}.csv"
+#
+#     subprocess_result = subprocess.run(
+#         ["C:/Program Files/R/R-4.4.1/bin/Rscript", "C:/Users/hasn0737/Desktop/r_study/SL/temp_SL.R"],
+#         capture_output=True,
+#         text=True,
+#         encoding="utf-8",
+#         cwd = "C:/Users/hasn0737/Desktop/r_study/SL/"
+#     )
+#
+#     # R 스크립트 실행 결과 확인
+#     if subprocess_result.returncode == 0:
+#         print("R script executed successfully.")
+#         print("Output:", subprocess_result.stdout)
+#     else:
+#         print("Error occurred while running R script.")
+#         print("Stderr:", subprocess_result.stderr)
+#
+#     return SLselected_gene
 
 def SLselected_gene_input(request):
-    #run_r_script_task.delay()
 
     context = {}
     if request.method == 'POST':
+
         SLselected_gene = request.POST.get('SLselected_gene')
-        results_df = run_r_SL(SLselected_gene)
-        print (SLselected_gene)
+        run_r_SL(SLselected_gene)
         #context['results'] = results_df.to_html()  # DataFrame을 HTML로 변환
         context['SLselected_gene'] = SLselected_gene
 
@@ -85,3 +143,35 @@ def SLselected_gene_input(request):
             context['img_path'] = None
     return render(request, 'analysis/sl.html', context)
 
+
+def r_script_process(request):
+    try:
+        # Celery 작업 실행
+        task_result = run_r_script_task.apply_async()
+        task_result.wait()  # 작업 완료까지 대기
+
+        # 작업 상태 확인
+        if task_result.state != 'SUCCESS':
+            return JsonResponse({'status': 'error', 'message': 'Celery task did not complete successfully.', 'state': task_result.state})
+
+        result = task_result.result
+        if result and 'returncode' in result:
+            if result['returncode'] == 0:
+                return JsonResponse({'status': 'success', 'message': 'R script executed successfully.'})
+            else:
+                return JsonResponse({
+                    'status': 'error',
+                    'message': 'R script failed.',
+                    'stdout': result['stdout'],
+                    'stderr': result['stderr']
+                })
+        else:
+            return JsonResponse({'status': 'error', 'message': 'No result returned from the task.'})
+
+    except Exception as e:
+        print(f"Error occurred: {str(e)}")
+        return JsonResponse({
+            'status': 'error',
+            'message': 'An unexpected error occurred.',
+            'error': str(e)
+        })

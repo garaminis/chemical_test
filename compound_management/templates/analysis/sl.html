@@ -9,6 +9,9 @@
         <input type="text" name="SLselected_gene" placeholder="SLselected Gene">
         <button type="submit">Submit</button>
     </form>
+    <br>
+    <button id="load_file">Load File</button>
+    <span id="status_message"></span>
 
     {% if SLselected_gene %}
         <h2>Results for Gene: {{ SLselected_gene }}</h2>
@@ -28,4 +31,27 @@
 
 {% endblock %}
 {% block extra_js %}
+<script>
+$(document).ready(function() {
+    $('#load_file').on('click', function() {
+
+        $.ajax({
+            url: '/analysis/load/',  //app앞에 넣어야함!
+            type: 'GET',  // 요청 방식
+            success: function(response) {
+                // 성공적으로 작업이 완료된 경우
+                if (response.status === 'success') {
+                    $('#status_message').text(response.message);  // 성공 메시지 표시
+                } else {
+                    $('#status_message').text(response.message);  // 오류 메시지 표시
+                }
+            },
+            error: function(xhr, status, error) {
+                // 요청 중 오류 발생 시
+                $('#status_message').text('An error occurred.');
+            }
+        });
+    });
+});
+</script>
 {% endblock %}
