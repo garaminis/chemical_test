@@ -47,13 +47,13 @@ def patient_input(request):
 
 def run_r_SL(SLselected_gene):
 
-    result = cache.get('r_script_result')
-    print(result)
-    if result is None:
-        return JsonResponse({'status': 'error', 'message': 'No result found in cache.'})
+    # result = cache.get('r_script_result')
+    # print(result)
+    # if result is None:
+    #     return JsonResponse({'status': 'error', 'message': 'No result found in cache.'})
 
     # R 스크립트 파일 읽기
-    with open("C:/Users/hasn0737/Desktop/r_study/SL/Sl_gr(fread).R", "r", encoding='utf-8') as file:
+    with open("C:/Users/hasn0737/Desktop/r_study/SL/Sl_gr.R", "r", encoding='utf-8') as file:
         r_script = file.readlines()
 
     # selected_patient_id 설정

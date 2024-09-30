@@ -13,7 +13,7 @@ logger = logging.getLogger(__name__)
 def run_r_script_task():
     try:
         result = subprocess.run(
-            ["C:/Program Files/R/R-4.4.1/bin/Rscript", "C:/Users/hasn0737/Desktop/r_study/SL/SL_start.R"],  # R 스크립트 경로
+            ["C:/Program Files/R/R-4.4.1/bin/Rscript", "C:/Users/hasn0737/Desktop/r_study/SL/SL_start_gr.R"],  # R 스크립트 경로
             check=True,
             capture_output=True,
             text=True,
